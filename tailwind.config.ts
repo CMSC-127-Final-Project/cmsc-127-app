@@ -59,9 +59,5 @@ export default {
   		}
   	}
   },
-<<<<<<< HEAD
   plugins: [tailwindcssAnimate],
-=======
-  plugins: [require("tailwindcss-animate")],
->>>>>>> 8d9212a (feat: Add login page design; no functionality yet)
 } satisfies Config;

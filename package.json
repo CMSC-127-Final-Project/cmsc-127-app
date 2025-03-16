@@ -9,19 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
-<<<<<<< HEAD
-=======
-    "@radix-ui/react-checkbox": "^1.1.4",
->>>>>>> 8d9212a (feat: Add login page design; no functionality yet)
     "@radix-ui/react-label": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-<<<<<<< HEAD
     "lucide-react": "^0.479.0",
-=======
-    "lucide-react": "^0.482.0",
->>>>>>> 8d9212a (feat: Add login page design; no functionality yet)
     "next": "15.1.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -33,10 +25,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-<<<<<<< HEAD
     "@types/tailwindcss": "^3.1.0",
-=======
->>>>>>> 8d9212a (feat: Add login page design; no functionality yet)
     "eslint": "^9",
     "eslint-config-next": "15.1.7",
     "postcss": "^8",
