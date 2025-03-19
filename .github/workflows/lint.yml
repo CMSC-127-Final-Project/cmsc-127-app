@@ -37,7 +37,7 @@ jobs:
           git commit -m "chore: auto-fix lint issues" || echo "No lint fixes"
           
           BRANCH_NAME="${GITHUB_HEAD_REF}"
-          git push origin HEAD:$BRANCH_NAME
+          git push origin HEAD:$BRANCH_NAME --force-with-lease
 
       - name: Check Prettier formatting
         run: npm run format:check
@@ -51,4 +51,4 @@ jobs:
           git commit -m "chore: auto-fix format issues" || echo "No format fixes"
           
           BRANCH_NAME="${GITHUB_HEAD_REF}"
-          git push origin HEAD:$BRANCH_NAME
+          git push origin HEAD:$BRANCH_NAME --force-with-lease
