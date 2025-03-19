@@ -1,6 +1,7 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 # 📑 Table of Contents
+
 - [📑 Table of Contents](#-table-of-contents)
 - [🚀 Getting Started](#-getting-started)
 - [🛠️ Using Git](#️-using-git)
@@ -14,7 +15,6 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
   - [Folder and File Naming](#folder-and-file-naming)
   - [Commit Message Guidelines](#commit-message-guidelines)
 
-
 # 🚀 Getting Started
 
 To run the development server:
@@ -25,17 +25,19 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. You can choose which page to open by adding the page's folder. Example: [http://localhost:3000/signup](http://localhost:3000/signup)
 
-You can start editing the page by modifying the corresponding ```page.tsx``` file. Changes will auto-update the page as you work.
+You can start editing the page by modifying the corresponding `page.tsx` file. Changes will auto-update the page as you work.
 
 # 🛠️ Using Git
 
 Set up Git:
+
 ```
 git config --global user.name "Your Name"
 git config --global user.email "youremail@example.com"
 ```
 
 Clone Repository:
+
 ```
 git clone https://github.com/CMSC-127-Final-Project/cmsc-127-app.git
 cd cmsc-127-app
@@ -48,19 +50,19 @@ We follow **Trunk-Based Development** for constant updates and rapid integration
 
 ## Branching Strategy
 
-- Main Branch: ```main``` (Live Branch/Production Ready)
+- Main Branch: `main` (Live Branch/Production Ready)
 - Short Feature Branches:
-  - Branch off ```main```
-  - Prefix ```feature/``` ```fix/``` ```chore/``` for Branch Naming Conventions
-    - ```feature```: For new features
-    - ```fix```: For bug fixes
-    - ```chore```: For maintenance tasks, refactoring, or dependency updates
-    - ```docs```: For documentation changes
-  - Example: ```feature/add-login-page```, ```chore/readme-improvement```
+  - Branch off `main`
+  - Prefix `feature/` `fix/` `chore/` for Branch Naming Conventions
+    - `feature`: For new features
+    - `fix`: For bug fixes
+    - `chore`: For maintenance tasks, refactoring, or dependency updates
+    - `docs`: For documentation changes
+  - Example: `feature/add-login-page`, `chore/readme-improvement`
 
 ## Workflow
 
-1. Pull the latest ```main```:
+1. Pull the latest `main`:
    ```
    git checkout main
    git pull
@@ -76,22 +78,22 @@ We follow **Trunk-Based Development** for constant updates and rapid integration
    git commit -m "feat: example commit message"
    git push
    ```
-4. Open a **Pull Request** to ```main```.
+4. Open a **Pull Request** to `main`.
 
 ## Rebasing
 
-When your **Pull Request** is behind ```main```.
+When your **Pull Request** is behind `main`.
 
-1. Checkout to ```main``` and pull the latest version:
+1. Checkout to `main` and pull the latest version:
    ```
    git checkout main
    git pull
    ```
-2. Go back to your ```feature-branch```:
+2. Go back to your `feature-branch`:
    ```
    git checkout branch-name
    ```
-3. Rebase ```main``` then fix conflict issues if there are any:
+3. Rebase `main` then fix conflict issues if there are any:
    ```
    git rebase main
    ```
@@ -112,21 +114,24 @@ When your **Pull Request** is behind ```main```.
 ## Code Formatting
 
 We have a **Github Action** that automatically runs:
+
 ```
 npm run lint
 npm run format
 ```
-when a new Pull Request is made or updated. This follows ```ESLint``` and ```Prettier``` for consistent style.
+
+when a new Pull Request is made or updated. This follows `ESLint` and `Prettier` for consistent style.
 
 ## Folder and File Naming
 
-- Use ```camelCase``` for file and folder naming
-- Place reusable components in ```src/components```
-- Pages inside ```src/app/pageName```
+- Use `camelCase` for file and folder naming
+- Place reusable components in `src/components`
+- Pages inside `src/app/pageName`
 
 ## Commit Message Guidelines
 
-We follow ```Conventional Commits```:
+We follow `Conventional Commits`:
+
 ```
 feat: add new feature
 fix: resolve issue
