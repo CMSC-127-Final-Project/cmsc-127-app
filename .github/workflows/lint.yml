@@ -9,10 +9,13 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # <--- Add this!
+
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Important for detached HEAD issue
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -33,7 +36,7 @@ jobs:
           if ! git diff --quiet; then
             git add .
             git commit -m "chore: auto-fix ESLint issues"
-            git push origin $GITHUB_HEAD_REF --force-with-lease
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $GITHUB_HEAD_REF --force-with-lease
           else
             echo "No ESLint fixes to commit"
           fi
@@ -49,7 +52,8 @@ jobs:
           if ! git diff --quiet; then
             git add .
             git commit -m "chore: auto-fix Prettier issues"
-            git push origin $GITHUB_HEAD_REF --force-with-lease
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $GITHUB_HEAD_REF --force-with-lease
           else
             echo "No Prettier fixes to commit"
           fi
+  
