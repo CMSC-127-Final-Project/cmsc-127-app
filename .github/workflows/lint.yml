@@ -1,20 +1,22 @@
-name: Lint and Format
+name: Auto-fix ESLint & Prettier issues
 
 on:
-  push:
-    branches: [main, feat/**]
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
 
 jobs:
-  lint:
+  lint-and-format:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write  # <--- Add this!
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
         with:
+          ref: ${{ github.head_ref }}
           fetch-depth: 0
 
       - name: Set up Node.js
@@ -25,35 +27,24 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # ---- ESLint auto-fix ----
-      - name: Auto-fix ESLint issues
-        run: |
-          npm run lint:fix
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git fetch origin $GITHUB_HEAD_REF
-          git checkout $GITHUB_HEAD_REF
-          if ! git diff --quiet; then
-            git add .
-            git commit -m "chore: auto-fix ESLint issues"
-            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $GITHUB_HEAD_REF --force-with-lease
-          else
-            echo "No ESLint fixes to commit"
-          fi
+      - name: Run ESLint auto-fix
+        run: npm run lint:fix
 
-      # ---- Prettier auto-fix ----
-      - name: Auto-fix Prettier issues
+      - name: Run Prettier auto-fix
+        run: npm run format:fix
+
+      - name: Commit & Push Auto-fixes
         run: |
-          npm run format:fix
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git fetch origin $GITHUB_HEAD_REF
-          git checkout $GITHUB_HEAD_REF
+
+          git fetch origin ${{ github.head_ref }}
+          git checkout ${{ github.head_ref }}
+
           if ! git diff --quiet; then
             git add .
-            git commit -m "chore: auto-fix Prettier issues"
-            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $GITHUB_HEAD_REF --force-with-lease
+            git commit -m "chore: auto-fix ESLint & Prettier issues"
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.head_ref }} --force-with-lease
           else
-            echo "No Prettier fixes to commit"
+            echo "No lint or format fixes needed"
           fi
-  
