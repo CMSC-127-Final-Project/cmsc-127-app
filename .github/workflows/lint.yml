@@ -36,6 +36,7 @@ jobs:
           git add .
           git commit -m "chore: auto-fix lint issues" || echo "No lint fixes"
           git checkout -b lint-fixes || git checkout lint-fixes
+          git pull origin lint-fixes  # Pull the latest changes
           git push origin lint-fixes
 
       - name: Check Prettier formatting
@@ -49,4 +50,5 @@ jobs:
           git add .
           git commit -m "chore: auto-fix format issues" || echo "No format fixes"
           git checkout -b format-fixes || git checkout format-fixes
+          git pull origin format-fixes  # Pull the latest changes
           git push origin format-fixes
