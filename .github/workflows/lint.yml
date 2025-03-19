@@ -32,7 +32,8 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add .
           git commit -m "chore: auto-fix lint issues" || echo "No lint fixes"
-          git push
+          git checkout -b lint-fixes || git checkout lint-fixes
+          git push origin lint-fixes
 
       - name: Check Prettier formatting
         run: npm run format:check
