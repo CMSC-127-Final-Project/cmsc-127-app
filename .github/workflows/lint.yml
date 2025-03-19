@@ -16,7 +16,7 @@ jobs:
       - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/head
+          ref: ${{ github.event.pull_request.head.ref }}  # 👈 Check out the actual branch name!
           fetch-depth: 0
 
       - name: Set up Node.js
@@ -34,6 +34,8 @@ jobs:
         run: npm run format:fix
 
       - name: Commit & Push Auto-fixes
+        env:
+          BRANCH_NAME: ${{ github.event.pull_request.head.ref }}  # 👈 Get branch name
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -41,7 +43,7 @@ jobs:
           if ! git diff --quiet; then
             git add .
             git commit -m "chore: auto-fix ESLint & Prettier issues"
-            git push
+            git push origin HEAD:$BRANCH_NAME  # 👈 Push back to the correct branch
           else
             echo "No lint or format fixes needed"
           fi
