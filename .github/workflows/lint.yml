@@ -40,3 +40,13 @@ jobs:
 
       - name: Check Prettier formatting
         run: npm run format:check
+
+      - name: Auto-fix Prettier issues
+        run: |
+          npm run format:fix
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m "chore: auto-fix format issues" || echo "No format fixes"
+          git checkout -b format-fixes || git checkout format-fixes
+          git push origin format-fixes
