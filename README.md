@@ -7,31 +7,25 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - [🌳 Git Workflow](#-git-workflow)
   - [Branching Strategy](#branching-strategy)
   - [Workflow](#workflow)
+  - [Rebasing](#rebasing)
 - [📝 Coding Standards](#-coding-standards)
   - [Tech Stack](#tech-stack)
+  - [Code Formatting](#code-formatting)
   - [Folder and File Naming](#folder-and-file-naming)
   - [Commit Message Guidelines](#commit-message-guidelines)
 
 
 ## 🚀 Getting Started
 
-First, run the development server:
+To run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. You can choose which page to open by adding the page's folder. Example: [http://localhost:3000/signup](http://localhost:3000/signup)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+You can start editing the page by modifying the corresponding ```page.tsx``` file. Changes will auto-update the page as you work.
 
 ## 🛠️ Using Git
 
@@ -71,18 +65,42 @@ We follow **Trunk-Based Development** for constant updates and rapid integration
    git checkout main
    git pull
    ```
-2. Create a branch. You can also do this in Github Issues to immediately link your branch to the issue.
+2. Create a branch. You can also do this in Github Issues to immediately link your branch to the issue:
    ```
    git checkout -b feature/example-branch
    ```
-3. Commit and Push
+3. Commit and Push:
    ```
    git status
    git add . (or specific file you want to stage changes)
    git commit -m "feat: example commit message"
    git push
    ```
-4. Open a **Pull Request** to ```main```
+4. Open a **Pull Request** to ```main```.
+
+### Rebasing
+
+When your **Pull Request** is behind ```main```.
+
+1. Checkout to ```main``` and pull the latest version:
+   ```
+   git checkout main
+   git pull
+   ```
+2. Go back to your ```feature-branch```:
+   ```
+   git checkout branch-name
+   ```
+3. Rebase ```main``` then fix conflict issues if there are any:
+   ```
+   git rebase main
+   ```
+4. Add, Commit, and Force push:
+   ```
+   git add .
+   git commit -m "feat: example commit message"
+   git push --force
+   ```
 
 ## 📝 Coding Standards
 
@@ -90,6 +108,15 @@ We follow **Trunk-Based Development** for constant updates and rapid integration
 
 - Frontend: Next.js, Typescript
 - Backend: Supabase
+
+### Code Formatting
+
+We have a **Github Action** that automatically runs:
+```
+npm run lint
+npm run format
+```
+when a new Pull Request is made or updated. This follows ```ESLint``` and ```Prettier``` for consistent style.
 
 ### Folder and File Naming
 
