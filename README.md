@@ -1,6 +1,6 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## 📑 Table of Contents
+# 📑 Table of Contents
 - [📑 Table of Contents](#-table-of-contents)
 - [🚀 Getting Started](#-getting-started)
 - [🛠️ Using Git](#️-using-git)
@@ -15,7 +15,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
   - [Commit Message Guidelines](#commit-message-guidelines)
 
 
-## 🚀 Getting Started
+# 🚀 Getting Started
 
 To run the development server:
 
@@ -27,7 +27,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying the corresponding ```page.tsx``` file. Changes will auto-update the page as you work.
 
-## 🛠️ Using Git
+# 🛠️ Using Git
 
 Set up Git:
 ```
@@ -42,11 +42,11 @@ cd cmsc-127-app
 code .
 ```
 
-## 🌳 Git Workflow
+# 🌳 Git Workflow
 
 We follow **Trunk-Based Development** for constant updates and rapid integration.
 
-### Branching Strategy
+## Branching Strategy
 
 - Main Branch: ```main``` (Live Branch/Production Ready)
 - Short Feature Branches:
@@ -58,7 +58,7 @@ We follow **Trunk-Based Development** for constant updates and rapid integration
     - ```docs```: For documentation changes
   - Example: ```feature/add-login-page```, ```chore/readme-improvement```
 
-### Workflow
+## Workflow
 
 1. Pull the latest ```main```:
    ```
@@ -78,7 +78,7 @@ We follow **Trunk-Based Development** for constant updates and rapid integration
    ```
 4. Open a **Pull Request** to ```main```.
 
-### Rebasing
+## Rebasing
 
 When your **Pull Request** is behind ```main```.
 
@@ -102,14 +102,14 @@ When your **Pull Request** is behind ```main```.
    git push --force
    ```
 
-## 📝 Coding Standards
+# 📝 Coding Standards
 
-### Tech Stack
+## Tech Stack
 
 - Frontend: Next.js, Typescript
 - Backend: Supabase
 
-### Code Formatting
+## Code Formatting
 
 We have a **Github Action** that automatically runs:
 ```
@@ -118,13 +118,13 @@ npm run format
 ```
 when a new Pull Request is made or updated. This follows ```ESLint``` and ```Prettier``` for consistent style.
 
-### Folder and File Naming
+## Folder and File Naming
 
 - Use ```camelCase``` for file and folder naming
 - Place reusable components in ```src/components```
 - Pages inside ```src/app/pageName```
 
-### Commit Message Guidelines
+## Commit Message Guidelines
 
 We follow ```Conventional Commits```:
 ```
