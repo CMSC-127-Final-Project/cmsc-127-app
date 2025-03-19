@@ -27,11 +27,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run Prettier
+        run: npm run format:check
+
       - name: Run ESLint auto-fix
         run: npm run lint:fix
 
       - name: Run Prettier auto-fix
         run: npm run format:fix
+
+      - name: Run Build
+        run: npm run build
 
       - name: Commit & Push Auto-fixes
         env:
