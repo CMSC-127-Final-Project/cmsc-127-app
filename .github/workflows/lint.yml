@@ -41,7 +41,7 @@ jobs:
       # ---- Prettier auto-fix ----
       - name: Auto-fix Prettier issues
         run: |
-          npm run format
+          npm run format:fix
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git fetch origin $GITHUB_HEAD_REF
