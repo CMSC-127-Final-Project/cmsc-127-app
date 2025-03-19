@@ -1,31 +1,31 @@
-"use client"
+'use client';
 
-import type React from "react"
+import type React from 'react';
 
-import { useState } from "react"
+import { useState } from 'react';
 // import { useRouter } from "next/navigation"
-import Link from "next/link"
+import Link from 'next/link';
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Icons } from "@/components/icons"
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Icons } from '@/components/icons';
 
 export default function SignupForm() {
-//   const router = useRouter()
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  //   const router = useRouter()
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault()
-    setIsLoading(true)
+    event.preventDefault();
+    setIsLoading(true);
 
     // This is where you would typically handle form submission
     // For example, sending data to an API endpoint
     setTimeout(() => {
-      setIsLoading(false)
+      setIsLoading(false);
       // Navigate to dashboard or confirmation page after successful signup
       // router.push("/dashboard")
-    }, 1000)
+    }, 1000);
   }
 
   return (
@@ -83,12 +83,11 @@ export default function SignupForm() {
         </div>
       </div>
       <div className="text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
+        Already have an account?{' '}
         <Link href="/login" className="underline underline-offset-4 hover:text-primary">
           Sign in
         </Link>
       </div>
     </div>
-  )
+  );
 }
-

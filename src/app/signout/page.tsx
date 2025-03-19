@@ -1,7 +1,9 @@
-import SignOutPage from "@/components/sign-out";
+import SignOutPage from '@/components/sign-out';
 
 export default function SignOut() {
-  return <>
-    <SignOutPage />
-  </>;
+  return (
+    <>
+      <SignOutPage />
+    </>
+  );
 }
