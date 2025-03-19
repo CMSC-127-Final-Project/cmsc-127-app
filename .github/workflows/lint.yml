@@ -16,7 +16,7 @@ jobs:
       - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: refs/pull/${{ github.event.pull_request.number }}/head
           fetch-depth: 0
 
       - name: Set up Node.js
@@ -38,13 +38,10 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-          git fetch origin ${{ github.head_ref }}
-          git checkout ${{ github.head_ref }}
-
           if ! git diff --quiet; then
             git add .
             git commit -m "chore: auto-fix ESLint & Prettier issues"
-            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.head_ref }} --force-with-lease
+            git push
           else
             echo "No lint or format fixes needed"
           fi
