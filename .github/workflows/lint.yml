@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write  # Add this line to grant write permission
+      contents: write  # needed to push commits back
 
     steps:
       - name: Checkout code
@@ -35,9 +35,8 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add .
           git commit -m "chore: auto-fix lint issues" || echo "No lint fixes"
-          git checkout -b lint-fixes || git checkout lint-fixes
-          git pull origin lint-fixes  # Pull the latest changes
-          git push origin lint-fixes
+          # push to the PR branch, not a new branch:
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
 
       - name: Check Prettier formatting
         run: npm run format:check
@@ -49,6 +48,4 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add .
           git commit -m "chore: auto-fix format issues" || echo "No format fixes"
-          git checkout -b format-fixes || git checkout format-fixes
-          git pull origin format-fixes  # Pull the latest changes
-          git push origin format-fixes
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
