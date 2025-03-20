@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 
+import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -21,24 +22,35 @@ import { Label } from '@/components/ui/label';
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
+    setError(null);
 
-    // Replace this with your actual authentication logic
+    const email = (event.currentTarget.elements.namedItem('email') as HTMLInputElement).value;
+    const password = (event.currentTarget.elements.namedItem('password') as HTMLInputElement).value;
+
     try {
-      // Example: const user = await signIn(email, password)
-      console.log('Authentication would happen here');
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      console.log('Login successful:', data);
 
       // Redirect after successful login
-      setTimeout(() => {
-        setIsLoading(false);
-        router.push('/dashboard'); // Change this to your post-login route
-      }, 1500);
-    } catch (error) {
-      console.error('Login failed:', error);
+      router.push('/dashboard'); // Change this to your post-login route
+    } catch (error: any) {
+      console.error('Login failed:', error.message);
+      setError(error.message || 'An unexpected error occurred.');
+    } finally {
       setIsLoading(false);
     }
   };
@@ -86,6 +98,7 @@ export default function LoginPage() {
                 </Button>
               </div>
             </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
             <div className="flex items-center space-x-2">
               <Checkbox id="remember" />
               <Label htmlFor="remember" className="text-sm font-normal">
