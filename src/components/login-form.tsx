@@ -47,9 +47,12 @@ export default function LoginPage() {
 
       // Redirect after successful login
       router.push('/dashboard'); // Change this to your post-login route
-    } catch (error: any) {
-      console.error('Login failed:', error.message);
-      setError(error.message || 'An unexpected error occurred.');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Login failed:', error.message);
+      } else {
+        console.error('Login failed:', error);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -106,10 +109,18 @@ export default function LoginPage() {
               </Label>
             </div>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex flex-col w-full gap-2">
             <Button className="w-full" type="submit" disabled={isLoading}>
               {isLoading ? 'Signing in...' : 'Sign in'}
             </Button>
+            <div className="w-full text-center text-sm text-muted-foreground underline-offset-4">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/signup"
+                className="underline hover:text-primary">
+                 Sign up
+              </Link>
+            </div>
           </CardFooter>
         </form>
       </Card>
