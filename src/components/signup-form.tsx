@@ -1,131 +1,137 @@
-"use client"
+'use client';
 
-import type React from "react"
+import type React from 'react';
 
-import { useState } from "react"
-import { supabase } from "@/lib/supabase"
-import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Icons } from "@/components/icons"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Icons } from '@/components/icons';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function SignupForm() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [step, setStep] = useState(1)
+  const [isLoading, setIsLoading] = useState(false);
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    role: "",
-    department: "",
-  })
-  const [passwordError, setPasswordError] = useState("")
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    role: '',
+    department: '',
+  });
+  const [passwordError, setPasswordError] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
 
     // Clear password error when either password field changes
-    if (name === "password" || name === "confirmPassword") {
-      setPasswordError("")
+    if (name === 'password' || name === 'confirmPassword') {
+      setPasswordError('');
     }
-  }
+  };
 
   const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const validateFirstStep = () => {
     if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
-      return false
+      return false;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setPasswordError("Passwords do not match")
-      return false
+      setPasswordError('Passwords do not match');
+      return false;
     }
 
-    return true
-  }
+    return true;
+  };
 
   const handleNextStep = () => {
     if (validateFirstStep()) {
-      setStep(2)
+      setStep(2);
     }
-  }
+  };
 
   const handlePrevStep = () => {
-    setStep(1)
-  }
+    setStep(1);
+  };
 
   async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault()
+    event.preventDefault();
 
     if (step === 1) {
-      handleNextStep()
-      return
+      handleNextStep();
+      return;
     }
 
     if (!formData.role || !formData.department) {
-      alert("Please select a role and department")
-      return
+      alert('Please select a role and department');
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     // 1. Sign up user using Supabase Auth
     const { data, error } = await supabase.auth.signUp({
       email: formData.email,
       password: formData.password,
-    })
+    });
 
     if (error) {
-      console.error("Error signing up:", error.message)
-      alert(error.message)
-      setIsLoading(false)
-      return
+      console.error('Error signing up:', error.message);
+      alert(error.message);
+      setIsLoading(false);
+      return;
     }
 
     // 2. Once the user is created, insert additional details into "User" table
     if (data.user) {
-      const { error: insertError } = await supabase.from("User").insert({
+      const { error: insertError } = await supabase.from('User').insert({
         auth_id: data.user.id,
         name: formData.name,
         email: formData.email,
         role: formData.role,
         dept: formData.department,
-      })
+      });
 
       if (insertError) {
-        console.error("Error inserting into User table:", insertError.message)
-        alert(insertError.message)
-        setIsLoading(false)
-        return
+        console.error('Error inserting into User table:', insertError.message);
+        alert(insertError.message);
+        setIsLoading(false);
+        return;
       }
 
-      alert("Sign-up successful!")
+      alert('Sign-up successful!');
     }
 
-    setIsLoading(false)
+    setIsLoading(false);
   }
 
   return (
     <div className="grid gap-6">
       <form onSubmit={onSubmit} className="overflow-hidden">
-        <div className="relative" style={{ height: step === 1 ? "auto" : "340px" }}>
+        <div className="relative" style={{ height: step === 1 ? 'auto' : '340px' }}>
           <AnimatePresence initial={false} mode="wait">
             {step === 1 && (
               <motion.div
                 key="step1"
-                initial={{ x: "-100%", opacity: 0 }}
+                initial={{ x: '-100%', opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                exit={{ x: "-100%", opacity: 0 }}
+                exit={{ x: '-100%', opacity: 0 }}
                 transition={{ duration: 0.3 }}
                 className="grid gap-4"
               >
@@ -194,7 +200,12 @@ export default function SignupForm() {
                   />
                   {passwordError && <p className="text-sm text-red-500">{passwordError}</p>}
                 </div>
-                <Button type="button" onClick={handleNextStep} disabled={isLoading} className="mt-2">
+                <Button
+                  type="button"
+                  onClick={handleNextStep}
+                  disabled={isLoading}
+                  className="mt-2"
+                >
                   Next <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
               </motion.div>
@@ -203,15 +214,18 @@ export default function SignupForm() {
             {step === 2 && (
               <motion.div
                 key="step2"
-                initial={{ x: "100%", opacity: 0 }}
+                initial={{ x: '100%', opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                exit={{ x: "100%", opacity: 0 }}
+                exit={{ x: '100%', opacity: 0 }}
                 transition={{ duration: 0.3 }}
                 className="grid gap-4"
               >
                 <div className="grid gap-2">
                   <Label htmlFor="role">Role</Label>
-                  <Select onValueChange={(value) => handleSelectChange("role", value)} value={formData.role}>
+                  <Select
+                    onValueChange={value => handleSelectChange('role', value)}
+                    value={formData.role}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select your role" />
                     </SelectTrigger>
@@ -224,7 +238,7 @@ export default function SignupForm() {
                 <div className="grid gap-2">
                   <Label htmlFor="department">Department</Label>
                   <Select
-                    onValueChange={(value) => handleSelectChange("department", value)}
+                    onValueChange={value => handleSelectChange('department', value)}
                     value={formData.department}
                   >
                     <SelectTrigger>
@@ -238,7 +252,12 @@ export default function SignupForm() {
                   </Select>
                 </div>
                 <div className="flex gap-2 mt-4">
-                  <Button type="button" onClick={handlePrevStep} disabled={isLoading} variant="outline">
+                  <Button
+                    type="button"
+                    onClick={handlePrevStep}
+                    disabled={isLoading}
+                    variant="outline"
+                  >
                     <ChevronLeft className="mr-2 h-4 w-4" /> Back
                   </Button>
                   <Button type="submit" disabled={isLoading} className="flex-1">
@@ -257,12 +276,11 @@ export default function SignupForm() {
         </div>
       </div>
       <div className="text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
+        Already have an account?{' '}
         <Link href="/login" className="underline underline-offset-4 hover:text-primary">
           Sign in
         </Link>
       </div>
     </div>
-  )
+  );
 }
-

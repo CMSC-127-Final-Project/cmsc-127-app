@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function IndexPage() {
-    const router = useRouter();
-    
-    useEffect(() => {
-        router.push('/login');
-    }, [router]);
+  const router = useRouter();
 
-    return null;
+  useEffect(() => {
+    router.push('/login');
+  }, [router]);
+
+  return null;
 }

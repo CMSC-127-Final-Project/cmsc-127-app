@@ -114,11 +114,9 @@ export default function LoginPage() {
               {isLoading ? 'Signing in...' : 'Sign in'}
             </Button>
             <div className="w-full text-center text-sm text-muted-foreground underline-offset-4">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/signup"
-                className="underline hover:text-primary">
-                 Sign up
+              Don&apos;t have an account?{' '}
+              <Link href="/signup" className="underline hover:text-primary">
+                Sign up
               </Link>
             </div>
           </CardFooter>
