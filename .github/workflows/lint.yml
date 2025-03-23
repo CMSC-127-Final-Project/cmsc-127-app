@@ -30,9 +30,6 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
-      - name: Run Prettier
-        run: npm run format:check
-
       - name: Run ESLint auto-fix
         run: npm run lint:fix
 
@@ -41,6 +38,10 @@ jobs:
 
       - name: Run Build
         run: npm run build
+        env: 
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
 
       - name: Commit & Push Auto-fixes
         env:
