@@ -6,25 +6,22 @@ export async function PATCH(req: Request) {
     const { userId, ...updates } = await req.json();
 
     if (!userId) {
-    return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+      return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
     }
 
     if (Object.keys(updates).length === 0) {
-    return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
+      return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
     }
 
-    const { data, error } = await supabase
-      .from('User') 
-      .update(updates) 
-      .eq('auth_id', userId)
+    const { data, error } = await supabase.from('User').update(updates).eq('auth_id', userId);
 
     if (error) {
-    console.error('Database error:', error.message);
-    return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
+      console.error('Database error:', error.message);
+      return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
     }
 
     if (!data) {
-    return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     return NextResponse.json({ profile: data }, { status: 200 });
