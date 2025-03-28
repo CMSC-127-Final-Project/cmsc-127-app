@@ -53,12 +53,12 @@ We follow **Trunk-Based Development** for constant updates and rapid integration
 - Main Branch: `main` (Live Branch/Production Ready)
 - Short Feature Branches:
   - Branch off `main`
-  - Prefix `feature/` `fix/` `chore/` for Branch Naming Conventions
-    - `feature`: For new features
+  - Prefix `feat/` `fix/` `chore/` for Branch Naming Conventions
+    - `feat`: For new features
     - `fix`: For bug fixes
     - `chore`: For maintenance tasks, refactoring, or dependency updates
     - `docs`: For documentation changes
-  - Example: `feature/add-login-page`, `chore/readme-improvement`
+  - Example: `feat/add-login-page`, `chore/readme-improvement`
 
 ## Workflow
 
