@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react'; 
 
-import { supabase } from '@/lib/supabase'; 
 import { Button } from '@/components/ui/button'; 
 import {
   Card,
@@ -46,13 +45,13 @@ export default function LoginPage() {
       const result = await response.json(); 
   
       if (!response.ok) {
-        const errorText = await response.text(); 
         throw new Error(result.error || 'Login failed'); 
       }
   
       console.log('Login successful:', result.user); 
   
       router.push('/dashboard');
+      // eslint-disable-next-line no-console
     } catch (error: any) {
       console.error('Login failed:', error.message); 
       setError(error.message || 'An unexpected error occurred.');
