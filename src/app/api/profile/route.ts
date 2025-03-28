@@ -15,17 +15,17 @@ export async function PATCH(req: Request) {
 
     // TECH DEBT: zod schema validation should be used here
     if (!updates.name || typeof updates.name !== 'string' || updates.name.trim().length === 0) {
-      console.error({ error: 'Invalid name provided'});
+      console.error({ error: 'Invalid name provided' });
     }
 
     const { data, error } = await supabase
       .from('User')
       .update({ name: updates.name })
-      .eq('auth_id', sessionAuthId); 
+      .eq('auth_id', sessionAuthId);
 
     if (error) {
-        console.error('Database error:', error.message);
-        return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
+      console.error('Database error:', error.message);
+      return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
     }
 
     // Return the updated profile data
