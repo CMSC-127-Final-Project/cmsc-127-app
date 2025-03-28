@@ -1,12 +1,12 @@
-'use client';
+'use client'; 
 
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react'; 
 
-import { supabase } from '@/lib/supabase';
-import { Button } from '@/components/ui/button';
+import { supabase } from '@/lib/supabase'; 
+import { Button } from '@/components/ui/button'; 
 import {
   Card,
   CardContent,
@@ -14,47 +14,50 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from '@/components/ui/card'; 
+import { Checkbox } from '@/components/ui/checkbox'; 
+import { Input } from '@/components/ui/input'; 
+import { Label } from '@/components/ui/label'; 
 
 export default function LoginPage() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false); 
+  const [error, setError] = useState<string | null>(null); 
+  const router = useRouter(); 
 
+  // Function to handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
+    event.preventDefault(); 
+    setIsLoading(true); 
+    setError(null); 
+  
     const email = (event.currentTarget.elements.namedItem('email') as HTMLInputElement).value;
     const password = (event.currentTarget.elements.namedItem('password') as HTMLInputElement).value;
-
+  
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }), 
       });
-
-      if (error) {
-        throw new Error(error.message);
+  
+      const result = await response.json(); 
+  
+      if (!response.ok) {
+        const errorText = await response.text(); 
+        throw new Error(result.error || 'Login failed'); 
       }
-
-      console.log('Login successful:', data);
-
-      // Redirect after successful login
-      router.push('/dashboard'); // Change this to your post-login route
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error('Login failed:', error.message);
-      } else {
-        console.error('Login failed:', error);
-      }
+  
+      console.log('Login successful:', result.user); 
+  
+      router.push('/dashboard');
+    } catch (error: any) {
+      console.error('Login failed:', error.message); 
+      setError(error.message || 'An unexpected error occurred.');
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); 
     }
   };
 
