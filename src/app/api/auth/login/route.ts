@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server'; 
-import { supabase } from '@/lib/supabase'; 
+import { NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
 
 export async function POST(req: Request) {
   try {
@@ -18,7 +18,6 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error('Login error:', err);
 
-    
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

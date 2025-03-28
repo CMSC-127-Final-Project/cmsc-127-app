@@ -1,11 +1,11 @@
-'use client'; 
+'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff } from 'lucide-react'; 
+import { Eye, EyeOff } from 'lucide-react';
 
-import { Button } from '@/components/ui/button'; 
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -13,51 +13,50 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'; 
-import { Checkbox } from '@/components/ui/checkbox'; 
-import { Input } from '@/components/ui/input'; 
-import { Label } from '@/components/ui/label'; 
+} from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export default function LoginPage() {
-  const [isLoading, setIsLoading] = useState(false); 
-  const [showPassword, setShowPassword] = useState(false); 
-  const [error, setError] = useState<string | null>(null); 
-  const router = useRouter(); 
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   // Function to handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); 
-    setIsLoading(true); 
-    setError(null); 
-  
+    event.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
     const email = (event.currentTarget.elements.namedItem('email') as HTMLInputElement).value;
     const password = (event.currentTarget.elements.namedItem('password') as HTMLInputElement).value;
-  
+
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }), 
+        body: JSON.stringify({ email, password }),
       });
-  
-      const result = await response.json(); 
-  
+
+      const result = await response.json();
+
       if (!response.ok) {
-        throw new Error(result.error || 'Login failed'); 
+        throw new Error(result.error || 'Login failed');
       }
-  
-      console.log('Login successful:', result.user); 
-  
+
+      console.log('Login successful:', result.user);
+
       router.push('/dashboard');
-    
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
-      console.error('Login failed:', errorMessage); 
+      console.error('Login failed:', errorMessage);
       setError(errorMessage);
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
