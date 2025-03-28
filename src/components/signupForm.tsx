@@ -32,17 +32,12 @@ export default function SignupForm() {
     role: '',
     department: '',
   });
-  const [formError, setFormError] = useState('');
   const router = useRouter();
   const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-
-    if (name === 'password' || name === 'confirmPassword') {
-      setFormError('');
-    }
   };
 
   const handleSelectChange = (name: string, value: string) => {
@@ -128,7 +123,7 @@ export default function SignupForm() {
   return (
     <div className="grid gap-6">
       <form onSubmit={onSubmit} className="overflow-hidden">
-        <div className="relative" style={{ height: '350px' }}>
+        <div className="relative p-4" style={{ height: '300px' }}>
           <AnimatePresence initial={false} mode="wait">
             {step === 1 && (
               <motion.div
@@ -191,11 +186,10 @@ export default function SignupForm() {
                   type="button"
                   onClick={handleNextStep}
                   disabled={isLoading}
-                  className="mt-2"
+                  className="mt-2 -color--upmin"
                 >
                   Next <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
-                {formError && <p className="mt-2 text-sm text-red-500">{formError}</p>}
               </motion.div>
             )}
 
@@ -268,7 +262,6 @@ export default function SignupForm() {
                     Sign up
                   </Button>
                 </div>
-                {formError && <p className="mt-2 text-sm text-red-500">{formError}</p>}
               </motion.div>
             )}
           </AnimatePresence>
