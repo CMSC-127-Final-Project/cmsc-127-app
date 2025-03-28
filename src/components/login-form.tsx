@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 
-import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -25,6 +24,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  // Function to handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
@@ -34,25 +34,27 @@ export default function LoginPage() {
     const password = (event.currentTarget.elements.namedItem('password') as HTMLInputElement).value;
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (error) {
-        throw new Error(error.message);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Login failed');
       }
 
-      console.log('Login successful:', data);
+      console.log('Login successful:', result.user);
 
-      // Redirect after successful login
-      router.push('/dashboard'); // Change this to your post-login route
+      router.push('/dashboard');
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error('Login failed:', error.message);
-      } else {
-        console.error('Login failed:', error);
-      }
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
+      console.error('Login failed:', errorMessage);
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
