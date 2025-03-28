@@ -3,7 +3,6 @@
 import type React from 'react';
 
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -19,6 +18,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 export default function SignupForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,15 +32,16 @@ export default function SignupForm() {
     role: '',
     department: '',
   });
-  const [passwordError, setPasswordError] = useState('');
+  const [formError, setFormError] = useState('');
+  const router = useRouter();
+  const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
 
-    // Clear password error when either password field changes
     if (name === 'password' || name === 'confirmPassword') {
-      setPasswordError('');
+      setFormError('');
     }
   };
 
@@ -48,12 +50,19 @@ export default function SignupForm() {
   };
 
   const validateFirstStep = () => {
-    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+    if (!formData.email || !formData.password || !formData.confirmPassword) {
+      toast({
+        title: 'Error',
+        description: 'Please fill in all fields.',
+      });
       return false;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setPasswordError('Passwords do not match');
+      toast({
+        title: 'Error',
+        description: 'Passwords do not match.',
+      });
       return false;
     }
 
@@ -78,53 +87,48 @@ export default function SignupForm() {
       return;
     }
 
-    if (!formData.role || !formData.department) {
-      alert('Please select a role and department');
+    if (!formData.role || !formData.department || !formData.name) {
+      toast({
+        title: 'Error',
+        description: 'Please fill in all fields.',
+      });
       return;
     }
 
     setIsLoading(true);
 
-    // 1. Sign up user using Supabase Auth
-    const { data, error } = await supabase.auth.signUp({
-      email: formData.email,
-      password: formData.password,
-    });
-
-    if (error) {
-      console.error('Error signing up:', error.message);
-      alert(error.message);
-      setIsLoading(false);
-      return;
-    }
-
-    // 2. Once the user is created, insert additional details into "User" table
-    if (data.user) {
-      const { error: insertError } = await supabase.from('User').insert({
-        auth_id: data.user.id,
-        name: formData.name,
-        email: formData.email,
-        role: formData.role,
-        dept: formData.department,
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        body: JSON.stringify(formData),
       });
 
-      if (insertError) {
-        console.error('Error inserting into User table:', insertError.message);
-        alert(insertError.message);
-        setIsLoading(false);
-        return;
+      if (!response.ok) {
+        const { error, status, name } = await response.json();
+        console.log(name);
+        throw { message: error, status: status, error_name: name };
       }
 
-      alert('Sign-up successful!');
+      setIsLoading(false);
+      router.push('/login');
+    } catch (error) {
+      const { message, status, error_name } = error as {
+        message: string;
+        status?: number;
+        error_name?: string;
+      };
+      toast({
+        title: `Uh-oh! Something went wrong. (code ${status})`,
+        description: `${error_name}: ${message}`,
+      });
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   }
 
   return (
     <div className="grid gap-6">
       <form onSubmit={onSubmit} className="overflow-hidden">
-        <div className="relative" style={{ height: step === 1 ? 'auto' : '340px' }}>
+        <div className="relative" style={{ height: '350px' }}>
           <AnimatePresence initial={false} mode="wait">
             {step === 1 && (
               <motion.div
@@ -135,22 +139,6 @@ export default function SignupForm() {
                 transition={{ duration: 0.3 }}
                 className="grid gap-4"
               >
-                <div className="grid gap-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    placeholder="John Doe"
-                    type="text"
-                    autoCapitalize="none"
-                    autoComplete="name"
-                    autoCorrect="off"
-                    disabled={isLoading}
-                    required
-                    value={formData.name}
-                    onChange={handleInputChange}
-                  />
-                </div>
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -198,7 +186,6 @@ export default function SignupForm() {
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                   />
-                  {passwordError && <p className="text-sm text-red-500">{passwordError}</p>}
                 </div>
                 <Button
                   type="button"
@@ -208,6 +195,7 @@ export default function SignupForm() {
                 >
                   Next <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
+                {formError && <p className="mt-2 text-sm text-red-500">{formError}</p>}
               </motion.div>
             )}
 
@@ -220,6 +208,21 @@ export default function SignupForm() {
                 transition={{ duration: 0.3 }}
                 className="grid gap-4"
               >
+                <div className="grid gap-2">
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    placeholder="John Doe"
+                    type="text"
+                    autoCapitalize="none"
+                    autoComplete="name"
+                    autoCorrect="off"
+                    disabled={isLoading}
+                    value={formData.name}
+                    onChange={handleInputChange}
+                  />
+                </div>
                 <div className="grid gap-2">
                   <Label htmlFor="role">Role</Label>
                   <Select
@@ -265,6 +268,7 @@ export default function SignupForm() {
                     Sign up
                   </Button>
                 </div>
+                {formError && <p className="mt-2 text-sm text-red-500">{formError}</p>}
               </motion.div>
             )}
           </AnimatePresence>
