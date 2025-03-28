@@ -22,32 +22,32 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 
 export default function SignupForm() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [step, setStep] = useState(1)
+  const [isLoading, setIsLoading] = useState(false);
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    role: "",
-    department: "",
-  })
-  const [formError, setFormError] = useState("")
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    role: '',
+    department: '',
+  });
+  const [formError, setFormError] = useState('');
   const router = useRouter();
   const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
 
-    if (name === "password" || name === "confirmPassword") {
-      setFormError("")
+    if (name === 'password' || name === 'confirmPassword') {
+      setFormError('');
     }
-  }
+  };
 
   const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const validateFirstStep = () => {
     if (!formData.email || !formData.password || !formData.confirmPassword) {
@@ -55,7 +55,7 @@ export default function SignupForm() {
         title: 'Error',
         description: 'Please fill in all fields.',
       });
-      return false
+      return false;
     }
 
     if (formData.password !== formData.confirmPassword) {
@@ -63,30 +63,30 @@ export default function SignupForm() {
         title: 'Error',
         description: 'Passwords do not match.',
       });
-      return false
+      return false;
     }
 
-    return true
-  }
+    return true;
+  };
 
   const handleNextStep = () => {
     if (validateFirstStep()) {
-      setStep(2)
+      setStep(2);
     }
-  }
+  };
 
   const handlePrevStep = () => {
-    setStep(1)
-  }
+    setStep(1);
+  };
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-  
+
     if (step === 1) {
       handleNextStep();
       return;
     }
-  
+
     if (!formData.role || !formData.department || !formData.name) {
       toast({
         title: 'Error',
@@ -94,25 +94,29 @@ export default function SignupForm() {
       });
       return;
     }
-  
+
     setIsLoading(true);
 
     try {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
         const { error, status, name } = await response.json();
-        console.log(name)
+        console.log(name);
         throw { message: error, status: status, error_name: name };
       }
 
       setIsLoading(false);
       router.push('/login');
     } catch (error) {
-      const { message, status, error_name } = error as { message: string; status?: number; error_name?: string };
+      const { message, status, error_name } = error as {
+        message: string;
+        status?: number;
+        error_name?: string;
+      };
       toast({
         title: `Uh-oh! Something went wrong. (code ${status})`,
         description: `${error_name}: ${message}`,
@@ -124,7 +128,7 @@ export default function SignupForm() {
   return (
     <div className="grid gap-6">
       <form onSubmit={onSubmit} className="overflow-hidden">
-        <div className="relative" style={{ height: "350px" }}>
+        <div className="relative" style={{ height: '350px' }}>
           <AnimatePresence initial={false} mode="wait">
             {step === 1 && (
               <motion.div
