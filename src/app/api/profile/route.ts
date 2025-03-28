@@ -16,15 +16,14 @@ export async function PATCH(req: Request) {
     const { data, error } = await supabase
       .from('User') 
       .update(updates) 
-      .eq('auth_id', userId) as { data: any[] | null, error: any };
+      .eq('auth_id', userId)
 
     if (error) {
     console.error('Database error:', error.message);
     return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
     }
 
-    // If no rows were updated, return a 404 error
-    if (!data || data.length === 0) {
+    if (!data) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
