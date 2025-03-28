@@ -52,6 +52,10 @@ export default {
           '5': 'hsl(var(--chart-5))',
         },
       },
+      fontFamily: {
+        raleway: ['Raleway', 'sans-serif'],
+        roboto: ['Roboto', 'sans-serif'],
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
