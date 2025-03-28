@@ -51,10 +51,11 @@ export default function LoginPage() {
       console.log('Login successful:', result.user); 
   
       router.push('/dashboard');
-      // eslint-disable-next-line no-console
-    } catch (error: any) {
-      console.error('Login failed:', error.message); 
-      setError(error.message || 'An unexpected error occurred.');
+    
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
+      console.error('Login failed:', errorMessage); 
+      setError(errorMessage);
     } finally {
       setIsLoading(false); 
     }
