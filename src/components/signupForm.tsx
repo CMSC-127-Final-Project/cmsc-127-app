@@ -223,7 +223,7 @@ export default function SignupForm() {
                     onValueChange={value => handleSelectChange('role', value)}
                     value={formData.role}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger disabled={isLoading}>
                       <SelectValue placeholder="Select your role" />
                     </SelectTrigger>
                     <SelectContent>
@@ -238,7 +238,7 @@ export default function SignupForm() {
                     onValueChange={value => handleSelectChange('department', value)}
                     value={formData.department}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger disabled={isLoading}>
                       <SelectValue placeholder="Select your department" />
                     </SelectTrigger>
                     <SelectContent>
