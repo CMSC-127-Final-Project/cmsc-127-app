@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
       email: formData.email,
       role: formData.role,
       dept: formData.department,
+      student_num: formData.studentNumber
     });
 
     if (insertError)

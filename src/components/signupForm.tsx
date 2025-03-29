@@ -31,6 +31,7 @@ export default function SignupForm() {
     password: '',
     confirmPassword: '',
     role: '',
+    studentNumber: '',
     department: '',
   });
   const router = useRouter();
@@ -89,7 +90,7 @@ export default function SignupForm() {
       return;
     }
 
-    if (!formData.role || !formData.department) {
+    if (!formData.role || !formData.department || !formData.studentNumber) {
       toast({
         title: 'Error',
         description: 'Please fill in all fields.',
@@ -242,21 +243,6 @@ export default function SignupForm() {
                 className="grid gap-4"
               >
                 <div className="grid gap-2">
-                  <Label htmlFor="role">Role</Label>
-                  <Select
-                    onValueChange={value => handleSelectChange('role', value)}
-                    value={formData.role}
-                  >
-                    <SelectTrigger disabled={isLoading}>
-                      <SelectValue placeholder="Select your role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Instructor">Instructor</SelectItem>
-                      <SelectItem value="Student">Student</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid gap-2">
                   <Label htmlFor="department">Department</Label>
                   <Select
                     onValueChange={value => handleSelectChange('department', value)}
@@ -272,6 +258,38 @@ export default function SignupForm() {
                     </SelectContent>
                   </Select>
                 </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="role">Role</Label>
+                  <Select
+                    onValueChange={value => handleSelectChange('role', value)}
+                    value={formData.role}
+                  >
+                    <SelectTrigger disabled={isLoading}>
+                      <SelectValue placeholder="Select your role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Instructor">Instructor</SelectItem>
+                      <SelectItem value="Student">Student</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {formData.role === 'Student' && (
+                <div className="grid gap-2">
+                  <Label htmlFor="studentNumber">Student Number</Label>
+                  <Input
+                    id="studentNumber"
+                    name="studentNumber"
+                    placeholder="ex. 2025-12345"
+                    type="text"
+                    autoCapitalize="none"
+                    autoComplete="off"
+                    autoCorrect="off"
+                    disabled={isLoading}
+                    value={formData.studentNumber}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                )}
                 <div className="flex gap-2 mt-4">
                   <Button
                     type="button"
