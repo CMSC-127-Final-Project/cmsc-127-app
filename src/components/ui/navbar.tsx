@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Menu, Bell, Info, Sun, Moon, UserCircle, LogOut } from 'lucide-react';
+import { Menu, Bell, Sun, Moon, UserCircle, LogOut } from 'lucide-react';
 
 export default function Navbar() {
   const [currentTime, setCurrentTime] = useState('');
@@ -55,15 +55,15 @@ export default function Navbar() {
   }, [darkMode]);
 
   return (
-    <nav className="flex items-center justify-between bg-white dark:bg-gray-900 p-6 shadow-md border-b relative">
+    <nav className="flex items-center justify-between bg-white dark:bg-gray-900 p-4 md:p-6 shadow-md border-b relative">
       {/* Left Section - Logo & Title */}
       <div className="flex items-center space-x-4">
-        <button className="p-2">
+        <button className="p-2 md:hidden">
           <Menu className="w-6 h-6 text-gray-700 dark:text-white" />
         </button>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/upminlogo.png" alt="" className="w-14 h-11" />
-        <span className="font-bold font-raleway text-gray-900 dark:text-white text-base leading-tight">
+        <img src="/upminlogo.png" alt="" className="w-10 h-8 md:w-14 md:h-11" />
+        <span className="hidden md:block font-bold font-raleway text-gray-900 dark:text-white text-sm md:text-base leading-tight">
           College of Science <br />& Mathematics
         </span>
       </div>
@@ -71,7 +71,7 @@ export default function Navbar() {
       {/* Right Section - Icons & Profile Dropdown */}
       <div className="flex items-center space-x-4">
         {/* Dark Mode Toggle & Date-Time */}
-        <div className="flex items-center space-x-6">
+        <div className="hidden md:flex items-center space-x-6">
           <span className="text-gray-900 dark:text-white font-medium font-roboto">
             {currentTime}
           </span>
@@ -82,8 +82,19 @@ export default function Navbar() {
               <Sun className="w-5 h-5 text-gray-900 cursor-pointer" />
             )}
           </button>
-          <Info className="w-5 h-5 text-gray-900 dark:text-white cursor-pointer" />
           <Bell className="w-5 h-5 text-gray-900 dark:text-white cursor-pointer" />
+        </div>
+
+        {/* Mobile Icons */}
+        <div className="flex md:hidden items-center space-x-4">
+          <Bell className="w-5 h-5 text-gray-900 dark:text-white cursor-pointer" />
+          <button onClick={() => setDarkMode(!darkMode)} className="focus:outline-none">
+            {darkMode ? (
+              <Moon className="w-5 h-5 text-yellow-300 cursor-pointer" />
+            ) : (
+              <Sun className="w-5 h-5 text-gray-900 cursor-pointer" />
+            )}
+          </button>
         </div>
 
         {/* Profile Dropdown */}
@@ -92,7 +103,9 @@ export default function Navbar() {
             className="flex items-center space-x-2 cursor-pointer"
             onClick={() => setDropdownOpen(!dropdownOpen)}
           >
-            <span className="text-gray-900 dark:text-white font-medium font-roboto">Celeru00</span>
+            <span className="text-gray-900 dark:text-white font-medium font-roboto text-sm md:text-base">
+              Celeru00
+            </span>
             <span
               className={`text-gray-900 dark:text-white text-sm font-roboto transition-transform ${
                 dropdownOpen ? 'rotate-180' : ''

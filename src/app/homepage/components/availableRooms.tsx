@@ -53,59 +53,42 @@ const reservations = [
   },
 ];
 
-const getStatusClass = (status: string) => {
-  switch (status) {
-    case 'Confirmed':
-      return 'text-green-600 font-medium';
-    case 'Pending':
-      return 'text-yellow-600 font-medium';
-    case 'Rejected':
-      return 'text-red-600 font-medium';
-    default:
-      return 'text-gray-600';
-  }
-};
-
 const AvailabeRooms = () => {
   return (
-    <div className="bg-white p-10 rounded-3xl drop-shadow-[0_-4px_10px_rgba(0,0,0,0.1)] mx-20 mt-1 mb-10">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-3xl font-bold font-raleway mb-3">Available Rooms</h2>
-        {/* Action Buttons */}
-        <div className="flex justify-end gap-3 mb-4 font-roboto">
-          <button className="border border-red-600 text-red-600 px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-red-50 transition">
-            <RxPlus className="text-red-600" size={20} /> Make a Reservation
+    <div className="bg-white p-6 md:p-10 rounded-3xl drop-shadow-[0_-4px_10px_rgba(0,0,0,0.1)] mx-4 md:mx-20 mt-1 mb-10">
+      <div className="flex flex-row justify-between items-center mb-4">
+        <h2 className="text-lg md:text-2xl font-bold font-raleway">Available Rooms</h2>
+        <div className="flex gap-3 font-roboto">
+          <button className="border border-red-600 text-red-600 px-3 py-2 md:px-4 md:py-2 rounded-xl flex items-center gap-2 hover:bg-red-50 transition">
+            <RxPlus className="text-red-600" size={20} />
+            <span className="hidden md:block">Make a Reservation</span>
           </button>
-          <button className="bg-[#5D1A0B] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#731f10] transition">
-            <RxEyeOpen className="text-white" size={20} /> See Request History
+          <button className="bg-[#5D1A0B] text-white px-3 py-2 md:px-4 md:py-2 rounded-xl flex items-center gap-2 hover:bg-[#731f10] transition">
+            <RxEyeOpen className="text-white" size={20} />
+            <span className="hidden md:block">See Request History</span>
           </button>
         </div>
       </div>
 
-      {/* Table */}
       <div className="overflow-x-auto font-roboto">
-        <table className="w-full border-collapse shadow-sm rounded-lg overflow-hidden">
+        <table className="w-full border-collapse shadow-sm rounded-lg overflow-hidden text-sm md:text-base">
           <thead>
             <tr className="bg-[#5D1A0B] text-white text-left">
-              <th className="px-5 py-3 rounded-tl-lg">Room Number</th>
-              <th className="px-5 py-3">Date</th>
-              <th className="px-5 py-3">Time</th>
-              <th className="px-5 py-3">Capacity</th>
-              <th className="px-5 py-3 rounded-tr-lg">Notes</th>
+              <th className="px-3 md:px-5 py-3 rounded-tl-lg">Room Number</th>
+              <th className="px-3 md:px-5 py-3">Date</th>
+              <th className="px-3 md:px-5 py-3">Time</th>
+              <th className="px-3 md:px-5 py-3">Capacity</th>
+              <th className="px-3 md:px-5 py-3 rounded-tr-lg">Notes</th>
             </tr>
           </thead>
           <tbody className="bg-white">
             {reservations.map((reservation, index) => (
               <tr key={index} className="border-t last:border-b">
-                <td className="px-5 py-3 hover:bg-gray-100">{reservation.room}</td>
-                <td className="px-5 py-3 hover:bg-gray-100">{reservation.date}</td>
-                <td className="px-5 py-3 hover:bg-gray-100">{reservation.time}</td>
-                <td
-                  className={`px-5 py-3 ${getStatusClass(reservation.capacity)} hover:bg-gray-100`}
-                >
-                  {reservation.capacity}
-                </td>
-                <td className="px-5 py-3 hover:bg-gray-100">{reservation.notes || '-'}</td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.room}</td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.date}</td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.time}</td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.capacity}</td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.notes || '-'}</td>
               </tr>
             ))}
           </tbody>
