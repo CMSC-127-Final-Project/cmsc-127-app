@@ -1,5 +1,5 @@
 import React from 'react';
-import { RxPlus, RxEyeOpen } from "react-icons/rx";
+import { RxPlus, RxEyeOpen } from 'react-icons/rx';
 
 const reservations = [
   {
@@ -69,17 +69,17 @@ const getStatusClass = (status: string) => {
 const AvailabeRooms = () => {
   return (
     <div className="bg-white p-10 rounded-3xl drop-shadow-[0_-4px_10px_rgba(0,0,0,0.1)] mx-20 mt-1 mb-10">
-      <div className='flex justify-between items-center mb-4'>
-           <h2 className="text-3xl font-bold font-raleway mb-3">Available Rooms</h2>
-          {/* Action Buttons */}
-          <div className="flex justify-end gap-3 mb-4 font-roboto">
-            <button className="border border-red-600 text-red-600 px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-red-50 transition">
-              <RxPlus className="text-red-600" size={20}/> Make a Reservation
-            </button>
-            <button className="bg-[#5D1A0B] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#731f10] transition">
-              <RxEyeOpen className="text-white" size={20} /> See Request History
-            </button>
-          </div>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-3xl font-bold font-raleway mb-3">Available Rooms</h2>
+        {/* Action Buttons */}
+        <div className="flex justify-end gap-3 mb-4 font-roboto">
+          <button className="border border-red-600 text-red-600 px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-red-50 transition">
+            <RxPlus className="text-red-600" size={20} /> Make a Reservation
+          </button>
+          <button className="bg-[#5D1A0B] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#731f10] transition">
+            <RxEyeOpen className="text-white" size={20} /> See Request History
+          </button>
+        </div>
       </div>
 
       {/* Table */}
@@ -100,7 +100,9 @@ const AvailabeRooms = () => {
                 <td className="px-5 py-3 hover:bg-gray-100">{reservation.room}</td>
                 <td className="px-5 py-3 hover:bg-gray-100">{reservation.date}</td>
                 <td className="px-5 py-3 hover:bg-gray-100">{reservation.time}</td>
-                <td className={`px-5 py-3 ${getStatusClass(reservation.capacity)} hover:bg-gray-100`}>
+                <td
+                  className={`px-5 py-3 ${getStatusClass(reservation.capacity)} hover:bg-gray-100`}
+                >
                   {reservation.capacity}
                 </td>
                 <td className="px-5 py-3 hover:bg-gray-100">{reservation.notes || '-'}</td>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaEdit } from 'react-icons/fa';
-import { RxCross1 } from "react-icons/rx";
+import { RxCross1 } from 'react-icons/rx';
 
 const reservations = [
   {
@@ -70,17 +70,17 @@ const getStatusClass = (status: string) => {
 const UpcomingReservations = () => {
   return (
     <div className="bg-white p-10 rounded-3xl drop-shadow-[0_-4px_10px_rgba(0,0,0,0.1)] mx-20 mt-1 mb-10">
-      <div className='flex justify-between items-center mb-4'>
-           <h2 className="text-3xl font-bold font-raleway mb-3">Upcoming Reservations</h2>
-          {/* Action Buttons */}
-          <div className="flex justify-end gap-3 mb-4 font-roboto">
-            <button className="border border-red-600 text-red-600 px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-red-50 transition">
-              <RxCross1 className="text-red-600" /> Cancel a Reservation
-            </button>
-            <button className="bg-[#5D1A0B] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#731f10] transition">
-              <FaEdit className="text-white" /> Modify a Request
-            </button>
-          </div>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-3xl font-bold font-raleway mb-3">Upcoming Reservations</h2>
+        {/* Action Buttons */}
+        <div className="flex justify-end gap-3 mb-4 font-roboto">
+          <button className="border border-red-600 text-red-600 px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-red-50 transition">
+            <RxCross1 className="text-red-600" /> Cancel a Reservation
+          </button>
+          <button className="bg-[#5D1A0B] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#731f10] transition">
+            <FaEdit className="text-white" /> Modify a Request
+          </button>
+        </div>
       </div>
 
       {/* Table */}

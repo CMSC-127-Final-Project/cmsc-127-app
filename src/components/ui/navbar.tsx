@@ -11,7 +11,7 @@ export default function Navbar() {
   const handleSignOut = async () => {
     const res = await fetch('/api/signout', { method: 'POST' });
     const data = await res.json();
-  
+
     if (res.ok) {
       alert(data.message);
       window.location.href = '/login'; // Redirect after sign out
@@ -132,7 +132,10 @@ export default function Navbar() {
                 </ul>
                 {/* Sign Out Button at the Bottom */}
                 <div className="flex justify-end">
-                  <button onClick={handleSignOut} className="w-28 mt-5 px-2 py-2 flex items-center justify-center space-x-2 bg-[#5D1A0B] text-white text-sm font-roboto hover:bg-[#5d0b0be7] rounded-2xl">
+                  <button
+                    onClick={handleSignOut}
+                    className="w-28 mt-5 px-2 py-2 flex items-center justify-center space-x-2 bg-[#5D1A0B] text-white text-sm font-roboto hover:bg-[#5d0b0be7] rounded-2xl"
+                  >
                     <LogOut className="w-4 h-4" />
                     <span>Sign out</span>
                   </button>

@@ -4,8 +4,7 @@ const WelcomeBanner = ({ username = 'User00' }) => {
   return (
     <div className="p-6 ml-16">
       <h1 className="text-5xl font-bold font-raleway flex items-center gap-2">
-        Welcome, {username}! 
-        <span className="text-5xl">👋</span> {/* Increased font size */}
+        Welcome, {username}!<span className="text-5xl">👋</span> {/* Increased font size */}
         <span className="bg-[#5D1A0B] text-white text-sm font-roboto font-normal px-3 py-2 rounded-xl flex items-center gap-1">
           <FaUser className="text-base" />
           User
