@@ -274,21 +274,21 @@ export default function SignupForm() {
                   </Select>
                 </div>
                 {formData.role === 'Student' && (
-                <div className="grid gap-2">
-                  <Label htmlFor="studentNumber">Student Number</Label>
-                  <Input
-                    id="studentNumber"
-                    name="studentNumber"
-                    placeholder="ex. 2025-12345"
-                    type="text"
-                    autoCapitalize="none"
-                    autoComplete="off"
-                    autoCorrect="off"
-                    disabled={isLoading}
-                    value={formData.studentNumber}
-                    onChange={handleInputChange}
-                  />
-                </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="studentNumber">Student Number</Label>
+                    <Input
+                      id="studentNumber"
+                      name="studentNumber"
+                      placeholder="ex. 2025-12345"
+                      type="text"
+                      autoCapitalize="none"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      disabled={isLoading}
+                      value={formData.studentNumber}
+                      onChange={handleInputChange}
+                    />
+                  </div>
                 )}
                 <div className="flex gap-2 mt-4">
                   <Button
