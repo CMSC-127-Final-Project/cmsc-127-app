@@ -46,7 +46,13 @@ export default function SignupForm() {
   };
 
   const validateFirstStep = () => {
-    if (!formData.email || !formData.password || !formData.confirmPassword || !formData.fname || !formData.lname) {
+    if (
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword ||
+      !formData.fname ||
+      !formData.lname
+    ) {
       toast({
         title: 'Error',
         description: 'Please fill in all fields.',
@@ -137,34 +143,34 @@ export default function SignupForm() {
               >
                 <div className="flex gap-4">
                   <div className="grid gap-1 flex-1">
-                  <Label htmlFor="fname">First Name</Label>
-                  <Input
-                    id="fname"
-                    name="fname"
-                    placeholder="John"
-                    type="text"
-                    autoCapitalize="none"
-                    autoComplete="name"
-                    autoCorrect="off"
-                    disabled={isLoading}
-                    value={formData.fname}
-                    onChange={handleInputChange}
-                  />
+                    <Label htmlFor="fname">First Name</Label>
+                    <Input
+                      id="fname"
+                      name="fname"
+                      placeholder="John"
+                      type="text"
+                      autoCapitalize="none"
+                      autoComplete="name"
+                      autoCorrect="off"
+                      disabled={isLoading}
+                      value={formData.fname}
+                      onChange={handleInputChange}
+                    />
                   </div>
                   <div className="grid gap-1 flex-1">
-                  <Label htmlFor="lname">Last Name</Label>
-                  <Input
-                    id="lname"
-                    name="lname"
-                    placeholder="Doe"
-                    type="text"
-                    autoCapitalize="none"
-                    autoComplete="name"
-                    autoCorrect="off"
-                    disabled={isLoading}
-                    value={formData.lname}
-                    onChange={handleInputChange}
-                  />
+                    <Label htmlFor="lname">Last Name</Label>
+                    <Input
+                      id="lname"
+                      name="lname"
+                      placeholder="Doe"
+                      type="text"
+                      autoCapitalize="none"
+                      autoComplete="name"
+                      autoCorrect="off"
+                      disabled={isLoading}
+                      value={formData.lname}
+                      onChange={handleInputChange}
+                    />
                   </div>
                 </div>
                 <div className="grid gap-2">
