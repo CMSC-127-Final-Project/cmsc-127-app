@@ -8,6 +8,18 @@ export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
+  const handleSignOut = async () => {
+    const res = await fetch('/api/signout', { method: 'POST' });
+    const data = await res.json();
+
+    if (res.ok) {
+      alert(data.message);
+      window.location.href = '/login'; // Redirect after sign out
+    } else {
+      console.error(data.error);
+    }
+  };
+
   // Update date & time format
   useEffect(() => {
     const updateTime = () => {
@@ -49,6 +61,7 @@ export default function Navbar() {
         <button className="p-2">
           <Menu className="w-6 h-6 text-gray-700 dark:text-white" />
         </button>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/upminlogo.png" alt="" className="w-14 h-11" />
         <span className="font-bold font-raleway text-gray-900 dark:text-white text-base leading-tight">
           College of Science <br />& Mathematics
@@ -119,7 +132,10 @@ export default function Navbar() {
                 </ul>
                 {/* Sign Out Button at the Bottom */}
                 <div className="flex justify-end">
-                  <button className="w-28 mt-5 px-2 py-2 flex items-center justify-center space-x-2 bg-[#5D1A0B] text-white text-sm font-roboto hover:bg-[#5d0b0be7] rounded-2xl">
+                  <button
+                    onClick={handleSignOut}
+                    className="w-28 mt-5 px-2 py-2 flex items-center justify-center space-x-2 bg-[#5D1A0B] text-white text-sm font-roboto hover:bg-[#5d0b0be7] rounded-2xl"
+                  >
                     <LogOut className="w-4 h-4" />
                     <span>Sign out</span>
                   </button>
