@@ -1,5 +1,4 @@
 import React from 'react';
-import { FaEye } from 'react-icons/fa';
 import { RxPlus, RxEyeOpen } from "react-icons/rx";
 
 const reservations = [
