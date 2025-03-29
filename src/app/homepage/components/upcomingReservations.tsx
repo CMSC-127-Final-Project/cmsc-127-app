@@ -101,7 +101,9 @@ const UpcomingReservations = () => {
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.room}</td>
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.date}</td>
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.time}</td>
-                <td className={`px-3 md:px-5 py-3 ${getStatusClass(reservation.status)} hover:bg-gray-100`}>
+                <td
+                  className={`px-3 md:px-5 py-3 ${getStatusClass(reservation.status)} hover:bg-gray-100`}
+                >
                   {reservation.status}
                 </td>
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.notes || '-'}</td>
