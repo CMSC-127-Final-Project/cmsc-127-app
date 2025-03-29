@@ -13,7 +13,8 @@ export async function POST(request: NextRequest) {
 
     const { error: insertError } = await supabase.from('User').insert({
       auth_id: data.user?.id,
-      name: formData.name,
+      last_name: formData.lname,
+      first_name: formData.fname,
       email: formData.email,
       role: formData.role,
       dept: formData.department,
