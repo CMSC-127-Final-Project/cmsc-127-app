@@ -25,7 +25,8 @@ export default function SignupForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    name: '',
+    fname: '',
+    lname: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -45,7 +46,7 @@ export default function SignupForm() {
   };
 
   const validateFirstStep = () => {
-    if (!formData.email || !formData.password || !formData.confirmPassword) {
+    if (!formData.email || !formData.password || !formData.confirmPassword || !formData.fname || !formData.lname) {
       toast({
         title: 'Error',
         description: 'Please fill in all fields.',
@@ -82,7 +83,7 @@ export default function SignupForm() {
       return;
     }
 
-    if (!formData.role || !formData.department || !formData.name) {
+    if (!formData.role || !formData.department) {
       toast({
         title: 'Error',
         description: 'Please fill in all fields.',
@@ -123,7 +124,7 @@ export default function SignupForm() {
   return (
     <div className="grid gap-6">
       <form onSubmit={onSubmit} className="overflow-hidden">
-        <div className="relative p-4" style={{ height: '300px' }}>
+        <div className="relative" style={{ height: '350px' }}>
           <AnimatePresence initial={false} mode="wait">
             {step === 1 && (
               <motion.div
@@ -134,6 +135,38 @@ export default function SignupForm() {
                 transition={{ duration: 0.3 }}
                 className="grid gap-4"
               >
+                <div className="flex gap-4">
+                  <div className="grid gap-1 flex-1">
+                  <Label htmlFor="fname">First Name</Label>
+                  <Input
+                    id="fname"
+                    name="fname"
+                    placeholder="John"
+                    type="text"
+                    autoCapitalize="none"
+                    autoComplete="name"
+                    autoCorrect="off"
+                    disabled={isLoading}
+                    value={formData.fname}
+                    onChange={handleInputChange}
+                  />
+                  </div>
+                  <div className="grid gap-1 flex-1">
+                  <Label htmlFor="lname">Last Name</Label>
+                  <Input
+                    id="lname"
+                    name="lname"
+                    placeholder="Doe"
+                    type="text"
+                    autoCapitalize="none"
+                    autoComplete="name"
+                    autoCorrect="off"
+                    disabled={isLoading}
+                    value={formData.lname}
+                    onChange={handleInputChange}
+                  />
+                  </div>
+                </div>
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -202,21 +235,6 @@ export default function SignupForm() {
                 transition={{ duration: 0.3 }}
                 className="grid gap-4"
               >
-                <div className="grid gap-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    placeholder="John Doe"
-                    type="text"
-                    autoCapitalize="none"
-                    autoComplete="name"
-                    autoCorrect="off"
-                    disabled={isLoading}
-                    value={formData.name}
-                    onChange={handleInputChange}
-                  />
-                </div>
                 <div className="grid gap-2">
                   <Label htmlFor="role">Role</Label>
                   <Select
