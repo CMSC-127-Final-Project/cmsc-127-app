@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
+
       <Navbar />
       <Welcome />
       <UpcomingReservations />
