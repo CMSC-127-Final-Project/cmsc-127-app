@@ -53,19 +53,6 @@ const reservations = [
   },
 ];
 
-const getStatusClass = (status: string) => {
-  switch (status) {
-    case 'Confirmed':
-      return 'text-green-600 font-medium';
-    case 'Pending':
-      return 'text-yellow-600 font-medium';
-    case 'Rejected':
-      return 'text-red-600 font-medium';
-    default:
-      return 'text-gray-600';
-  }
-};
-
 const AvailabeRooms = () => {
   return (
     <div className="bg-white p-6 md:p-10 rounded-3xl drop-shadow-[0_-4px_10px_rgba(0,0,0,0.1)] mx-4 md:mx-20 mt-1 mb-10">
