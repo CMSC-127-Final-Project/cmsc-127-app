@@ -61,7 +61,7 @@ export default function Navbar() {
         <button className="p-2">
           <Menu className="w-6 h-6 text-gray-700 dark:text-white" />
         </button>
-        // eslint-disable-next-line @next/next/no-img-element
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/upminlogo.png" alt="" className="w-14 h-11" />
         <span className="font-bold font-raleway text-gray-900 dark:text-white text-base leading-tight">
           College of Science <br />& Mathematics
