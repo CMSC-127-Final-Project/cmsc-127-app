@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
-import { LogInIcon} from 'lucide-react';
+import { LogInIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -67,22 +67,37 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="w-full max-w-xl rounded-lg bg-white p-8 shadow-md">
         <div className="mb-6 flex justify-center">
-          <Image src="/up_logo.png" alt="University of the Philippines Mindanao Logo" width={180} height={180} priority />
+          <Image
+            src="/up_logo.png"
+            alt="University of the Philippines Mindanao Logo"
+            width={180}
+            height={180}
+            priority
+          />
         </div>
         <CardHeader>
-          <CardTitle className="text-2xl font-semibold text-muted-foreground-900">Sign in</CardTitle>
-          <CardDescription className="text-muted-foreground-600">Enter your credentials to access your account</CardDescription>
+          <CardTitle className="text-2xl font-semibold text-muted-foreground-900">
+            Sign in
+          </CardTitle>
+          <CardDescription className="text-muted-foreground-600">
+            Enter your credentials to access your account
+          </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="mb-1 block text-sm front-medium text-muted-foreground-700">Email Address</Label>
-              <Input 
-                id="email" 
-                type="email" 
-                placeholder="name@example.com" 
+              <Label
+                htmlFor="email"
+                className="mb-1 block text-sm front-medium text-muted-foreground-700"
+              >
+                Email Address
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="name@example.com"
                 className="w-full rounded"
-                required 
+                required
               />
             </div>
             <div className="space-y-2">
@@ -117,19 +132,20 @@ export default function LoginPage() {
             </div>
             {error && <p className="text-red-500 text-sm">{error}</p>}
             <div className="space-x-2">
-              <Checkbox 
+              <Checkbox
                 id="remember-me"
                 checked={rememberMe}
-                onCheckedChange={ (checked) => setRememberMe(checked as boolean) } />
+                onCheckedChange={checked => setRememberMe(checked as boolean)}
+              />
               <Label htmlFor="remember" className="h-4 w-4 rounded text-sm font-normal">
                 Remember me
               </Label>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col w-full gap-2">
-            <Button 
-              className="flex w-full items-center justify-center" 
-              type="submit" 
+            <Button
+              className="flex w-full items-center justify-center"
+              type="submit"
               disabled={isLoading}
             >
               <LogInIcon className="mr-2 h-4 w-4" />
