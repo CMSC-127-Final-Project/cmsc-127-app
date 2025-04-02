@@ -110,7 +110,12 @@ export default function SignupForm() {
       return;
     }
 
-    if (formData.role === 'Instructor' && !formData.instructorID && !formData.instructorOffice && !formData.facultyRank) { 
+    if (
+      formData.role === 'Instructor' &&
+      !formData.instructorID &&
+      !formData.instructorOffice &&
+      !formData.facultyRank
+    ) {
       toast({
         title: 'Error',
         description: 'Please fill in all fields.',
@@ -327,20 +332,20 @@ export default function SignupForm() {
                   </div>
                 )}
                 {formData.role === 'Instructor' && (
-                  <div className='grid gap-2'>
-                    <Label htmlFor='instructorID'>Instructor ID</Label>
+                  <div className="grid gap-2">
+                    <Label htmlFor="instructorID">Instructor ID</Label>
                     <Input
-                      id='instructorID'
-                      name='instructorID'
-                      placeholder='Enter your instructor ID'
-                      type='text'
-                      autoCapitalize='none'
-                      autoComplete='off'
-                      autoCorrect='off'
+                      id="instructorID"
+                      name="instructorID"
+                      placeholder="Enter your instructor ID"
+                      type="text"
+                      autoCapitalize="none"
+                      autoComplete="off"
+                      autoCorrect="off"
                       disabled={isLoading}
                       value={formData.instructorID}
                       onChange={handleInputChange}
-                      />
+                    />
                   </div>
                 )}
                 {formData.role === 'Instructor' && (
@@ -363,20 +368,20 @@ export default function SignupForm() {
                   </div>
                 )}
                 {formData.role === 'Instructor' && (
-                  <div className='grid gap-2'>
-                    <Label htmlFor='instructorOffice'>Instructor Office</Label>
+                  <div className="grid gap-2">
+                    <Label htmlFor="instructorOffice">Instructor Office</Label>
                     <Input
-                      id='instructorOffice'
-                      name='instructorOffice'
-                      placeholder='Enter your Office Room Number.'
-                      type='text'
-                      autoCapitalize='none'
-                      autoComplete='off'
-                      autoCorrect='off'
+                      id="instructorOffice"
+                      name="instructorOffice"
+                      placeholder="Enter your Office Room Number."
+                      type="text"
+                      autoCapitalize="none"
+                      autoComplete="off"
+                      autoCorrect="off"
                       disabled={isLoading}
                       value={formData.instructorOffice}
                       onChange={handleInputChange}
-                      />
+                    />
                   </div>
                 )}
                 <div className="flex gap-2 mt-4">

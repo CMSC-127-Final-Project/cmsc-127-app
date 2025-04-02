@@ -23,15 +23,22 @@ export async function POST(request: NextRequest) {
     });
 
     if (formData.role === 'Instructor') {
-      const { data: instructorData,error: instructorError } = await supabase.from('Instructor').insert({ 
-        instructor_id: formData.instructorID,
-        office: formData.instructorOffice,
-        faculty_rank: formData.facultyRank,
-      }).select('instructor_id').single();
-      
+      const { data: instructorData, error: instructorError } = await supabase
+        .from('Instructor')
+        .insert({
+          instructor_id: formData.instructorID,
+          office: formData.instructorOffice,
+          faculty_rank: formData.facultyRank,
+        })
+        .select('instructor_id')
+        .single();
+
       if (instructorError) throw { message: instructorError.message, name: instructorError.name };
 
-      const { error: updateError } = await supabase.from('User').update({ instructor_id: instructorData.instructor_id }).eq('email', formData.email);
+      const { error: updateError } = await supabase
+        .from('User')
+        .update({ instructor_id: instructorData.instructor_id })
+        .eq('email', formData.email);
 
       if (updateError) throw { message: updateError.message, name: updateError.name };
     }
