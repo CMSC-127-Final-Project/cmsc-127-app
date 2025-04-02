@@ -4,8 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Eye, EyeOff } from 'lucide-react';
-import { LogInIcon } from 'lucide-react';
+import { Eye, EyeOff, LogInIcon } from 'lucide-react';
+import { useUser } from '@/components/homepage/UserContext'; // Import the UserContext
 
 import { Button } from '@/components/ui/button';
 import {
@@ -25,9 +25,8 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const [rememberMe, setRememberMe] = useState(false);
+  const { setUser } = useUser(); // Access the setUser function from UserContext
 
-  // Function to handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
@@ -53,6 +52,13 @@ export default function LoginPage() {
 
       console.log('Login successful:', result.user);
 
+      // Update the UserContext with the logged-in user's data
+      setUser({
+        username: result.user.username,
+        studentNumber: result.user.studentNumber,
+      });
+
+      // Redirect to homepage
       router.push('/homepage');
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
@@ -132,11 +138,7 @@ export default function LoginPage() {
             </div>
             {error && <p className="text-red-500 text-sm">{error}</p>}
             <div className="space-x-2">
-              <Checkbox
-                id="remember-me"
-                checked={rememberMe}
-                onCheckedChange={checked => setRememberMe(checked as boolean)}
-              />
+              <Checkbox id="remember-me" />
               <Label htmlFor="remember" className="h-4 w-4 rounded text-sm font-normal">
                 Remember me
               </Label>

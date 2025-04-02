@@ -72,7 +72,7 @@ const AvailabeRooms = () => {
 
       <div className="overflow-x-auto font-roboto">
         <table className="w-full border-collapse shadow-sm rounded-lg overflow-hidden text-sm md:text-base">
-          <thead>
+          <thead className="font-roboto">
             <tr className="bg-[#5D1A0B] text-white text-left">
               <th className="px-3 md:px-5 py-3 rounded-tl-lg">Room Number</th>
               <th className="px-3 md:px-5 py-3">Date</th>
@@ -81,7 +81,7 @@ const AvailabeRooms = () => {
               <th className="px-3 md:px-5 py-3 rounded-tr-lg">Notes</th>
             </tr>
           </thead>
-          <tbody className="bg-white">
+          <tbody className="bg-white font-roboto">
             {reservations.map((reservation, index) => (
               <tr key={index} className="border-t last:border-b">
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.room}</td>
