@@ -19,7 +19,6 @@ export async function POST(request: NextRequest) {
       email: formData.email,
       role: formData.role,
       dept: formData.department,
-      student_num: formData.studentNumber,
     });
 
     if (formData.role === 'Instructor') {
@@ -41,6 +40,12 @@ export async function POST(request: NextRequest) {
         .eq('email', formData.email);
 
       if (updateError) throw { message: updateError.message, name: updateError.name };
+    } else {
+      const { error: studentError } = await supabase
+        .from('User')
+        .update({ student_num: formData.studentNumber })
+        .eq('email', formData.email);
+      if (studentError) throw { message: studentError.message, name: studentError.name };
     }
 
     if (insertError) throw { message: insertError.message, name: insertError.name };
