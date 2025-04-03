@@ -15,14 +15,35 @@ export async function POST(request: NextRequest) {
       auth_id: data.user?.id,
       last_name: formData.lname,
       first_name: formData.fname,
+      nickname: formData.nickname,
       email: formData.email,
       role: formData.role,
       dept: formData.department,
       student_num: formData.studentNumber,
     });
 
-    if (insertError)
-      throw { message: insertError.message, name: insertError.name, status: insertError.code };
+    if (formData.role === 'Instructor') {
+      const { data: instructorData, error: instructorError } = await supabase
+        .from('Instructor')
+        .insert({
+          instructor_id: formData.instructorID,
+          office: formData.instructorOffice,
+          faculty_rank: formData.facultyRank,
+        })
+        .select('instructor_id')
+        .single();
+
+      if (instructorError) throw { message: instructorError.message, name: instructorError.name };
+
+      const { error: updateError } = await supabase
+        .from('User')
+        .update({ instructor_id: instructorData.instructor_id })
+        .eq('email', formData.email);
+
+      if (updateError) throw { message: updateError.message, name: updateError.name };
+    }
+
+    if (insertError) throw { message: insertError.message, name: insertError.name };
     return NextResponse.json({ message: 'User created successfully' }, { status: 200 });
   } catch (error) {
     const { message, status, name } = error as { message: string; status?: number; name?: string };

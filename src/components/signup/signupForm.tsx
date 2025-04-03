@@ -27,11 +27,15 @@ export default function SignupForm() {
   const [formData, setFormData] = useState({
     fname: '',
     lname: '',
+    nickname: '',
     email: '',
     password: '',
     confirmPassword: '',
     role: '',
     studentNumber: '',
+    instructorID: '',
+    facultyRank: '',
+    instructorOffice: '',
     department: '',
   });
   const router = useRouter();
@@ -90,7 +94,28 @@ export default function SignupForm() {
       return;
     }
 
-    if (!formData.role || !formData.department || !formData.studentNumber) {
+    if (!formData.role || !formData.department) {
+      toast({
+        title: 'Error',
+        description: 'Please fill in all fields.',
+      });
+      return;
+    }
+
+    if (formData.role === 'Student' && !formData.studentNumber) {
+      toast({
+        title: 'Error',
+        description: 'Please enter your student number.',
+      });
+      return;
+    }
+
+    if (
+      formData.role === 'Instructor' &&
+      !formData.instructorID &&
+      !formData.instructorOffice &&
+      !formData.facultyRank
+    ) {
       toast({
         title: 'Error',
         description: 'Please fill in all fields.',
@@ -131,7 +156,7 @@ export default function SignupForm() {
   return (
     <div className="grid gap-6">
       <form onSubmit={onSubmit} className="overflow-hidden">
-        <div className="relative" style={{ height: '350px' }}>
+        <div className="relative" style={{ height: '450px' }}>
           <AnimatePresence initial={false} mode="wait">
             {step === 1 && (
               <motion.div
@@ -173,6 +198,22 @@ export default function SignupForm() {
                       onChange={handleInputChange}
                     />
                   </div>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="nickname">Nickname</Label>
+                  <Input
+                    id="nickname"
+                    name="nickname"
+                    placeholder="Please Enter your Nickname"
+                    type="text"
+                    autoCapitalize="none"
+                    autoComplete="off"
+                    autoCorrect="off"
+                    disabled={isLoading}
+                    required
+                    value={formData.nickname}
+                    onChange={handleInputChange}
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
@@ -286,6 +327,59 @@ export default function SignupForm() {
                       autoCorrect="off"
                       disabled={isLoading}
                       value={formData.studentNumber}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                )}
+                {formData.role === 'Instructor' && (
+                  <div className="grid gap-2">
+                    <Label htmlFor="instructorID">Instructor ID</Label>
+                    <Input
+                      id="instructorID"
+                      name="instructorID"
+                      placeholder="Enter your instructor ID"
+                      type="text"
+                      autoCapitalize="none"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      disabled={isLoading}
+                      value={formData.instructorID}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                )}
+                {formData.role === 'Instructor' && (
+                  <div className="grid gap-2">
+                    <Label htmlFor="facultyRank">Faculty Rank</Label>
+                    <Select
+                      onValueChange={value => handleSelectChange('facultyRank', value)}
+                      value={formData.facultyRank}
+                    >
+                      <SelectTrigger disabled={isLoading}>
+                        <SelectValue placeholder="Select your Rank" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Lecturer">Lecturer</SelectItem>
+                        <SelectItem value="Assistant Professor">Assistant Professor</SelectItem>
+                        <SelectItem value="Associate Professor">Associate Professor</SelectItem>
+                        <SelectItem value="Professor">Professor</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+                {formData.role === 'Instructor' && (
+                  <div className="grid gap-2">
+                    <Label htmlFor="instructorOffice">Instructor Office</Label>
+                    <Input
+                      id="instructorOffice"
+                      name="instructorOffice"
+                      placeholder="Enter your Office Room Number."
+                      type="text"
+                      autoCapitalize="none"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      disabled={isLoading}
+                      value={formData.instructorOffice}
                       onChange={handleInputChange}
                     />
                   </div>
