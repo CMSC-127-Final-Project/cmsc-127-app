@@ -41,7 +41,10 @@ export async function POST(request: NextRequest) {
 
       if (updateError) throw { message: updateError.message, name: updateError.name };
     } else {
-      const { error: studentError } = await supabase.from('User').update({ student_num: formData.studentNumber }).eq('email', formData.email);
+      const { error: studentError } = await supabase
+        .from('User')
+        .update({ student_num: formData.studentNumber })
+        .eq('email', formData.email);
       if (studentError) throw { message: studentError.message, name: studentError.name };
     }
 
