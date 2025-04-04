@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Menu, Bell, Sun, Moon, UserCircle, LogOut } from 'lucide-react';
+import { Bell, Sun, Moon, UserCircle, LogOut } from 'lucide-react';
 import { RxHamburgerMenu } from 'react-icons/rx';
 
 export default function Navbar() {
