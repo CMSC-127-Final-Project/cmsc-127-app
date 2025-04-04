@@ -16,9 +16,11 @@ export default function HomePage() {
   return (
     <>
       <Navbar />
-      <Welcome />
-      <UpcomingReservations />
-      <AvailabeRooms />
+      <div className="pt-16 md:pt-24">
+        <Welcome />
+        <UpcomingReservations />
+        <AvailabeRooms />
+      </div>
     </>
   );
 }

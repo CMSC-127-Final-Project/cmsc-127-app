@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Menu, Bell, Sun, Moon, UserCircle, LogOut } from 'lucide-react';
+import { RxHamburgerMenu } from 'react-icons/rx';
 
 export default function Navbar() {
   const [currentTime, setCurrentTime] = useState('');
@@ -55,12 +56,10 @@ export default function Navbar() {
   }, [darkMode]);
 
   return (
-    <nav className="flex items-center justify-between bg-white dark:bg-gray-900 p-4 md:p-6 shadow-md border-b relative">
+    <nav className="flex items-center justify-between bg-white dark:bg-gray-900 p-4 md:p-6 shadow-md border-b fixed w-full z-50">
       {/* Left Section - Logo & Title */}
       <div className="flex items-center space-x-4">
-        <button className="p-2 md:hidden">
-          <Menu className="w-6 h-6 text-gray-700 dark:text-white" />
-        </button>
+        <RxHamburgerMenu className="w-5 h-5 text-gray-900 dark:text-white cursor-pointer" />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/upminlogo.png" alt="" className="w-10 h-8 md:w-14 md:h-11" />
         <span className="hidden md:block font-bold font-raleway text-gray-900 dark:text-white text-sm md:text-base leading-tight">
