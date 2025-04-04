@@ -16,7 +16,7 @@ export async function GET() {
     }
 
     return NextResponse.json(data, { status: 200 });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: 'Unexpected error occurred' }, { status: 500 });
   }
 }
