@@ -71,14 +71,14 @@ const AvailabeRooms = () => {
       </div>
 
       <div className="overflow-x-auto font-roboto">
-        <table className="w-full border-collapse shadow-sm rounded-lg overflow-hidden text-sm md:text-base">
+        <table className="w-full table-fixed border-collapse shadow-sm rounded-lg overflow-hidden text-sm md:text-base">
           <thead>
             <tr className="bg-[#5D1A0B] text-white text-left">
-              <th className="px-3 md:px-5 py-3 rounded-tl-lg">Room Number</th>
-              <th className="px-3 md:px-5 py-3">Date</th>
-              <th className="px-3 md:px-5 py-3">Time</th>
-              <th className="px-3 md:px-5 py-3">Capacity</th>
-              <th className="px-3 md:px-5 py-3 rounded-tr-lg">Notes</th>
+              <th className="px-2 md:px-4 py-2 w-1/5 rounded-tl-lg">Room Number</th>
+              <th className="px-2 md:px-4 py-2 w-1/5">Date</th>
+              <th className="px-2 md:px-4 py-2 w-1/5">Time</th>
+              <th className="px-2 md:px-4 py-2 w-1/5">Capacity</th>
+              <th className="px-2 md:px-4 py-2 w-1/5 rounded-tr-lg">Notes</th>
             </tr>
           </thead>
           <tbody className="bg-white">
