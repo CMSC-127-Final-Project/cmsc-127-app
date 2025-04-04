@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { FaEdit } from 'react-icons/fa';
-import { RxCross1} from 'react-icons/rx';
+import { RxCross1 } from 'react-icons/rx';
 
 interface Reservation {
   room: string;
