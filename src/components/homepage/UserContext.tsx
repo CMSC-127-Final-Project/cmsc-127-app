@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState } from 'react';
 
 interface User {
-  username: string;
+  firstName: string;
   studentNumber: string;
 }
 

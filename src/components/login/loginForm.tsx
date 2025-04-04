@@ -54,7 +54,7 @@ export default function LoginPage() {
 
       // Update the UserContext with the logged-in user's data
       setUser({
-        username: result.user.username,
+        firstName: result.user.firstName, // Use firstName instead of username
         studentNumber: result.user.studentNumber,
       });
 

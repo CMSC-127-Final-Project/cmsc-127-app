@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <UserProvider> {/* Wrap the application with UserProvider */}
+        <UserProvider> 
           <Toaster />
           {children}
         </UserProvider>

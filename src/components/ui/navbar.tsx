@@ -85,7 +85,7 @@ export default function Navbar() {
             onClick={() => setDropdownOpen(!dropdownOpen)}
           >
             <span className="text-gray-900 dark:text-white font-medium font-roboto text-sm md:text-base">
-              {user?.username || 'Guest'}
+              {user?.firstName || 'Guest'}
             </span>
             <span
               className={`text-gray-900 dark:text-white text-sm font-roboto transition-transform ${
@@ -103,7 +103,7 @@ export default function Navbar() {
                   <UserCircle className="text-gray-600 dark:text-gray-300 w-12 h-12" />
                   <div>
                     <p className="font-semibold font-raleway dark:text-white">
-                      {user?.username || 'Guest'}
+                      {user?.firstName || 'Guest'}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 font-raleway">
                       {user?.studentNumber || 'N/A'}
