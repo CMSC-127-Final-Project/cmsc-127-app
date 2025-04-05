@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { supabase } from '@/lib/supabase';
 
 export async function POST(req: Request) {
+
   try {
     const { email, password } = await req.json();
 
@@ -10,11 +12,17 @@ export async function POST(req: Request) {
       password,
     });
 
+    const cookieStore = await cookies();
+
     if (error) {
       throw new Error(error.message);
     }
 
-    return NextResponse.json({ user: data.user }, { status: 200 });
+    cookieStore.set('user', data.user?.id || '');
+    cookieStore.set('access_token', data.session?.access_token || '');
+    cookieStore.set('refresh_token', data.session?.refresh_token || '');
+
+    return NextResponse.json({ user: data.user.id, access_token: data.session.access_token, refresh_token: data.session.refresh_token }, { status: 200 });
   } catch (err) {
     console.error('Login error:', err);
 
