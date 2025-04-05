@@ -4,14 +4,13 @@ import { supabase } from "@/lib/supabase";
 
 export async function GET(
     request: NextRequest,
-    props: { params: { id: string } }
+    { params }: { params: { id: string } }
     ){
-    const { id } = await props.params;
+    const { id } = await params;
 
     try {
         const { data, error } = await supabase.from("User").select("nickname").eq("auth_id", id).single();
         if (error){
-            console.log(error);
             throw new Error(error.details);
         }
 
