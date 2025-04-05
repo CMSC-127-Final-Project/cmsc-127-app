@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Navbar from '@/components/ui/navbar';
 import ReservationForm from '@/components/reservation/reservationForm';
-import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'Make a Reservation',
@@ -13,17 +12,17 @@ export default function ReservationPage() {
     <>
         <Navbar />
         <div className="flex min-h-screen flex-col items-center justify-center px-4">
-        <div className="flex w-full flex-col justify-center sm:w-[45rem] sm:bg-background sm:rounded-lg sm:shadow-lg sm:p-10">
-            <div className="sm:mx-auto sm:w-[500px] space-y-8">
-            <div className="flex flex-col text-left">
-                <h1 className="text-xl font-semibold tracking-tight">Make a Reservation</h1>
-                <p className="text-sm text-muted-foreground font-raleway">
-                Enter the room reservation details below.
-                </p>
+          <div className="flex-1 container mx-auto px-4 py-8">
+            <div className="max-w-5xl bg-white rounded-lg p-8 shadow-sm">
+              <h1 className="text-4xl font-bold mb-2">Make a reservation</h1>
+              <p className="text-lg mb-8">Enter the room reservation details below:</p>
             </div>
-            <ReservationForm />
+            <div className="flex w-full flex-col justify-center sm:bg-background sm:rounded-lg sm:shadow-lg sm:p-10">
+              <div className="sm:mx-auto space-y-8">
+              <ReservationForm />
+              </div>
             </div>
-        </div>
+          </div>
         </div>
         </>
   );
