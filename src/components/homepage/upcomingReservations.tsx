@@ -54,7 +54,9 @@ const UpcomingReservations = () => {
   return (
     <div className="bg-white p-6 md:p-10 rounded-3xl drop-shadow-[0_-4px_10px_rgba(0,0,0,0.1)] mx-4 md:mx-20 mt-1 mb-10">
       <div className="flex flex-row justify-between items-center mb-4">
-        <h2 className="text-lg md:text-2xl font-bold font-raleway">Upcoming Reservations</h2>
+        <div className="flex items-center gap-3">
+          <h2 className="text-lg md:text-2xl font-bold font-raleway">Upcoming Reservations</h2>
+        </div>
         <div className="flex gap-3 font-roboto">
           <button className="border border-red-600 text-red-600 px-3 py-2 md:px-4 md:py-2 rounded-xl flex items-center gap-2 hover:bg-red-50 transition">
             <RxCross1 className="text-red-600" />
