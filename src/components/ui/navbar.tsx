@@ -3,21 +3,32 @@
 import { useState, useEffect } from 'react';
 import { Bell, Sun, Moon, UserCircle, LogOut } from 'lucide-react';
 import { RxHamburgerMenu } from 'react-icons/rx';
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
   const [currentTime, setCurrentTime] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const router = useRouter();
 
   const handleSignOut = async () => {
-    const res = await fetch('/api/signout', { method: 'POST' });
-    const data = await res.json();
+    setIsSigningOut(true);
+    try {
+      const res = await fetch('/api/auth/signout', { method: 'GET' });
+      const data = await res.json();
 
-    if (res.ok) {
-      alert(data.message);
-      window.location.href = '/login'; // Redirect after sign out
-    } else {
-      console.error(data.error);
+      if (res.ok) {
+        router.push('/login');
+      } else {
+        console.error(data.error);
+        alert('Sign-out failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error during sign-out:', error);
+      alert('An error occurred. Please try again.');
+    } finally {
+      setIsSigningOut(false); // Reset state if needed
     }
   };
 
@@ -146,10 +157,17 @@ export default function Navbar() {
                 <div className="flex justify-end">
                   <button
                     onClick={handleSignOut}
-                    className="w-28 mt-5 px-2 py-2 flex items-center justify-center space-x-2 bg-[#5D1A0B] text-white text-sm font-roboto hover:bg-[#5d0b0be7] rounded-2xl"
+                    disabled={isSigningOut} // Disable button while signing out
+                    className={`${
+                      isSigningOut ? 'w-36' : 'w-28'
+                    } mt-5 px-2 py-2 flex items-center justify-center space-x-2 ${
+                      isSigningOut
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-[#5D1A0B] hover:bg-[#5d0b0be7]'
+                    } text-white text-sm font-roboto rounded-2xl`} // Dynamic width
                   >
                     <LogOut className="w-4 h-4" />
-                    <span>Sign out</span>
+                    <span>{isSigningOut ? 'Signing out...' : 'Sign out'}</span>
                   </button>
                 </div>
               </div>
