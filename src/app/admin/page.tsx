@@ -35,9 +35,9 @@ export default async function AdminPage() {
 
   return (
     <>
-      <Navbar username={nickname}/>
+      <Navbar username={nickname} />
       <div className="pt-16 md:pt-24">
-        <WelcomeBanner username={nickname}/>
+        <WelcomeBanner username={nickname} />
         <Requests />
       </div>
     </>

@@ -40,7 +40,7 @@ export default async function HomePage() {
       <div className="pt-16 md:pt-24">
         <Welcome username={nickname} />
         <AvailabeRooms />
-        <UpcomingReservations user_id={user_id}/>
+        <UpcomingReservations user_id={user_id} />
       </div>
     </>
   );

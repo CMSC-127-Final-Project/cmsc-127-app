@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React from 'react';
 import { RxCheckCircled, RxCrossCircled, RxTrash } from 'react-icons/rx';
@@ -6,26 +6,29 @@ import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Reservation {
-  reservation_id: string,
-  room_num: string,
-  date: string,
-  capacity: number,
-  start_time: string,
-  end_time: string
+  reservation_id: string;
+  room_num: string;
+  date: string;
+  capacity: number;
+  start_time: string;
+  end_time: string;
 }
 
-const acceptReservation = async (reservation: Reservation, toast: (options: { title: string; description: string; }) => void) => {
+const acceptReservation = async (
+  reservation: Reservation,
+  toast: (options: { title: string; description: string }) => void
+) => {
   console.log(reservation);
   try {
     const response = await fetch('/api/reservations/accept', {
       method: 'PATCH',
-      body: JSON.stringify({ reservation_id: reservation.reservation_id })
+      body: JSON.stringify({ reservation_id: reservation.reservation_id }),
     });
 
     if (!response.ok) throw new Error('Failed to accept reservation');
     toast({
       title: 'Success',
-      description: 'Accepted the reservation!'
+      description: 'Accepted the reservation!',
     });
   } catch (error) {
     console.error(error);
@@ -36,18 +39,21 @@ const acceptReservation = async (reservation: Reservation, toast: (options: { ti
   }
 };
 
-const rejectReservation = async (reservation: Reservation, toast: (options: { title: string; description: string; }) => void) => {
+const rejectReservation = async (
+  reservation: Reservation,
+  toast: (options: { title: string; description: string }) => void
+) => {
   console.log(reservation);
   try {
     const response = await fetch('/api/reservations/reject', {
       method: 'PATCH',
-      body: JSON.stringify({ reservation_id: reservation.reservation_id })
+      body: JSON.stringify({ reservation_id: reservation.reservation_id }),
     });
 
     if (!response.ok) throw new Error('Failed to reject reservation');
     toast({
       title: 'Success',
-      description: 'Rejected the reservation!'
+      description: 'Rejected the reservation!',
     });
   } catch (error) {
     console.error(error);
@@ -58,18 +64,21 @@ const rejectReservation = async (reservation: Reservation, toast: (options: { ti
   }
 };
 
-const removeReservation = async (reservation: Reservation, toast: (options: { title: string; description: string; }) => void) => {
+const removeReservation = async (
+  reservation: Reservation,
+  toast: (options: { title: string; description: string }) => void
+) => {
   console.log(reservation);
   try {
     const response = await fetch('/api/reservations/remove', {
       method: 'DELETE',
-      body: JSON.stringify({ reservation_id: reservation.reservation_id })
+      body: JSON.stringify({ reservation_id: reservation.reservation_id }),
     });
 
     if (!response.ok) throw new Error('Failed to delete reservation');
     toast({
       title: 'Success',
-      description: 'Deleted the reservation!'
+      description: 'Deleted the reservation!',
     });
   } catch (error) {
     console.error(error);
@@ -86,24 +95,23 @@ const ReservationRequests = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-      const loadReservations = async () => {
-        try {
-          const response = await fetch('/api/reservations/reserve', {
-            method: 'GET',
-          });
-  
-          if (!response.ok) {
-            throw new Error('Failed to fetch reservations');
-          }
-  
-          const data = await response.json();
-          setReservations(data.length > 0 ? data : []);
-        } catch {
+    const loadReservations = async () => {
+      try {
+        const response = await fetch('/api/reservations/reserve', {
+          method: 'GET',
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch reservations');
         }
-      };
-  
-      loadReservations();
-    }, []);
+
+        const data = await response.json();
+        setReservations(data.length > 0 ? data : []);
+      } catch {}
+    };
+
+    loadReservations();
+  }, []);
 
   return (
     <div className="bg-white p-6 md:p-10 rounded-3xl drop-shadow-[0_-4px_10px_rgba(0,0,0,0.1)] mx-4 md:mx-20 mt-1 mb-10">
@@ -131,20 +139,31 @@ const ReservationRequests = () => {
           <tbody className="bg-white">
             {reservations.map((reservation, index) => (
               <tr key={index} className="border-t last:border-b">
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.reservation_id}</td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.room_num}</td> 
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
+                  {reservation.reservation_id}
+                </td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.room_num}</td>
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.date}</td>
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.capacity}</td>
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.start_time}</td>
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.end_time}</td>
                 <td className="px-0 md:px-0 py-5 flex">
-                  <button className="text-green-500 px-2 py-1 rounded-md" onClick={() => acceptReservation(reservation, toast)}>
+                  <button
+                    className="text-green-500 px-2 py-1 rounded-md"
+                    onClick={() => acceptReservation(reservation, toast)}
+                  >
                     <RxCheckCircled size={20} />
                   </button>
-                  <button className="text-red-500 px-2 py-1 rounded-md" onClick={() => rejectReservation(reservation, toast)}>
+                  <button
+                    className="text-red-500 px-2 py-1 rounded-md"
+                    onClick={() => rejectReservation(reservation, toast)}
+                  >
                     <RxCrossCircled size={20} />
                   </button>
-                  <button className="text-gray-500 px-2 py-1 rounded-md" onClick={() => removeReservation(reservation, toast)}>
+                  <button
+                    className="text-gray-500 px-2 py-1 rounded-md"
+                    onClick={() => removeReservation(reservation, toast)}
+                  >
                     <RxTrash size={20} />
                   </button>
                 </td>

@@ -83,35 +83,45 @@ const UpcomingReservations = ({ user_id }: { user_id: string }) => {
               </tr>
             </thead>
             <tbody className="bg-white">
-                {reservations.length > 0
-                ? reservations.map((reservation, index) => (
+              {reservations.length > 0 ? (
+                reservations.map((reservation, index) => (
                   <tr key={index} className="border-t last:border-b">
                     <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
-                    {reservation.room_num || '-'}
+                      {reservation.room_num || '-'}
                     </td>
                     <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
-                    {reservation.date || '-'}
+                      {reservation.date || '-'}
                     </td>
                     <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
-                    {new Date(`1970-01-01T${reservation.start_time}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) || '-'} {'-'} {new Date(`1970-01-01T${reservation.end_time}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) || '-'}
+                      {new Date(`1970-01-01T${reservation.start_time}`).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true,
+                      }) || '-'}{' '}
+                      {'-'}{' '}
+                      {new Date(`1970-01-01T${reservation.end_time}`).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true,
+                      }) || '-'}
                     </td>
                     <td
-                    className={`px-3 md:px-5 py-3 ${getStatusClass(reservation.status)} hover:bg-gray-100`}
+                      className={`px-3 md:px-5 py-3 ${getStatusClass(reservation.status)} hover:bg-gray-100`}
                     >
-                    {reservation.status || '-'}
+                      {reservation.status || '-'}
                     </td>
                     <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
-                    {reservation.admin_notes || '-'}
+                      {reservation.admin_notes || '-'}
                     </td>
                   </tr>
-                  ))
-                : (
-                  <tr>
-                    <td colSpan={5} className="text-center px-3 md:px-5 py-3 text-gray-400">
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="text-center px-3 md:px-5 py-3 text-gray-400">
                     No Reservations Found
-                    </td>
-                  </tr>
-                  )}
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         )}

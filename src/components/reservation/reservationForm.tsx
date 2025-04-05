@@ -36,19 +36,19 @@ export default function ReservationForm({ user_id }: { user_id: string }) {
 
   const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newMessage = e.target.value.slice(0, 250);
-    setFormData((prev) => ({ ...prev, message: newMessage }));
+    setFormData(prev => ({ ...prev, message: newMessage }));
   };
 
   const handleAllDayChange = (checked: boolean) => {
     setAllDay(checked as boolean);
     if (checked) {
-      setFormData((prev) => ({
+      setFormData(prev => ({
         ...prev,
         startTime: '08:00',
         endTime: '17:00',
       }));
     } else {
-      setFormData((prev) => ({
+      setFormData(prev => ({
         ...prev,
         startTime: '',
         endTime: '',
@@ -57,12 +57,12 @@ export default function ReservationForm({ user_id }: { user_id: string }) {
   };
 
   useEffect(() => {
-    const loadRooms = async() => {
+    const loadRooms = async () => {
       try {
         const response = await fetch('/api/reservations/rooms', {
           method: 'GET',
         });
-        if (!response.ok) throw new Error;
+        if (!response.ok) throw new Error();
 
         const data = await response.json();
         const sortedRooms = data.sort((a: Room, b: Room) =>
@@ -70,9 +70,9 @@ export default function ReservationForm({ user_id }: { user_id: string }) {
         );
         setRooms(sortedRooms);
       } catch {
-        console.error("Could not load rooms.")
+        console.error('Could not load rooms.');
       }
-    }
+    };
 
     loadRooms();
   }, []);
@@ -94,17 +94,17 @@ export default function ReservationForm({ user_id }: { user_id: string }) {
       }
 
       toast({
-        title: 'Success!'
-      })
+        title: 'Success!',
+      });
     } catch (error) {
       console.error(error);
       toast({
         title: 'Error!',
-        description: 'Something went wrong! Please try again later.'
+        description: 'Something went wrong! Please try again later.',
       });
     }
   }
-  
+
   return (
     <form className="space-y-8" onSubmit={onSubmit}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -114,15 +114,13 @@ export default function ReservationForm({ user_id }: { user_id: string }) {
           </label>
           <Select
             value={formData.roomNum}
-            onValueChange={(value) =>
-              setFormData((prev) => ({ ...prev, roomNum: value }))
-            }
+            onValueChange={value => setFormData(prev => ({ ...prev, roomNum: value }))}
           >
             <SelectTrigger className="focus:ring-[#6b2323]">
               <SelectValue placeholder="Select a room" />
             </SelectTrigger>
             <SelectContent>
-              {rooms.map((room) => (
+              {rooms.map(room => (
                 <SelectItem key={room.room_number} value={room.room_number}>
                   {room.room_number}
                 </SelectItem>
@@ -139,9 +137,7 @@ export default function ReservationForm({ user_id }: { user_id: string }) {
             id="date"
             type="date"
             value={formData.date}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, date: e.target.value }))
-            }
+            onChange={e => setFormData(prev => ({ ...prev, date: e.target.value }))}
             className="focus-visible:ring-[#6b2323]"
           />
         </div>
@@ -154,9 +150,7 @@ export default function ReservationForm({ user_id }: { user_id: string }) {
             <Input
               type="time"
               value={formData.startTime}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, startTime: e.target.value }))
-              }
+              onChange={e => setFormData(prev => ({ ...prev, startTime: e.target.value }))}
               className="focus-visible:ring-[#6b2323]"
               disabled={allDay}
             />
@@ -164,9 +158,7 @@ export default function ReservationForm({ user_id }: { user_id: string }) {
             <Input
               type="time"
               value={formData.endTime}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, endTime: e.target.value }))
-              }
+              onChange={e => setFormData(prev => ({ ...prev, endTime: e.target.value }))}
               className="focus-visible:ring-[#6b2323]"
               disabled={allDay}
             />
@@ -190,9 +182,7 @@ export default function ReservationForm({ user_id }: { user_id: string }) {
           </label>
           <Select
             value={formData.reason}
-            onValueChange={(value) =>
-              setFormData((prev) => ({ ...prev, reason: value }))
-            }
+            onValueChange={value => setFormData(prev => ({ ...prev, reason: value }))}
           >
             <SelectTrigger className="focus:ring-[#6b2323]">
               <SelectValue placeholder="Select a reason" />

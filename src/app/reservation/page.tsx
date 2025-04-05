@@ -39,7 +39,7 @@ export default async function ReservationPage() {
           </div>
           <div className="flex w-full flex-col justify-center sm:bg-background sm:rounded-lg sm:shadow-lg sm:p-10">
             <div className="sm:mx-20 space-y-8">
-              <ReservationForm user_id={user_id}/>
+              <ReservationForm user_id={user_id} />
             </div>
           </div>
         </div>
