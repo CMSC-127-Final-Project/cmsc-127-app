@@ -18,7 +18,7 @@ export default function ReservationPage() {
               <p className="text-lg mb-8">Enter the room reservation details below:</p>
             </div>
             <div className="flex w-full flex-col justify-center sm:bg-background sm:rounded-lg sm:shadow-lg sm:p-10">
-              <div className="sm:mx-auto space-y-8">
+              <div className="sm:mx-20 space-y-8">
               <ReservationForm />
               </div>
             </div>
