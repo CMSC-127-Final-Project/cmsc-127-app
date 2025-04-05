@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   const cookieStore = await cookies();
-  const user_id = cookieStore.get('user')?.value;
+  const user_id = cookieStore.get('user')?.value || '';
 
   let nickname = '';
   try {
@@ -40,7 +40,7 @@ export default async function HomePage() {
       <div className="pt-16 md:pt-24">
         <Welcome username={nickname} />
         <AvailabeRooms />
-        <UpcomingReservations />
+        <UpcomingReservations user_id={user_id}/>
       </div>
     </>
   );

@@ -26,14 +26,14 @@ const getStatusClass = (status: string) => {
   }
 };
 
-const UpcomingReservations = () => {
+const UpcomingReservations = ({ user_id }: { user_id: string }) => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadReservations = async () => {
       try {
-        const response = await fetch('/api/reservations', {
+        const response = await fetch(`/api/reservations/${user_id}`, {
           method: 'GET',
         });
 
@@ -50,7 +50,7 @@ const UpcomingReservations = () => {
     };
 
     loadReservations();
-  }, []);
+  }, [user_id]);
 
   return (
     <div className="bg-white p-6 md:p-10 rounded-3xl drop-shadow-[0_-4px_10px_rgba(0,0,0,0.1)] mx-4 md:mx-20 mt-1 mb-10">
@@ -83,37 +83,35 @@ const UpcomingReservations = () => {
               </tr>
             </thead>
             <tbody className="bg-white">
-              {reservations.length > 0
+                {reservations.length > 0
                 ? reservations.map((reservation, index) => (
-                    <tr key={index} className="border-t last:border-b">
-                      <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
-                        {reservation.room_num || '-'}
-                      </td>
-                      <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
-                        {reservation.date || '-'}
-                      </td>
-                      <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
-                        {reservation.start_time || '-'} {'-'} {reservation.end_time || '-'}
-                      </td>
-                      <td
-                        className={`px-3 md:px-5 py-3 ${getStatusClass(reservation.status)} hover:bg-gray-100`}
-                      >
-                        {reservation.status || '-'}
-                      </td>
-                      <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
-                        {reservation.admin_notes || '-'}
-                      </td>
-                    </tr>
+                  <tr key={index} className="border-t last:border-b">
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
+                    {reservation.room_num || '-'}
+                    </td>
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
+                    {reservation.date || '-'}
+                    </td>
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
+                    {new Date(`1970-01-01T${reservation.start_time}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) || '-'} {'-'} {new Date(`1970-01-01T${reservation.end_time}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) || '-'}
+                    </td>
+                    <td
+                    className={`px-3 md:px-5 py-3 ${getStatusClass(reservation.status)} hover:bg-gray-100`}
+                    >
+                    {reservation.status || '-'}
+                    </td>
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
+                    {reservation.admin_notes || '-'}
+                    </td>
+                  </tr>
                   ))
-                : Array.from({ length: 6 }).map((_, index) => (
-                    <tr key={index} className="border-t last:border-b">
-                      <td className="px-3 md:px-5 py-3 text-gray-400">-</td>
-                      <td className="px-3 md:px-5 py-3 text-gray-400">-</td>
-                      <td className="px-3 md:px-5 py-3 text-gray-400">-</td>
-                      <td className="px-3 md:px-5 py-3 text-gray-400">-</td>
-                      <td className="px-3 md:px-5 py-3 text-gray-400">-</td>
-                    </tr>
-                  ))}
+                : (
+                  <tr>
+                    <td colSpan={5} className="text-center px-3 md:px-5 py-3 text-gray-400">
+                    No Reservations Found
+                    </td>
+                  </tr>
+                  )}
             </tbody>
           </table>
         )}
