@@ -15,4 +15,4 @@ export default async function Welcome({ username }: { username: string }) {
       </p>
     </div>
   );
-};
+}

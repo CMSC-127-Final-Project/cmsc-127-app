@@ -18,7 +18,7 @@ export default async function HomePage() {
   const user_id = cookieStore.get('user')?.value;
 
   let nickname = '';
-  try{
+  try {
     const response = await fetch(`http://localhost:3000/api/user/${user_id}`, {
       method: 'GET',
     });
@@ -26,7 +26,7 @@ export default async function HomePage() {
     if (!response.ok) {
       const { error } = await response.json();
       throw new Error(error);
-    };
+    }
 
     const data = await response.json();
     nickname = data.nickname;
@@ -36,9 +36,9 @@ export default async function HomePage() {
 
   return (
     <>
-      <Navbar username={nickname}/>
+      <Navbar username={nickname} />
       <div className="pt-16 md:pt-24">
-        <Welcome username={nickname}/>
+        <Welcome username={nickname} />
         <AvailabeRooms />
         <UpcomingReservations />
       </div>

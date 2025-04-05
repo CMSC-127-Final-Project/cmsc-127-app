@@ -9,13 +9,13 @@ export default async function Home() {
     console.log('No access token found, redirecting to login...');
     return (
       <div>
-        <Index action={''}/>
+        <Index action={''} />
       </div>
     );
   } else {
     return (
       <div>
-        <Index action={'access_token'}/>
+        <Index action={'access_token'} />
       </div>
     );
   }

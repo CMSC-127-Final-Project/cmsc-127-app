@@ -52,7 +52,6 @@ export default function LoginPage() {
       }
 
       router.push('/homepage');
-
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
       console.error('Login failed:', errorMessage);

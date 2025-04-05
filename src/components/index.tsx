@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 
 export default function IndexPage({ action }: { action: string }) {
   const router = useRouter();
-  
+
   useEffect(() => {
-    if(action === 'access_token') {
+    if (action === 'access_token') {
       router.push('/homepage');
     } else {
       router.push('/login');
