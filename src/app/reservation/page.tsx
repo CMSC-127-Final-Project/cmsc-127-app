@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 export default function ReservationPage() {
   return (
     <>
-        <Navbar />
-        <div className="flex min-h-screen flex-col items-center justify-center px-4">
-          <div className="flex-1 container mx-auto px-4 py-8">
+        <Navbar username={''} />
+        <div className=" flex min-h-screen flex-col items-center justify-center px-4">
+          <div className="flex-1 container mx-auto px-4 py-8 sm:mt-20">
             <div className="max-w-5xl bg-white rounded-lg p-8 shadow-sm">
               <h1 className="text-4xl font-bold mb-2">Make a reservation</h1>
               <p className="text-lg mb-8">Enter the room reservation details below:</p>
