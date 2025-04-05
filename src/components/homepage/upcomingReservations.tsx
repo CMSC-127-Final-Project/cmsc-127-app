@@ -5,11 +5,12 @@ import { FaEdit } from 'react-icons/fa';
 import { RxCross1 } from 'react-icons/rx';
 
 interface Reservation {
-  room: string;
+  room_num: string;
   date: string;
-  time: string;
+  start_time: string;
+  end_time: string;
   status: string;
-  notes?: string;
+  admin_notes?: string;
 }
 
 const getStatusClass = (status: string) => {
@@ -54,9 +55,7 @@ const UpcomingReservations = () => {
   return (
     <div className="bg-white p-6 md:p-10 rounded-3xl drop-shadow-[0_-4px_10px_rgba(0,0,0,0.1)] mx-4 md:mx-20 mt-1 mb-10">
       <div className="flex flex-row justify-between items-center mb-4">
-        <div className="flex items-center gap-3">
-          <h2 className="text-lg md:text-2xl font-bold font-raleway">Upcoming Reservations</h2>
-        </div>
+        <h2 className="text-lg md:text-2xl font-bold font-raleway">Your Reservations</h2>
         <div className="flex gap-3 font-roboto">
           <button className="border border-red-600 text-red-600 px-3 py-2 md:px-4 md:py-2 rounded-xl flex items-center gap-2 hover:bg-red-50 transition">
             <RxCross1 className="text-red-600" />
@@ -88,13 +87,13 @@ const UpcomingReservations = () => {
                 ? reservations.map((reservation, index) => (
                     <tr key={index} className="border-t last:border-b">
                       <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
-                        {reservation.room || '-'}
+                        {reservation.room_num || '-'}
                       </td>
                       <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
                         {reservation.date || '-'}
                       </td>
                       <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
-                        {reservation.time || '-'}
+                        {reservation.start_time || '-'} {'-'} {reservation.end_time || '-'}
                       </td>
                       <td
                         className={`px-3 md:px-5 py-3 ${getStatusClass(reservation.status)} hover:bg-gray-100`}
@@ -102,7 +101,7 @@ const UpcomingReservations = () => {
                         {reservation.status || '-'}
                       </td>
                       <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
-                        {reservation.notes || '-'}
+                        {reservation.admin_notes || '-'}
                       </td>
                     </tr>
                   ))

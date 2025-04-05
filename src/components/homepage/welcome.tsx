@@ -1,6 +1,6 @@
 import { FaUser } from 'react-icons/fa';
 
-const WelcomeBanner = ({ username = 'User00' }) => {
+export default async function Welcome({ username }: { username: string }) {
   return (
     <div className="p-4 md:p-6 md:ml-16">
       <h1 className="text-2xl md:text-5xl font-bold font-raleway flex flex-wrap items-center gap-2">
@@ -15,6 +15,4 @@ const WelcomeBanner = ({ username = 'User00' }) => {
       </p>
     </div>
   );
-};
-
-export default WelcomeBanner;
+}
