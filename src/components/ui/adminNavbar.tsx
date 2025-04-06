@@ -5,7 +5,7 @@ import { UserSearch, Sun, Moon, UserCircle, LogOut } from 'lucide-react';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { useRouter } from 'next/navigation';
 
-export default function Navbar() {
+export default function Navbar({ username }: { username: string }) {
   const [currentTime, setCurrentTime] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
@@ -114,7 +114,7 @@ export default function Navbar() {
             onClick={() => setDropdownOpen(!dropdownOpen)}
           >
             <span className="text-gray-900 dark:text-white font-medium font-roboto text-sm md:text-base">
-              Celeru00
+              {username}
             </span>
             <span
               className={`text-gray-900 dark:text-white text-sm font-roboto transition-transform ${
@@ -136,7 +136,7 @@ export default function Navbar() {
                 <div className="flex items-center gap-2 border-b pb-2 dark:border-gray-600">
                   <UserCircle className="text-gray-600 dark:text-gray-300 w-12 h-12" />
                   <div>
-                    <p className="font-semibold font-raleway dark:text-white">Celeru00</p>
+                    <p className="font-semibold font-raleway dark:text-white">{username}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 font-raleway">
                       20XX-XXXXX
                     </p>
