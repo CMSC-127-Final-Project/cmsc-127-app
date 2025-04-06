@@ -59,10 +59,12 @@ const AvailabeRooms = () => {
       <div className="flex flex-row justify-between items-center mb-4">
         <h2 className="text-lg md:text-2xl font-bold font-raleway">Available Rooms</h2>
         <div className="flex gap-3 font-roboto">
-          <button className="border border-red-600 text-red-600 px-3 py-2 md:px-4 md:py-2 rounded-xl flex items-center gap-2 hover:bg-red-50 transition">
+          <a 
+            className="border border-red-600 text-red-600 px-3 py-2 md:px-4 md:py-2 rounded-xl flex items-center gap-2 hover:bg-red-50 transition"
+            href="/reservation">
             <RxPlus className="text-red-600" size={20} />
             <span className="hidden md:block">Make a Reservation</span>
-          </button>
+          </a>
           <button className="bg-[#5D1A0B] text-white px-3 py-2 md:px-4 md:py-2 rounded-xl flex items-center gap-2 hover:bg-[#731f10] transition">
             <RxEyeOpen className="text-white" size={20} />
             <span className="hidden md:block">See Request History</span>
