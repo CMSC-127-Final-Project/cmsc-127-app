@@ -3,6 +3,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 # 📑 Table of Contents
 
 - [📑 Table of Contents](#-table-of-contents)
+- [📓 Description](#-description)
 - [🚀 Getting Started](#-getting-started)
 - [🛠️ Using Git](#️-using-git)
 - [🌳 Git Workflow](#-git-workflow)
@@ -10,10 +11,16 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
   - [Workflow](#workflow)
   - [Rebasing](#rebasing)
 - [📝 Coding Standards](#-coding-standards)
-  - [Tech Stack](#tech-stack)
+  - [Tech Stack and Tools](#tech-stack-and-tools)
   - [Code Formatting](#code-formatting)
   - [Folder and File Naming](#folder-and-file-naming)
   - [Commit Message Guidelines](#commit-message-guidelines)
+
+# 📓 Description
+
+**This project is in compliance with our CMSC Database Management Systems course.**
+
+This project aims to streamline and digitalize the process of reserving rooms in the College of Science and Mathematics in the University of the Philippines Mindanao. This Room Management System allows students or staff to check the availability of a room and to request an available room for reservation. This allows the administration to allow the usage of rooms without the tedious filing proccess that could take days for approval.
 
 # 🚀 Getting Started
 
@@ -106,10 +113,28 @@ When your **Pull Request** is behind `main`.
 
 # 📝 Coding Standards
 
-## Tech Stack
+## Tech Stack and Tools
 
-- Frontend: Next.js, Typescript
-- Backend: Supabase
+- Next.js
+- React
+- TailwindCSS
+- Typescript
+- Radix
+- Shadcn
+- Momento
+- V-Test
+- React Testing Library
+- Playwright
+- Zod
+- Sentry
+- Storybook
+- Supabase
+- AWS Amplify
+- AWS S3
+- ESLint
+- Prettier
+- Github Actions
+- Posthog
 
 ## Code Formatting
 
