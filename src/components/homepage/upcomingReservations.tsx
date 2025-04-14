@@ -72,7 +72,7 @@ const UpcomingReservations = ({ user_id }: { user_id: string }) => {
         {error ? (
           <div className="text-center text-red-600">{error}</div>
         ) : (
-          <table className="w-full table-fixed border-collapse shadow-sm rounded-lg overflow-hidden text-sm md:text-base">
+          <table className="w-full border-collapse shadow-sm rounded-lg overflow-hidden text-sm md:text-base">
             <thead>
               <tr className="bg-[#5D1A0B] text-white text-left">
                 <th className="px-2 md:px-4 py-2 w-1/5 rounded-tl-lg">Room Number</th>
@@ -86,13 +86,13 @@ const UpcomingReservations = ({ user_id }: { user_id: string }) => {
               {reservations.length > 0 ? (
                 reservations.map((reservation, index) => (
                   <tr key={index} className="border-t last:border-b">
-                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
                       {reservation.room_num || '-'}
                     </td>
-                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
                       {reservation.date || '-'}
                     </td>
-                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
                       {new Date(`1970-01-01T${reservation.start_time}`).toLocaleTimeString([], {
                         hour: '2-digit',
                         minute: '2-digit',
@@ -106,11 +106,11 @@ const UpcomingReservations = ({ user_id }: { user_id: string }) => {
                       }) || '-'}
                     </td>
                     <td
-                      className={`px-3 md:px-5 py-3 ${getStatusClass(reservation.status)} hover:bg-gray-100`}
+                      className={`px-3 md:px-5 py-3 ${getStatusClass(reservation.status)} hover:bg-gray-100 font-roboto`}
                     >
                       {reservation.status || '-'}
                     </td>
-                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
                       {reservation.admin_notes || '-'}
                     </td>
                   </tr>

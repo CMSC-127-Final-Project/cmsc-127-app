@@ -71,7 +71,7 @@ const AvailabeRooms = () => {
       </div>
 
       <div className="overflow-x-auto font-roboto">
-        <table className="w-full table-fixed border-collapse shadow-sm rounded-lg overflow-hidden text-sm md:text-base">
+        <table className="w-full border-collapse shadow-sm rounded-lg overflow-hidden text-sm md:text-base">
           <thead>
             <tr className="bg-[#5D1A0B] text-white text-left">
               <th className="px-2 md:px-4 py-2 w-1/5 rounded-tl-lg">Room Number</th>
@@ -84,11 +84,21 @@ const AvailabeRooms = () => {
           <tbody className="bg-white">
             {reservations.map((reservation, index) => (
               <tr key={index} className="border-t last:border-b">
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.room}</td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.date}</td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.time}</td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.capacity}</td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.notes || '-'}</td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                  {reservation.room}
+                </td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                  {reservation.date}
+                </td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                  {reservation.time}
+                </td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                  {reservation.capacity}
+                </td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                  {reservation.notes || '-'}
+                </td>
               </tr>
             ))}
           </tbody>

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { RxCheckCircled, RxCrossCircled, RxTrash } from 'react-icons/rx';
+import { RxCheckCircled, RxCrossCircled, RxTrash, RxDotsHorizontal } from 'react-icons/rx';
 import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -91,8 +91,19 @@ const removeReservation = async (
 
 const ReservationRequests = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
 
   const { toast } = useToast();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (openDropdownId) setOpenDropdownId(null);
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [openDropdownId]);
 
   useEffect(() => {
     const loadReservations = async () => {
@@ -116,56 +127,99 @@ const ReservationRequests = () => {
   return (
     <div className="bg-white p-6 md:p-10 rounded-3xl drop-shadow-[0_-4px_10px_rgba(0,0,0,0.1)] mx-4 md:mx-20 mt-1 mb-10">
       <div className="flex flex-row justify-between items-center mb-4">
-        <h2 className="text-lg md:text-3xl font-bold font-raleway">Reservation Requests</h2>
+        <h2 className="text-lg md:text-2xl font-bold font-raleway">Reservation Requests</h2>
       </div>
 
-      <div className="overflow-x-auto font-roboto">
-        <table className="w-full table-fixed border-collapse shadow-sm rounded-lg overflow-hidden text-sm md:text-base">
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse shadow-sm rounded-lg overflow-hidden text-sm md:text-base">
           <thead>
-            <tr className="bg-[#5D1A0B] text-white text-left">
-              <th className="px-2 md:px-4 py-2 w-1/5 rounded-tl-lg">Schedule ID</th>
-              <th className="px-2 md:px-4 py-2 w-1/5">
+            <tr className="bg-[#5D1A0B] text-white">
+              <th className="px-2 md:px-4 py-2 w-[20%] min-w-[150px] rounded-tl-lg">Schedule ID</th>
+              <th className="px-2 md:px-4 py-2 w-[12%] min-w-[80px]">
                 Room
                 <br />
                 Number
               </th>
-              <th className="px-2 md:px-4 py-2 w-1/5">Date</th>
-              <th className="px-2 md:px-4 py-2 w-1/5">Capacity</th>
-              <th className="px-2 md:px-4 py-2 w-1/5">Start Time</th>
-              <th className="px-2 md:px-4 py-2 w-1/5">End Time</th>
-              <th className="px-2 md:px-4 py-2 w-1/5 rounded-tr-lg">Actions</th>
+              <th className="px-2 md:px-4 py-2 w-[15%] min-w-[110px]">Date</th>
+              <th className="px-2 md:px-4 py-2 w-[10%] min-w-[70px]">Capacity</th>
+              <th className="px-2 md:px-4 py-2 w-[12%] min-w-[90px]">Start Time</th>
+              <th className="px-2 md:px-4 py-2 w-[12%] min-w-[90px]">End Time</th>
+              <th className="px-2 md:px-4 py-2 w-[10%] min-w-[80px] rounded-tr-lg">Actions</th>
             </tr>
           </thead>
-          <tbody className="bg-white">
+          <tbody className="bg-white text-center">
             {reservations.map((reservation, index) => (
               <tr key={index} className="border-t last:border-b">
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
                   {reservation.reservation_id}
                 </td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.room_num}</td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.date}</td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.capacity}</td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.start_time}</td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100">{reservation.end_time}</td>
-                <td className="px-0 md:px-0 py-5 flex">
-                  <button
-                    className="text-green-500 px-2 py-1 rounded-md"
-                    onClick={() => acceptReservation(reservation, toast)}
-                  >
-                    <RxCheckCircled size={20} />
-                  </button>
-                  <button
-                    className="text-red-500 px-2 py-1 rounded-md"
-                    onClick={() => rejectReservation(reservation, toast)}
-                  >
-                    <RxCrossCircled size={20} />
-                  </button>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
+                  {reservation.room_num}
+                </td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                  {reservation.date}
+                </td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
+                  {reservation.capacity}
+                </td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                  {reservation.start_time}
+                </td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                  {reservation.end_time}
+                </td>
+                <td className="px-0 md:px-0 py-5 relative text-center">
                   <button
                     className="text-gray-500 px-2 py-1 rounded-md"
-                    onClick={() => removeReservation(reservation, toast)}
+                    onClick={e => {
+                      e.stopPropagation();
+                      setOpenDropdownId(
+                        openDropdownId === reservation.reservation_id
+                          ? null
+                          : reservation.reservation_id
+                      );
+                    }}
                   >
-                    <RxTrash size={20} />
+                    <RxDotsHorizontal size={20} />
                   </button>
+
+                  {openDropdownId === reservation.reservation_id && (
+                    <div className="absolute right-0 mt-2 py-2 bg-white rounded-md shadow-xl z-10 border border-gray-200">
+                      <button
+                        className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                        onClick={e => {
+                          e.stopPropagation();
+                          acceptReservation(reservation, toast);
+                          setOpenDropdownId(null);
+                        }}
+                      >
+                        <RxCheckCircled size={18} className="mr-2 text-green-500" />
+                        Accept
+                      </button>
+                      <button
+                        className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                        onClick={e => {
+                          e.stopPropagation();
+                          rejectReservation(reservation, toast);
+                          setOpenDropdownId(null);
+                        }}
+                      >
+                        <RxCrossCircled size={18} className="mr-2 text-red-500" />
+                        Reject
+                      </button>
+                      <button
+                        className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                        onClick={e => {
+                          e.stopPropagation();
+                          removeReservation(reservation, toast);
+                          setOpenDropdownId(null);
+                        }}
+                      >
+                        <RxTrash size={18} className="mr-2 text-gray-500" />
+                        Remove
+                      </button>
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}
