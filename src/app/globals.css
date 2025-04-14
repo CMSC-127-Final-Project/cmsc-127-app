@@ -55,6 +55,7 @@
 
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 0 0% 3.9%;
 
@@ -111,10 +112,115 @@
     @apply border-border;
     @apply font-raleway;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   Button {
     @apply font-roboto;
+  }
+}
+
+/* Dark mode styles for body and common elements */
+@layer base {
+  body {
+    @apply bg-white text-gray-900 transition-colors duration-200;
+  }
+
+  .dark body {
+    @apply bg-gray-900 text-white;
+  }
+
+  main {
+    @apply bg-white dark:bg-gray-900 transition-colors duration-200;
+  }
+
+  /* Table styling for dark mode */
+  .dark table {
+    @apply bg-gray-900 text-white shadow-md;
+  }
+
+  .dark thead tr {
+    @apply bg-[#5D1A0B] text-white;
+  }
+
+  .dark tbody tr {
+    @apply border-gray-700;
+  }
+
+  .dark td,
+  .dark th {
+    @apply text-white;
+  }
+
+  .dark tbody {
+    @apply bg-gray-900;
+  }
+
+  /* Dark mode for container elements */
+  .dark .bg-white {
+    @apply bg-gray-900;
+  }
+
+  /* Welcome message styling for dark mode */
+  .dark h1,
+  .dark h2,
+  .dark h3,
+  .dark .welcome-text,
+  .dark .welcome-message,
+  .dark .page-title,
+  .dark .header-text {
+    @apply text-white;
+  }
+
+  /* Welcome message styling for dark mode - enhanced with more specific selectors */
+  .dark h1,
+  .dark h2,
+  .dark h3,
+  .dark h4,
+  .dark h5,
+  .dark h6,
+  .dark p,
+  .dark .welcome-text,
+  .dark .welcome-message,
+  .dark .page-title,
+  .dark .header-text,
+  .dark .text-gray-900,
+  .dark .font-bold,
+  .dark [class*="welcome"],
+  .dark [class*="title"],
+  .dark [class*="header"],
+  .dark div[class*="text"] {
+    @apply text-white !important;
+  }
+
+  /* Force text color for specific classes used in welcome banners */
+  .dark .bg-white .text-gray-900,
+  .dark .text-gray-700,
+  .dark .text-gray-800,
+  .dark .text-black {
+    @apply text-white !important;
+  }
+
+  /* Card/container styling with improved shadows for dark mode */
+  .card,
+  .container,
+  .content-section {
+    @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-gray-200 dark:border-gray-700 transition-colors duration-200;
+  }
+
+  .dark .card,
+  .dark .container,
+  .dark .content-section,
+  .dark .rounded-3xl {
+    @apply shadow-md bg-gray-900;
+  }
+
+  /* Form element styling */
+  input,
+  select,
+  textarea {
+    @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 transition-colors duration-200;
   }
 }

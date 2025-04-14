@@ -57,14 +57,36 @@ export default function Navbar({ username }: { username: string }) {
     return () => clearInterval(interval);
   }, []);
 
-  // Dark Mode Toggle
+  // Enhanced Dark Mode Implementation
+  useEffect(() => {
+    // Check for saved preference in localStorage
+    const savedDarkMode = localStorage.getItem('darkMode');
+
+    if (savedDarkMode !== null) {
+      // Use saved preference if available
+      setDarkMode(savedDarkMode === 'true');
+    } else {
+      // Otherwise, check for system preference
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setDarkMode(prefersDark);
+    }
+  }, []);
+
+  // Apply dark mode changes and save preference
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
+
+    // Save preference to localStorage
+    localStorage.setItem('darkMode', darkMode.toString());
   }, [darkMode]);
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
 
   return (
     <nav className="flex items-center justify-between bg-white dark:bg-gray-900 p-4 md:p-6 shadow-md border-b fixed w-full z-50">
@@ -85,7 +107,11 @@ export default function Navbar({ username }: { username: string }) {
           <span className="text-gray-900 dark:text-white font-medium font-roboto">
             {currentTime}
           </span>
-          <button onClick={() => setDarkMode(!darkMode)} className="focus:outline-none">
+          <button
+            onClick={toggleDarkMode}
+            className="focus:outline-none transition-colors duration-200"
+            aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
             {darkMode ? (
               <Moon className="w-5 h-5 text-yellow-300 cursor-pointer" />
             ) : (
@@ -98,7 +124,11 @@ export default function Navbar({ username }: { username: string }) {
         {/* Mobile Icons */}
         <div className="flex md:hidden items-center space-x-4">
           <Bell className="w-5 h-5 text-gray-900 dark:text-white cursor-pointer" />
-          <button onClick={() => setDarkMode(!darkMode)} className="focus:outline-none">
+          <button
+            onClick={toggleDarkMode}
+            className="focus:outline-none transition-colors duration-200"
+            aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
             {darkMode ? (
               <Moon className="w-5 h-5 text-yellow-300 cursor-pointer" />
             ) : (
