@@ -188,10 +188,10 @@
   .dark .header-text,
   .dark .text-gray-900,
   .dark .font-bold,
-  .dark [class*="welcome"],
-  .dark [class*="title"],
-  .dark [class*="header"],
-  .dark div[class*="text"] {
+  .dark [class*='welcome'],
+  .dark [class*='title'],
+  .dark [class*='header'],
+  .dark div[class*='text'] {
     @apply text-white !important;
   }
 

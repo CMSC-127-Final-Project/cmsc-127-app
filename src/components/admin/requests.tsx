@@ -156,12 +156,18 @@ const ReservationRequests = () => {
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
                   {reservation.room_num}
                 </td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">{reservation.date}</td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                  {reservation.date}
+                </td>
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
                   {reservation.capacity}
                 </td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">{reservation.start_time}</td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">{reservation.end_time}</td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                  {reservation.start_time}
+                </td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                  {reservation.end_time}
+                </td>
                 <td className="px-0 md:px-0 py-5 relative text-center">
                   <button
                     className="text-gray-500 px-2 py-1 rounded-md"

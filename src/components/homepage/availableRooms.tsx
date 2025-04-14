@@ -84,11 +84,21 @@ const AvailabeRooms = () => {
           <tbody className="bg-white">
             {reservations.map((reservation, index) => (
               <tr key={index} className="border-t last:border-b">
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">{reservation.room}</td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">{reservation.date}</td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">{reservation.time}</td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">{reservation.capacity}</td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">{reservation.notes || '-'}</td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                  {reservation.room}
+                </td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                  {reservation.date}
+                </td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                  {reservation.time}
+                </td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                  {reservation.capacity}
+                </td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                  {reservation.notes || '-'}
+                </td>
               </tr>
             ))}
           </tbody>
