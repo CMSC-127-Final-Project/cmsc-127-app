@@ -1,57 +1,38 @@
-'use client';
-
 import type React from 'react';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { MessageSquare, Monitor } from 'lucide-react';
 
-export default function SupportForm() {
+export default function ContactUs() {
   return (
-    <form>
       <Card>
         <CardHeader>
-          <CardTitle>Help & Support</CardTitle>
+          <CardTitle className="text-lg">Contact Us</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="subject">Subject</Label>
-            <Select name="subject" required>
-              <SelectTrigger id="subject">
-                <SelectValue placeholder="Select a subject" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="general">General Inquiry</SelectItem>
-                <SelectItem value="technical">Technical Support</SelectItem>
-                <SelectItem value="feedback">Feedback</SelectItem>
-                <SelectItem value="others">Others</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <div className="space-y-4 p-4">
+              <ContactOption icon={<Monitor className="h-5 w-5" />} title="Email: csm.colsec@up.edu.ph" />
 
-          <div className="space-y-2">
-            <Label htmlFor="message">Message</Label>
-            <Textarea
-              id="message"
-              name="message"
-              placeholder="Please describe your issue or question in detail"
-              className="min-h-[120px]"
-              required
-            />
-          </div>
+              <ContactOption icon={<MessageSquare className="h-5 w-5" />} title="Facebook: @UPMiinCSM.helpdesk" />
 
-          <div className="flex justify-end">
-            <Button className="bg-[#6b1d1d] hover:bg-[#5a1818]">Send Email</Button>
-          </div>
+              <ContactOption icon={<MessageSquare className="h-5 w-5" />} title="Twitter: @UPMiinCSM.helpdesk" />
+
+              <ContactOption icon={<MessageSquare className="h-5 w-5" />} title="Instagram: @UPMiinCSM.helpdesk" />
+            </div>
         </CardContent>
       </Card>
-    </form>
   );
+}
+
+interface ContactOptionProps {
+  icon: React.ReactNode
+  title: string
+}
+
+function ContactOption({ icon, title }: ContactOptionProps) {
+  return (
+    <button className="w-full flex gap-3 hover:bg-gray-50 rounded-lg transition-colors">
+      <div className="w-10 h-10 rounded-full flex items-center justify-center">{icon}</div>
+      <span className="font-medium">{title}</span>
+    </button>
+  )
 }
