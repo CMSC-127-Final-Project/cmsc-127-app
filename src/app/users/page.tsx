@@ -4,11 +4,11 @@ import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
-  title: 'Admin',
+  title: 'Manage Users',
   icons: {
     icon: '/upfavicon.ico',
   },
-  description: 'Admin page of the application',
+  description: 'Manage users here. You may create, read, update, and delete users as needed.',
 };
 
 export default async function UserManagementPage() {
