@@ -1,7 +1,7 @@
 import Navbar from '@/components/ui/navbar';
 import Welcome from '@/components/homepage/welcome';
 import UpcomingReservations from '@/components/homepage/upcomingReservations';
-import AvailabeRooms from '@/components/homepage/availableRooms';
+import RoomReservation from '@/components/homepage/availableRooms';
 import { cookies } from 'next/headers';
 import type { Metadata } from 'next';
 
@@ -39,7 +39,7 @@ export default async function HomePage() {
       <Navbar username={nickname} />
       <div className="lg:mt-0 md:mt-12">
         <Welcome username={nickname} />
-        <AvailabeRooms />
+        <RoomReservation />
         <UpcomingReservations user_id={user_id} />
       </div>
     </>
