@@ -37,7 +37,7 @@ export default async function HomePage() {
   return (
     <>
       <Navbar username={nickname} />
-      <div>
+      <div className="lg:mt-0 md:mt-12">
         <Welcome username={nickname} />
         <AvailabeRooms />
         <UpcomingReservations user_id={user_id} />

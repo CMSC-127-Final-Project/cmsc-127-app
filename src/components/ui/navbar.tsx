@@ -191,8 +191,14 @@ export default function Navbar({ username }: { username: string }) {
                     >
                       Profile and Preferences
                     </li>
-                    <li className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
-                      Settings
+                    <li
+                      className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                      onClick={() => {
+                        setDropdownOpen(false);
+                        router.push('/profile?tab=security');
+                      }}
+                    >
+                      Security
                     </li>
                     <li
                       className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
