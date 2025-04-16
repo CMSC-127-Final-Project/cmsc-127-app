@@ -73,7 +73,7 @@ const AvailabeRooms = () => {
       <div className="overflow-x-auto font-roboto">
         <table className="w-full border-collapse shadow-sm rounded-lg overflow-hidden text-sm md:text-base">
           <thead>
-            <tr className="bg-[#5D1A0B] text-white text-left">
+            <tr className="bg-[#5D1A0B] text-white text-left h-14">
               <th className="px-2 md:px-4 py-2 w-1/5 rounded-tl-lg">Room Number</th>
               <th className="px-2 md:px-4 py-2 w-1/5">Date</th>
               <th className="px-2 md:px-4 py-2 w-1/5">Time</th>

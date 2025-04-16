@@ -224,3 +224,37 @@
     @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 transition-colors duration-200;
   }
 }
+
+/* Sidebar open state - only adjust content, not navbar */
+@media (min-width: 768px) {
+  .content-with-sidebar {
+    margin-left: 14rem;
+    /* 56px (sidebar width) */
+  }
+
+  .sidebar-open .container,
+  .sidebar-open .content-section {
+    max-width: calc(100% - 14rem);
+  }
+}
+
+/* Sidebar and layout adjustments */
+.sidebar-open .container,
+.sidebar-open .content-section,
+.sidebar-open .rounded-3xl {
+  width: calc(100% - 14rem);
+  margin-left: 14rem;
+  transition:
+    width 0.3s,
+    margin-left 0.3s;
+}
+
+/* For mobile, ensure the content doesn't get shifted when sidebar is open */
+@media (max-width: 767px) {
+  .sidebar-open .container,
+  .sidebar-open .content-section,
+  .sidebar-open .rounded-3xl {
+    width: 100%;
+    margin-left: 0;
+  }
+}
