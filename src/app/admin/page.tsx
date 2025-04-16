@@ -3,8 +3,6 @@ import WelcomeBanner from '@/components/admin/welcome';
 import Requests from '@/components/admin/requests';
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import { Button } from '@/components/ui/button';
-import router from 'next/router';
 
 export const metadata: Metadata = {
   title: 'Admin',
@@ -41,16 +39,6 @@ export default async function AdminPage() {
       <div className="pt-16 md:pt-24">
         <WelcomeBanner username={nickname} />
         <Requests />
-      </div>
-      <div className="flex justify-center mt-4">
-        <Button 
-          className="bg-[#5D1A0B] text-white hover:bg-[#6b1d1d] transition-colors duration-300"
-          onClick={() => {
-            router.push('/users');
-          }}
-        >
-          Manage Users
-        </Button>
       </div>
     </>
   );
