@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -42,37 +42,43 @@ export default function SupportForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form>
+      <Card>
+        <CardHeader>
+          <CardTitle>Help & Support</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="subject">Subject</Label>
+            <Select name="subject" required>
+              <SelectTrigger id="subject">
+                <SelectValue placeholder="Select a subject" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="general">General Inquiry</SelectItem>
+                <SelectItem value="technical">Technical Support</SelectItem>
+                <SelectItem value="feedback">Feedback</SelectItem>
+                <SelectItem value="others">Others</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="subject">Subject</Label>
-        <Select name="subject" required>
-          <SelectTrigger id="subject">
-            <SelectValue placeholder="Select a subject" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="general">General Inquiry</SelectItem>
-            <SelectItem value="technical">Technical Support</SelectItem>
-            <SelectItem value="billing">Billing Question</SelectItem>
-            <SelectItem value="feedback">Feedback</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="message">Message</Label>
+            <Textarea
+              id="message"
+              name="message"
+              placeholder="Please describe your issue or question in detail"
+              className="min-h-[120px]"
+              required
+            />
+          </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="message">Message</Label>
-        <Textarea
-          id="message"
-          name="message"
-          placeholder="Please describe your issue or question in detail"
-          className="min-h-[120px]"
-          required
-        />
-      </div>
-
-      <Button type="submit" className="w-full bg-[#7a1a1a] hover:bg-[#5a1313]" disabled={isSubmitting}>
-        {isSubmitting ? "Submitting..." : "Submit Request"}
-      </Button>
+          <div className="flex justify-end">
+            <Button className="bg-[#6b1d1d] hover:bg-[#5a1818]">Send Email</Button>
+          </div>
+        </CardContent>
+      </Card>
     </form>
   )
 }

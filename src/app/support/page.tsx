@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Navbar from '@/components/ui/navbar';
 import SupportForm from '@/components/support/supportForm';
 import { cookies } from 'next/headers';
+import Header from '@/components/profile/ProfileHeader';
+import ProfileSidebar from '@/components/profile/profilesidebar';
 
 export const metadata: Metadata = {
   title: 'Help & Support',
@@ -34,17 +36,13 @@ export default async function SupportPage() {
   return (
     <>
       <Navbar username={nickname} />
-      <div className=" flex min-h-screen flex-col items-center justify-center px-4">
-        <div className="flex-1 container mx-auto px-4 py-8 sm:mt-20">
-          <div className="max-w-full bg-white p-8 shadow-sm">
-            <h1 className="text-4xl font-bold mb-2">Contact Support</h1>
-            <p className="text-lg mb-8">Enter your concerns below:</p>
-          </div>
-          <div className="flex w-full flex-col justify-center sm:bg-background sm:rounded-lg sm:shadow-lg sm:p-10">
-            <SupportForm />
-          </div>
+      <main className="container mx-auto py-6 px-4 md:px-6 flex flex-col md:flex-row gap-6">
+        <div className="flex flex-col w-full md:w-3/4">
+          <Header />
+          <SupportForm />
         </div>
-      </div>
+        <ProfileSidebar />
+      </main>
     </>
   );
 }
