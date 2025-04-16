@@ -6,6 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Search } from 'lucide-react';
 import { List } from 'lucide-react';
+import { RxDotsHorizontal } from 'react-icons/rx';
+import { RxCheckCircled, RxCrossCircled, RxTrash } from 'react-icons/rx';
+import { useEffect } from 'react';
+
 
 interface User {
   id: number;
@@ -21,9 +25,10 @@ interface User {
 export default function Users() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [showEmptyState, setShowEmptyState] = useState(true);
+
 
   const handleSearch = () => {
     const isInputComplete = firstName && lastName;
@@ -98,7 +103,7 @@ export default function Users() {
             <table className="w-full border-collapse shadow-sm rounded-lg overflow-hidden text-sm md:text-base">
               <thead>
                 <tr className="bg-[#5D1A0B] text-white">
-                  <th className="px-2 md:px-4 py-2 w-[20%] min-w-[150px] rounded-tl-lg">User ID</th>
+                  <th className="px-2 md:px-4 py-2 w-[10%] min-w-[150px] rounded-tl-lg">User ID</th>
                   <th className="px-2 md:px-4 py-2 w-[12%] min-w-[80px]">
                     Student
                     <br />
@@ -113,10 +118,73 @@ export default function Users() {
                   <th className="px-2 md:px-4 py-2 w-[10%] min-w-[80px] rounded-tr-lg">Actions</th>
                 </tr>
               </thead>
+              <tbody>
+                {users.map(user => (
+                  <tr key={user.id} className="border-t last:border-b">
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">{user.id}</td>
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">{user.number}</td>
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">{user.firstName}</td>
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">{user.lastName}</td>
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">{user.email}</td>
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">{user.phone}</td>
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">{user.role}</td>
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">{user.department}</td>
+                    <td className="px-0 md:px-0 py-5 relative text-center">
+                      <button
+                        className="text-gray-500 px-2 py-1 rounded-md"
+                        onClick={e => {
+                          e.stopPropagation();
+                          setOpenDropdownId(
+                            openDropdownId
+                          );
+                        }}
+                      >
+                        <RxDotsHorizontal size={20} />
+                      </button>
+
+                      {openDropdownId && (
+                        <div className="absolute right-0 mt-2 py-2 bg-white rounded-md shadow-xl z-10 border border-g</div>ray-200">
+                          <button
+                            className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                            onClick={e => {
+                              e.stopPropagation();
+                              setOpenDropdownId(null);
+                            }}
+                          >
+                            Update
+                          </button>
+                          
+                          <button
+                            className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                            onClick={e => {
+                              e.stopPropagation();
+                              setOpenDropdownId(null);
+                            }}
+                          >
+                            <RxTrash size={18} className="mr-2 text-gray-500" />
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
           </div>
         </>
       )}
       </div>
+      
     );
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (openDropdownId) setOpenDropdownId(null);
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [openDropdownId]);    
 };
