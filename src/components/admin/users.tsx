@@ -1,15 +1,11 @@
 'use client';
 
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Search } from 'lucide-react';
-import { List } from 'lucide-react';
-import { RxDotsHorizontal } from 'react-icons/rx';
-import { RxCheckCircled, RxCrossCircled, RxTrash } from 'react-icons/rx';
-import { useEffect } from 'react';
-
+import { Search, List } from 'lucide-react';
+import { RxDotsHorizontal, RxTrash } from 'react-icons/rx';
 
 interface User {
   id: number;
