@@ -61,6 +61,12 @@ export default function LoginPage() {
     }
   };
 
+  // State for the popup
+  const [showPopup, setShowPopup] = useState(false);
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="w-full max-w-xl rounded-lg bg-white p-8 shadow-md">
@@ -101,12 +107,28 @@ export default function LoginPage() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <Link
-                  href="/forgot-password"
+                <button
+                  type="button"
                   className="text-xs text-muted-foreground underline-offset-4 hover:underline"
+                  onClick={() => setShowPopup(true)}
                 >
                   Forgot password?
-                </Link>
+                </button>
+                {showPopup && (
+                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                  <div className="bg-white p-6 rounded shadow-md">
+                    <p className="text-sm text-muted-foreground">
+                    To reset your password, go to the Administrator's Office and bring your identification card.
+                    </p>
+                    <button
+                      className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark mx-auto block"
+                      onClick={() => setShowPopup(false)}
+                    >
+                      Close
+                    </button>
+                  </div>
+                  </div>
+                )}
               </div>
               <div className="relative">
                 <Input id="password" type={showPassword ? 'text' : 'password'} required />
