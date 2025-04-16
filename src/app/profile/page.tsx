@@ -1,12 +1,12 @@
 import Navbar from '@/components/ui/navbar';
-import Welcome from '@/components/homepage/welcome';
-import UpcomingReservations from '@/components/homepage/upcomingReservations';
-import AvailabeRooms from '@/components/homepage/availableRooms';
+import Header from '@/components/profile/ProfileHeader';
+import ProfileSidebar from '@/components/profile/profilesidebar';
+import Settings from '@/components/profile/settings';
 import { cookies } from 'next/headers';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Home',
+  title: 'Profile',
   icons: {
     icon: '/upfavicon.ico',
   },
@@ -37,11 +37,13 @@ export default async function HomePage() {
   return (
     <>
       <Navbar username={nickname} />
-      <div>
-        <Welcome username={nickname} />
-        <AvailabeRooms />
-        <UpcomingReservations user_id={user_id} />
-      </div>
+      <main className="container mx-auto py-6 px-4 md:px-6 flex flex-col md:flex-row gap-6">
+        <div className="flex flex-col w-full md:w-3/4">
+          <Header />
+          <Settings />
+        </div>
+        <ProfileSidebar />
+      </main>
     </>
   );
 }
