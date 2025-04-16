@@ -194,7 +194,13 @@ export default function Navbar({ username }: { username: string }) {
                     <li className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                       Settings
                     </li>
-                    <li className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                    <li
+                      className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                      onClick={() => {
+                        setDropdownOpen(false);
+                        router.push('/support');
+                      }}
+                    >
                       Help and Support
                     </li>
                   </ul>
