@@ -149,7 +149,7 @@ export default function RoomReservation() {
           <List className="w-12 h-12 mb-4" />
           <p className="font-medium text-base text-gray-700">No rooms searched yet</p>
           <p className="text-sm mt-1">
-            Select a date and time range, then click "Search Rooms" to find available rooms.
+            Select a date and time range, then click &quot;Search Rooms&quot; to find available rooms.
           </p>
         </div>
       )}
