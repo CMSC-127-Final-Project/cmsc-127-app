@@ -5,6 +5,7 @@ import { UserSearch, Sun, Moon, UserCircle, LogOut } from 'lucide-react';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { useRouter } from 'next/navigation';
 
+
 export default function Navbar({ username }: { username: string }) {
   const [currentTime, setCurrentTime] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -92,7 +93,12 @@ export default function Navbar({ username }: { username: string }) {
               <Sun className="w-5 h-5 text-gray-900 cursor-pointer" />
             )}
           </button>
-          <UserSearch className="w-5 h-5 text-gray-900 dark:text-white cursor-pointer" />
+          <UserSearch 
+            className="w-5 h-5 text-gray-900 dark:text-white cursor-pointer" 
+            onClick={() =>
+              router.push('/users') // Redirect to search page
+            }
+          />
         </div>
 
         {/* Mobile Icons */}
