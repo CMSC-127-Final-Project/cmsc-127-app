@@ -149,7 +149,8 @@ export default function RoomReservation() {
           <List className="w-12 h-12 mb-4" />
           <p className="font-medium text-base text-gray-700">No rooms searched yet</p>
           <p className="text-sm mt-1">
-            Select a date and time range, then click &quot;Search Rooms&quot; to find available rooms.
+            Select a date and time range, then click &quot;Search Rooms&quot; to find available
+            rooms.
           </p>
         </div>
       )}
@@ -222,12 +223,16 @@ export default function RoomReservation() {
               value={reason}
               onChange={e => setReason(e.target.value)}
               placeholder="Enter reason..."
-              className='h-32'
+              className="h-32"
             />
           </div>
 
           <DialogFooter className="mt-4">
-            <Button variant="outline" onClick={() => setShowDialog(false)} className='text-red-900 hover:bg-red-50 hover:text-red-900'>
+            <Button
+              variant="outline"
+              onClick={() => setShowDialog(false)}
+              className="text-red-900 hover:bg-red-50 hover:text-red-900"
+            >
               Cancel
             </Button>
             <Button onClick={confirmReservation}>Confirm</Button>

@@ -90,9 +90,7 @@ const UpcomingReservations = ({ user_id }: { user_id: string }) => {
                 <th className={`px-2 md:px-4 py-2 w-1/5 ${actionColumn ? '' : 'rounded-tr-lg'}`}>
                   Notes
                 </th>
-                {actionColumn && (
-                  <th className="px-2 md:px-4 py-2 rounded-tr-lg">Action</th>
-                )}
+                {actionColumn && <th className="px-2 md:px-4 py-2 rounded-tr-lg">Action</th>}
               </tr>
             </thead>
             <tbody className="bg-white">
