@@ -244,12 +244,13 @@
 .sidebar-open .rounded-3xl {
   width: calc(100% - 14rem);
   margin-left: 14rem;
-  transition: width 0.3s, margin-left 0.3s;
+  transition:
+    width 0.3s,
+    margin-left 0.3s;
 }
 
 /* For mobile, ensure the content doesn't get shifted when sidebar is open */
 @media (max-width: 767px) {
-
   .sidebar-open .container,
   .sidebar-open .content-section,
   .sidebar-open .rounded-3xl {
