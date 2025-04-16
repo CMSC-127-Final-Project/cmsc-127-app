@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Home, User, Settings, HelpCircle } from 'lucide-react';
+import { Home, User, Lock, HelpCircle } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 export default function ProfileSidebar() {
@@ -21,20 +21,28 @@ export default function ProfileSidebar() {
               <Home className="h-4 w-4 mr-2 text-[#6b1d1d]" />
               <span className="text-sm font-medium">Back to Dashboard</span>
             </div>
-            <div className="p-3 hover:bg-gray-50 cursor-pointer flex items-center">
+            <div
+              className="p-3 hover:bg-gray-50 cursor-pointer flex items-center"
+              onClick={() => router.push('/profile?tab=personal')}
+            >
               <User className="h-4 w-4 mr-2 text-[#6b1d1d]" />
-              <span className="text-sm font-medium">Account and Profile Management</span>
+              <span className="text-sm font-medium">Profile and Preferences</span>
             </div>
-            <div className="p-3 hover:bg-gray-50 cursor-pointer flex items-center">
-              <Settings className="h-4 w-4 mr-2 text-[#6b1d1d]" />
-              <span className="text-sm">Settings</span>
+            <div
+              className="p-3 hover:bg-gray-50 cursor-pointer flex items-center"
+              onClick={() => {
+                router.push('/profile?tab=security');
+              }}
+            >
+              <Lock className="h-4 w-4 mr-2 text-[#6b1d1d]" />
+              <span className="text-sm font-medium">Change Password</span>
             </div>
             <div
               className="p-3 hover:bg-gray-50 cursor-pointer flex items-center"
               onClick={() => router.push('/support')}
             >
               <HelpCircle className="h-4 w-4 mr-2 text-[#6b1d1d]" />
-              <span className="text-sm">Help and Support</span>
+              <span className="text-sm font-medium">Help and Support</span>
             </div>
           </div>
         </CardContent>

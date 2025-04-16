@@ -8,9 +8,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useSearchParams } from 'next/navigation';
 
 export default function Settings() {
-  const [activeTab, setActiveTab] = useState('personal');
+  const searchParams = useSearchParams();
+  const defaultTab = searchParams.get('tab') || 'personal';
+  const [activeTab, setActiveTab] = useState(defaultTab);
 
   return (
     <div>
@@ -50,27 +53,28 @@ export default function Settings() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" placeholder="User" />
+                  <Input id="firstName" placeholder="User" disabled />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" placeholder="OO" />
+                  <Input id="lastName" placeholder="OO" disabled />
                 </div>
               </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="studentnumber">Student Number</Label>
+                  <Input id="studentnumber" type="text" placeholder="20XX-XXXXX" disabled />
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="nickname">Nickname</Label>
                   <Input id="nickname" placeholder="Isko" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="studentnumber">Student Number</Label>
-                  <Input id="studentnumber" type="text" placeholder="20XX-XXXXX" />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
-                <Input id="email" type="email" placeholder="useroo@college.edu" />
+                <Input id="email" type="email" placeholder="useroo@college.edu" disabled />
               </div>
 
               <div className="space-y-2">
@@ -82,10 +86,11 @@ export default function Settings() {
                 <Label htmlFor="department">Department</Label>
                 <select
                   id="department"
+                  defaultValue=""
                   className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6b1d1d] transition-colors duration-200"
                 >
-                  <option value="" disabled selected>
-                    Select your department{' '}
+                  <option value="" disabled>
+                    Select your department
                   </option>
                   <option value="DMPCS">DMPCS</option>
                   <option value="DSFT">DSFT</option>
