@@ -1,7 +1,5 @@
 import LoginPage from '@/components/login/loginForm';
 import { Metadata } from 'next';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 import Image from 'next/image';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
