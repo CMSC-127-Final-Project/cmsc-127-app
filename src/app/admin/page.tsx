@@ -19,7 +19,7 @@ export default async function AdminPage() {
   return (
     <>
       <Navbar user_id={user_id} />
-      <div className="pt-16 md:pt-24">
+      <div>
         <WelcomeBanner user_id={user_id} />
         <Requests />
       </div>  
