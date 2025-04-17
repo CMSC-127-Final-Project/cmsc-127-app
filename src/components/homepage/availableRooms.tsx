@@ -144,6 +144,7 @@ export default function RoomReservation() {
         <div className="flex flex-col items-center justify-center text-center mt-16 text-gray-500">
           <List className="w-12 h-12 mb-4" />
           <p className="font-medium text-base text-gray-700">No rooms searched yet</p>
+          {/* eslint-disable-next-line react/no-unescaped-entities */}
           <p className="text-sm mt-1">
             Select a date and time range, then click "Search Rooms" to find available rooms.
           </p>
@@ -170,7 +171,8 @@ export default function RoomReservation() {
                   {date ? format(date, 'MMMM d, yyyy') : '&ndash;'}
                 </p>
                 <p className="text-sm text-gray-500 mb-2">
-                  <span className="font-medium text-gray-700">Time:</span> {startTime} &ndash; {endTime}
+                  <span className="font-medium text-gray-700">Time:</span> {startTime} &ndash;{' '}
+                  {endTime}
                 </p>
                 {room.notes && (
                   <p className="text-sm text-amber-700 mt-1">
