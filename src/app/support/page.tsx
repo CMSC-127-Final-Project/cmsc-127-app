@@ -19,23 +19,24 @@ export default async function SupportPage() {
     data: { user },
   } = await supabase.auth.getUser();
   const user_id = user?.id || '';
-  
+
   return (
     <>
       <Navbar user_id={user_id} />
       <main className="container mx-auto py-6 px-4 md:px-6 flex flex-col md:flex-row gap-6">
         <div className="flex flex-col w-full md:w-3/4">
-        <Card className="mb-6">
-          <CardHeader className="pb-3">
-            <div className="flex justify-between items-center">
-              <CardTitle className="text-2xl font-bold">Help and Support</CardTitle>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Message us in any of the following channels and we will get back to you as soon as possible.
-            </p>
-          </CardHeader>
-        </Card>
-        <ContactUs />
+          <Card className="mb-6">
+            <CardHeader className="pb-3">
+              <div className="flex justify-between items-center">
+                <CardTitle className="text-2xl font-bold">Help and Support</CardTitle>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Message us in any of the following channels and we will get back to you as soon as
+                possible.
+              </p>
+            </CardHeader>
+          </Card>
+          <ContactUs />
         </div>
         <ProfileSidebar />
       </main>
