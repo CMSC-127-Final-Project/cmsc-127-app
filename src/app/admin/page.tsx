@@ -22,7 +22,7 @@ export default async function AdminPage() {
       <div>
         <WelcomeBanner user_id={user_id} />
         <Requests />
-      </div>  
+      </div>
     </>
   );
 }
