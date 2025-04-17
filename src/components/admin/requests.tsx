@@ -95,7 +95,6 @@ const ReservationRequests = () => {
 
   const { toast } = useToast();
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = () => {
       if (openDropdownId) setOpenDropdownId(null);
@@ -135,11 +134,7 @@ const ReservationRequests = () => {
           <thead>
             <tr className="bg-[#5D1A0B] text-white">
               <th className="px-2 md:px-4 py-2 w-[20%] min-w-[150px] rounded-tl-lg">Schedule ID</th>
-              <th className="px-2 md:px-4 py-2 w-[12%] min-w-[80px]">
-                Room
-                <br />
-                Number
-              </th>
+              <th className="px-2 md:px-4 py-2 w-[12%] min-w-[80px]">Room<br />Number</th>
               <th className="px-2 md:px-4 py-2 w-[15%] min-w-[110px]">Date</th>
               <th className="px-2 md:px-4 py-2 w-[10%] min-w-[70px]">Capacity</th>
               <th className="px-2 md:px-4 py-2 w-[12%] min-w-[90px]">Start Time</th>
@@ -150,33 +145,19 @@ const ReservationRequests = () => {
           <tbody className="bg-white text-center">
             {reservations.map((reservation, index) => (
               <tr key={index} className="border-t last:border-b">
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                  {reservation.reservation_id}
-                </td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
-                  {reservation.room_num}
-                </td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                  {reservation.date}
-                </td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
-                  {reservation.capacity}
-                </td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                  {reservation.start_time}
-                </td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                  {reservation.end_time}
-                </td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">{reservation.reservation_id}</td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">{reservation.room_num}</td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">{reservation.date}</td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">{reservation.capacity}</td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">{reservation.start_time}</td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">{reservation.end_time}</td>
                 <td className="px-0 md:px-0 py-5 relative text-center">
                   <button
                     className="text-gray-500 px-2 py-1 rounded-md"
                     onClick={e => {
                       e.stopPropagation();
                       setOpenDropdownId(
-                        openDropdownId === reservation.reservation_id
-                          ? null
-                          : reservation.reservation_id
+                        openDropdownId === reservation.reservation_id ? null : reservation.reservation_id
                       );
                     }}
                   >
@@ -184,7 +165,11 @@ const ReservationRequests = () => {
                   </button>
 
                   {openDropdownId === reservation.reservation_id && (
-                    <div className="absolute right-0 mt-2 py-2 bg-white rounded-md shadow-xl z-10 border border-gray-200">
+                    <div
+                      className={`absolute right-0 ${
+                        index >= reservations.length - 2 ? 'bottom-full mb-2' : 'mt-2'
+                      } py-2 bg-white rounded-md shadow-xl z-10 border border-gray-200`}
+                    >
                       <button
                         className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                         onClick={e => {

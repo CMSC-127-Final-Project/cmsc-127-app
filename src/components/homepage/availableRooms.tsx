@@ -1,14 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Calendar, Clock, Search, List } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, Search, List } from 'lucide-react';
 import { RxPlus } from 'react-icons/rx';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Dialog,
   DialogContent,
@@ -28,9 +28,9 @@ interface Room {
 }
 
 export default function RoomReservation() {
-  const [date, setDate] = useState<Date | undefined>();
-  const [startTime, setStartTime] = useState<string>('');
-  const [endTime, setEndTime] = useState<string>('');
+  const [date, setDate] = useState<Date | null>(null);
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [availableRooms] = useState<Room[]>([
     { id: '1', number: 'Room 227', capacity: 50, notes: 'Chairs Broken' },
     { id: '2', number: 'Room 203', capacity: 25, notes: 'No electricity' },
@@ -40,10 +40,12 @@ export default function RoomReservation() {
     { id: '6', number: 'Computer Laboratory', capacity: 10 },
     { id: '7', number: 'Room 226', capacity: 24 },
   ]);
+
   const [hasSearched, setHasSearched] = useState(false);
   const [showEmptyState, setShowEmptyState] = useState(true);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [showDialog, setShowDialog] = useState(false);
+  const [reason, setReason] = useState('');
 
   const handleSearch = () => {
     const isInputComplete = date && startTime && endTime;
@@ -56,8 +58,6 @@ export default function RoomReservation() {
     setShowDialog(true);
   };
 
-  const [reason, setReason] = useState('');
-
   const confirmReservation = () => {
     if (selectedRoom && date && startTime && endTime && reason.trim()) {
       console.log('Reservation Info:', {
@@ -68,7 +68,6 @@ export default function RoomReservation() {
         reason,
       });
       alert(`Room ${selectedRoom.number} reserved for: ${reason}`);
-      // Reset fields
       setShowDialog(false);
       setSelectedRoom(null);
       setReason('');
@@ -78,14 +77,14 @@ export default function RoomReservation() {
   };
 
   return (
-    <div className="bg-white p-6 md:p-10 rounded-3xl drop-shadow-[0_-4px_10px_rgba(0,0,0,0.1)] mx-4 md:mx-20 mt-1 mb-10 font-roboto">
+    <div className="bg-white p-6 md:p-10 rounded-3xl shadow-md mx-4 md:mx-20 mt-1 mb-10 font-roboto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <h2 className="text-lg md:text-2xl font-bold font-raleway text-gray-900">
           Find Available Rooms
         </h2>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3 mb-8 font-roboto">
+      <div className="grid gap-6 md:grid-cols-3 mb-8">
         <div className="space-y-2">
           <Label htmlFor="date">Date</Label>
           <Popover>
@@ -97,12 +96,12 @@ export default function RoomReservation() {
                   !date && 'text-muted-foreground'
                 )}
               >
-                <Calendar className="mr-2 h-4 w-4" />
+                <CalendarIcon className="mr-2 h-4 w-4" />
                 {date ? format(date, 'PPP') : <span>Pick a date</span>}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <CalendarComponent mode="single" selected={date} onSelect={setDate} initialFocus />
+            <PopoverContent className="w-auto p-0" side="right">
+              <Calendar selected={date} onChange={setDate} />
             </PopoverContent>
           </Popover>
         </div>
@@ -135,13 +134,10 @@ export default function RoomReservation() {
       </div>
 
       <div className="flex justify-end">
-        <button
-          onClick={handleSearch}
-          className="bg-[#5D1A0B] text-white px-3 py-2 md:px-4 md:py-2 rounded-xl flex items-center gap-2 hover:bg-[#731f10] transition"
-        >
-          <Search className="text-white" size={20} />
-          <span className="hidden md:block">Search</span>
-        </button>
+        <Button onClick={handleSearch} className="bg-[#5D1A0B] hover:bg-[#731f10] text-white">
+          <Search className="mr-2" size={20} />
+          <span className="hidden md:inline">Search</span>
+        </Button>
       </div>
 
       {hasSearched && showEmptyState && (
@@ -149,8 +145,7 @@ export default function RoomReservation() {
           <List className="w-12 h-12 mb-4" />
           <p className="font-medium text-base text-gray-700">No rooms searched yet</p>
           <p className="text-sm mt-1">
-            Select a date and time range, then click &quot;Search Rooms&quot; to find available
-            rooms.
+            Select a date and time range, then click "Search Rooms" to find available rooms.
           </p>
         </div>
       )}
@@ -158,7 +153,7 @@ export default function RoomReservation() {
       {hasSearched && !showEmptyState && (
         <>
           <h3 className="text-xl font-semibold font-raleway mb-4 mt-10">Available Rooms</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 font-roboto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {availableRooms.map(room => (
               <div
                 key={room.id}
@@ -183,13 +178,13 @@ export default function RoomReservation() {
                   </p>
                 )}
                 <div className="mt-4 justify-end flex gap-2">
-                  <button
+                  <Button
                     onClick={() => handleReserveClick(room)}
-                    className="bg-[#5D1A0B] text-white px-3 py-2 md:px-4 md:py-2 rounded-xl flex items-center gap-2 hover:bg-[#731f10] transition"
+                    className="bg-[#5D1A0B] hover:bg-[#731f10] text-white"
                   >
-                    <RxPlus className="text-white" size={20} />
-                    <span className="hidden md:block">Reserve Room</span>
-                  </button>
+                    <RxPlus size={20} className="mr-2" />
+                    <span className="hidden md:inline">Reserve Room</span>
+                  </Button>
                 </div>
               </div>
             ))}
@@ -197,7 +192,6 @@ export default function RoomReservation() {
         </>
       )}
 
-      {/* Dialog Pop-up */}
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="rounded-xl space-y-2">
           <DialogHeader>
