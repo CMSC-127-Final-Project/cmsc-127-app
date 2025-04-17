@@ -100,7 +100,7 @@ export default function RoomReservation() {
                 {date ? format(date, 'PPP') : <span>Pick a date</span>}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" side="right">
+            <PopoverContent className="w-auto p-0" side="bottom" align="start">
               <Calendar selected={date} onChange={setDate} />
             </PopoverContent>
           </Popover>
