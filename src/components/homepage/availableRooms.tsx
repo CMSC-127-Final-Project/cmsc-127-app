@@ -167,10 +167,10 @@ export default function RoomReservation() {
                 </div>
                 <p className="text-sm text-gray-500 mb-1">
                   <span className="font-medium text-gray-700">Date:</span>{' '}
-                  {date ? format(date, 'MMMM d, yyyy') : '-'}
+                  {date ? format(date, 'MMMM d, yyyy') : '&ndash;'}
                 </p>
                 <p className="text-sm text-gray-500 mb-2">
-                  <span className="font-medium text-gray-700">Time:</span> {startTime} - {endTime}
+                  <span className="font-medium text-gray-700">Time:</span> {startTime} &ndash; {endTime}
                 </p>
                 {room.notes && (
                   <p className="text-sm text-amber-700 mt-1">
@@ -203,10 +203,10 @@ export default function RoomReservation() {
 
           <div className="space-y-2">
             <p>
-              <strong>Date:</strong> {date ? format(date, 'MMMM d, yyyy') : '-'}
+              <strong>Date:</strong> {date ? format(date, 'MMMM d, yyyy') : '&ndash;'}
             </p>
             <p>
-              <strong>Time:</strong> {startTime} – {endTime}
+              <strong>Time:</strong> {startTime} &ndash; {endTime}
             </p>
           </div>
 
