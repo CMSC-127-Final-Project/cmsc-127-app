@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/server';
+import { cookies } from 'next/headers';
 
 export async function POST(request: NextRequest) {
+  const supabase = await createClient();
+  const cookieStore = await cookies();
   try {
     const formData = await request.json();
     const { data, error } = await supabase.auth.signUp({
@@ -10,6 +13,10 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) throw { message: error.message, status: error.status, name: error.name };
+
+    cookieStore.set('access_token', data.session?.access_token || '', { path: '/' });
+    cookieStore.set('refresh_token', data.session?.refresh_token || '', { path: '/' });
+    cookieStore.set('user', data.user?.id || '', { path: '/' });
 
     const { error: insertError } = await supabase.from('User').insert({
       auth_id: data.user?.id,
@@ -22,7 +29,14 @@ export async function POST(request: NextRequest) {
     });
 
     if (formData.role === 'Instructor') {
-      const { data: instructorData, error: instructorError } = await supabase
+      const { error: updateError } = await supabase
+        .from('User')
+        .update({ instructor_id: formData.instructorID })
+        .eq('email', formData.email);
+
+      if (updateError) throw { message: updateError.message, name: updateError.name };
+
+      const { error: instructorError } = await supabase
         .from('Instructor')
         .insert({
           instructor_id: formData.instructorID,
@@ -31,15 +45,9 @@ export async function POST(request: NextRequest) {
         })
         .select('instructor_id')
         .single();
-
-      if (instructorError) throw { message: instructorError.message, name: instructorError.name };
-
-      const { error: updateError } = await supabase
-        .from('User')
-        .update({ instructor_id: instructorData.instructor_id })
-        .eq('email', formData.email);
-
-      if (updateError) throw { message: updateError.message, name: updateError.name };
+      
+      console.log(instructorError)
+      if (instructorError) throw { message: "Please try again later." };
     } else {
       const { error: studentError } = await supabase
         .from('User')
@@ -52,6 +60,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'User created successfully' }, { status: 200 });
   } catch (error) {
     const { message, status, name } = error as { message: string; status?: number; name?: string };
-    return NextResponse.json({ error: message, status, name }, { status: status || 500 });
+    const userResponse = await supabase.auth.admin.getUserById(cookieStore.get('user')?.value || '');
+    if (userResponse.data) {
+      const { error: supabaseError } = await supabase.auth.admin.deleteUser(cookieStore.get('user')?.value || '');
+      if (supabaseError) console.log(supabaseError.message);
+      cookieStore.delete('access_token');
+      cookieStore.delete('refresh_token');
+      cookieStore.delete('user');
+    }
+    return NextResponse.json({ error: message, status: status || 500, name: name || "Internal Server Error"}, { status: status || 500 });
   }
 }

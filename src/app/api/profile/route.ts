@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/server';
 
 export async function PATCH(req: Request) {
+  const supabase = await createClient();
   try {
     const { data: session, error: sessionError } = await supabase.auth.getSession();
 

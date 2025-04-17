@@ -1,9 +1,10 @@
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/server';
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 
 export async function PATCH(request: NextRequest) {
   const { reservation_id } = await request.json();
+  const supabase = await createClient();
   try {
     const { error } = await supabase
       .from('Reservation')
