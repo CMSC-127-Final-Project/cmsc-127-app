@@ -11,10 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const cookieStore = await cookies();
-  if (cookieStore.has('access_token')) {
-    redirect('/homepage');
-  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
     <Card className="w-full max-w-xl rounded-lg bg-white p-8 shadow-md">
