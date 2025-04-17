@@ -22,7 +22,7 @@ export default async function AdminPage() {
       <div className="pt-16 md:pt-24">
         <WelcomeBanner user_id={user_id} />
         <Requests />
-      </div>  
+      </div>
     </>
   );
 }

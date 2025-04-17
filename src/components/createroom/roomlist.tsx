@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -8,9 +8,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Trash2, Pencil, X, Edit } from "lucide-react";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/table';
+import { Trash2, Pencil, X, Edit } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 type Room = {
   id: number;
@@ -20,7 +20,7 @@ type Room = {
   createdAt: string;
 };
 
-type ActionMode = "edit" | "delete" | null;
+type ActionMode = 'edit' | 'delete' | null;
 
 export function RoomList() {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -29,25 +29,25 @@ export function RoomList() {
   const [editedRoom, setEditedRoom] = useState<Room | null>(null);
 
   const loadRooms = () => {
-    const storedRooms = JSON.parse(localStorage.getItem("rooms") || "[]");
+    const storedRooms = JSON.parse(localStorage.getItem('rooms') || '[]');
     setRooms(storedRooms);
   };
 
   useEffect(() => {
     loadRooms();
-    window.addEventListener("roomsUpdated", loadRooms);
-    return () => window.removeEventListener("roomsUpdated", loadRooms);
+    window.addEventListener('roomsUpdated', loadRooms);
+    return () => window.removeEventListener('roomsUpdated', loadRooms);
   }, []);
 
   const formatRoomType = (type: string) => {
     return type
-      .split("-")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   };
 
   const toggleMode = (mode: ActionMode) => {
-    setActionMode((prev) => (prev === mode ? null : mode));
+    setActionMode(prev => (prev === mode ? null : mode));
     setSelectedRoom(null);
   };
 
@@ -63,10 +63,8 @@ export function RoomList() {
 
   const saveRoom = () => {
     if (!editedRoom) return;
-    const updatedRooms = rooms.map((room) =>
-      room.id === editedRoom.id ? editedRoom : room
-    );
-    localStorage.setItem("rooms", JSON.stringify(updatedRooms));
+    const updatedRooms = rooms.map(room => (room.id === editedRoom.id ? editedRoom : room));
+    localStorage.setItem('rooms', JSON.stringify(updatedRooms));
     setRooms(updatedRooms);
     closeEditModal();
   };
@@ -76,24 +74,22 @@ export function RoomList() {
       <div className="bg-white p-6 md:p-8 rounded-3xl shadow-md w-full font-roboto relative">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h2 className="text-lg md:text-2xl font-bold font-raleway text-gray-900">
-              Room List
-            </h2>
+            <h2 className="text-lg md:text-2xl font-bold font-raleway text-gray-900">Room List</h2>
             <p className="text-sm text-gray-600">View all available rooms</p>
           </div>
           <div className="flex gap-2">
             <Button
-              variant={actionMode === "delete" ? "secondary" : "ghost"}
+              variant={actionMode === 'delete' ? 'secondary' : 'ghost'}
               size="icon"
-              onClick={() => toggleMode("delete")}
+              onClick={() => toggleMode('delete')}
               className="border border-red-600 text-red-600 px-3 py-2 md:px-4 md:py-2 rounded-xl flex items-center gap-2 hover:bg-red-50 transition"
             >
               <X className="w-5 h-5" />
             </Button>
             <Button
-              variant={actionMode === "edit" ? "secondary" : "ghost"}
+              variant={actionMode === 'edit' ? 'secondary' : 'ghost'}
               size="icon"
-              onClick={() => toggleMode("edit")}
+              onClick={() => toggleMode('edit')}
               className="bg-[#5D1A0B] text-white px-3 py-2 md:px-4 md:py-2 rounded-xl flex items-center gap-2 hover:bg-[#731f10] transition"
             >
               <Edit className="w-5 h-5" />
@@ -132,23 +128,21 @@ export function RoomList() {
                   </TableCell>
                 </TableRow>
               ) : (
-                rooms.map((room) => (
+                rooms.map(room => (
                   <TableRow key={room.id} className="hover:bg-[#fdf7f6]">
                     <TableCell className="font-medium text-gray-800 font-roboto">
                       {room.name}
                     </TableCell>
-                    <TableCell className="text-gray-700 font-roboto">
-                      {room.capacity}
-                    </TableCell>
+                    <TableCell className="text-gray-700 font-roboto">{room.capacity}</TableCell>
                     <TableCell className="text-gray-700 font-roboto">
                       {formatRoomType(room.type)}
                     </TableCell>
-                    {actionMode === "delete" && (
+                    {actionMode === 'delete' && (
                       <TableCell className="text-center text-red-500">
                         <Trash2 className="w-5 h-5 cursor-pointer hover:scale-110 transition" />
                       </TableCell>
                     )}
-                    {actionMode === "edit" && (
+                    {actionMode === 'edit' && (
                       <TableCell className="text-center text-blue-500">
                         <Pencil
                           className="w-5 h-5 cursor-pointer hover:scale-110 transition"
@@ -168,31 +162,23 @@ export function RoomList() {
       {selectedRoom && editedRoom && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex justify-center items-center p-4">
           <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md space-y-4">
-            <h3 className="text-xl font-semibold text-gray-800">
-              Edit Room
-            </h3>
+            <h3 className="text-xl font-semibold text-gray-800">Edit Room</h3>
             <div className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Room Name
-                </label>
+                <label className="block text-sm font-medium text-gray-700">Room Name</label>
                 <input
                   type="text"
                   value={editedRoom.name}
-                  onChange={(e) =>
-                    setEditedRoom({ ...editedRoom, name: e.target.value })
-                  }
+                  onChange={e => setEditedRoom({ ...editedRoom, name: e.target.value })}
                   className="mt-1 w-full border rounded-lg px-3 py-2 text-sm"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Capacity
-                </label>
+                <label className="block text-sm font-medium text-gray-700">Capacity</label>
                 <input
                   type="number"
                   value={editedRoom.capacity}
-                  onChange={(e) =>
+                  onChange={e =>
                     setEditedRoom({
                       ...editedRoom,
                       capacity: parseInt(e.target.value),
@@ -202,15 +188,11 @@ export function RoomList() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Room Type
-                </label>
+                <label className="block text-sm font-medium text-gray-700">Room Type</label>
                 <input
                   type="text"
                   value={editedRoom.type}
-                  onChange={(e) =>
-                    setEditedRoom({ ...editedRoom, type: e.target.value })
-                  }
+                  onChange={e => setEditedRoom({ ...editedRoom, type: e.target.value })}
                   className="mt-1 w-full border rounded-lg px-3 py-2 text-sm"
                 />
               </div>
