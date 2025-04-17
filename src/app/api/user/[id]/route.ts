@@ -9,7 +9,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
   try {
     const { data, error } = await supabase.from('User').select('*').eq('auth_id', id);
-    console.log('Fetched user data:', data);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
