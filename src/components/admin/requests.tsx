@@ -95,7 +95,6 @@ const ReservationRequests = () => {
 
   const { toast } = useToast();
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = () => {
       if (openDropdownId) setOpenDropdownId(null);
@@ -184,7 +183,11 @@ const ReservationRequests = () => {
                   </button>
 
                   {openDropdownId === reservation.reservation_id && (
-                    <div className="absolute right-0 mt-2 py-2 bg-white rounded-md shadow-xl z-10 border border-gray-200">
+                    <div
+                      className={`absolute right-0 ${
+                        index >= reservations.length - 2 ? 'bottom-full mb-2' : 'mt-2'
+                      } py-2 bg-white rounded-md shadow-xl z-10 border border-gray-200`}
+                    >
                       <button
                         className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                         onClick={e => {
