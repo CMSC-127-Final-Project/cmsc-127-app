@@ -177,11 +177,11 @@ export function RoomList() {
                 <label className="block text-sm font-medium text-gray-700">Capacity</label>
                 <input
                   type="number"
-                  value={editedRoom.capacity}
+                  value={editedRoom.capacity ?? ''}
                   onChange={e =>
                     setEditedRoom({
                       ...editedRoom,
-                      capacity: parseInt(e.target.value),
+                      capacity: parseInt(e.target.value) || 0,
                     })
                   }
                   className="mt-1 w-full border rounded-lg px-3 py-2 text-sm"
