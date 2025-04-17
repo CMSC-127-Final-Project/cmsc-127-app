@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Navbar from '@/components/ui/navbar';
 import ReservationForm from '@/components/reservation/reservationForm';
-import { createClient } from '@/utils/supabase/server'; 
+import { createClient } from '@/utils/supabase/server';
 
 export const metadata: Metadata = {
   title: 'Make a Reservation',
