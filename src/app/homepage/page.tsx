@@ -2,7 +2,7 @@ import Navbar from '@/components/ui/navbar';
 import Welcome from '@/components/homepage/welcome';
 import UpcomingReservations from '@/components/homepage/upcomingReservations';
 import RoomReservation from '@/components/homepage/availableRooms';
-import { cookies } from 'next/headers';
+import { createClient } from '@/utils/supabase/server';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -14,31 +14,15 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const cookieStore = await cookies();
-  const user_id = cookieStore.get('user')?.value || '';
-
-  let nickname = '';
-  try {
-    const response = await fetch(`http://localhost:3000/api/user/${user_id}`, {
-      method: 'GET',
-    });
-
-    if (!response.ok) {
-      const { error } = await response.json();
-      throw new Error(error);
-    }
-
-    const data = await response.json();
-    nickname = data.nickname;
-  } catch (error) {
-    console.error('Error fetching nickname:', error);
-  }
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+  const user_id = data.user?.id || '';
 
   return (
     <>
-      <Navbar username={nickname} />
+      <Navbar user_id={user_id} />
       <div className="lg:mt-0 md:mt-12">
-        <Welcome username={nickname} />
+        <Welcome user_id={user_id} />
         <RoomReservation />
         <UpcomingReservations user_id={user_id} />
       </div>

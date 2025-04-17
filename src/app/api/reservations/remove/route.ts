@@ -1,8 +1,9 @@
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/server';
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 
 export async function DELETE(request: NextRequest) {
+  const supabase = await createClient();
   const { reservation_id } = await request.json();
   try {
     const { error } = await supabase

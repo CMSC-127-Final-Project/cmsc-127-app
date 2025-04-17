@@ -30,7 +30,7 @@ export default async function ReservationPage() {
   }
   return (
     <>
-      <Navbar username={nickname} />
+      <Navbar user_id={nickname} />
       <div className=" flex min-h-screen flex-col items-center justify-center px-4">
         <div className="flex-1 container mx-auto px-4 py-8 sm:mt-20">
           <div className="max-w-5xl bg-white rounded-lg p-8 shadow-sm">

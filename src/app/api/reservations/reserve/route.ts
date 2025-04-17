@@ -1,8 +1,9 @@
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/server';
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 
 export async function POST(request: NextRequest) {
+  const supabase = await createClient();
   try {
     const formData = await request.json();
     const { error } = await supabase.from('Reservation').insert({
@@ -15,18 +16,24 @@ export async function POST(request: NextRequest) {
       user_msg: formData.message,
     });
 
-    if (error) throw { message: error.message, status: error.details, name: error.name };
+    if (error) throw new Error();
 
     return NextResponse.json({ status: 200 });
-  } catch (error) {
-    const { message, status, name } = error as { message: string; status?: number; name?: string };
-    return NextResponse.json({ error: message, status, name }, { status: status || 500 });
+  } catch {
+    return NextResponse.json(
+      { error: 'Please try again later.', status: 500, name: 'Internal Server Error' },
+      { status: 500 }
+    );
   }
 }
 
 export async function GET() {
+  console.log('GET Request Recieved');
   try {
+    const supabase = await createClient();
     const { data, error } = await supabase.from('Reservation').select('*').eq('status', 'Pending');
+    const { data: session } = await supabase.auth.getSession();
+    console.log('Session:', session);
     if (error) throw new Error(error.message);
 
     return NextResponse.json(data, { status: 200 });
