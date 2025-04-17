@@ -14,20 +14,20 @@ export default function Navbar({ user_id }: { user_id: string }) {
 
   const [username, setUsername] = useState();
   useEffect(() => {
-      const loadNickname = async () => {
-        try {
-          const response = await fetch(`/api/user/${user_id}`);
-          if (!response.ok) {
-            throw new Error('Failed to fetch reservations');
-          }
-          const data = await response.json();
-          console.log('Fetched user data:', data);
-          setUsername(data[0].nickname || 'User');
-        } catch (err) {
-          console.error('Internal Server Error:', err);
+    const loadNickname = async () => {
+      try {
+        const response = await fetch(`/api/user/${user_id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch reservations');
         }
-      };
-      loadNickname();
+        const data = await response.json();
+        console.log('Fetched user data:', data);
+        setUsername(data[0].nickname || 'User');
+      } catch (err) {
+        console.error('Internal Server Error:', err);
+      }
+    };
+    loadNickname();
   }, [user_id]);
 
   const handleSignOut = async () => {

@@ -1,4 +1,4 @@
-'use server'
+'use server';
 
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
@@ -17,9 +17,7 @@ export async function POST(req: Request) {
       throw new Error(error.message);
     }
 
-    return NextResponse.json(
-      { status: 200 }
-    );
+    return NextResponse.json({ status: 200 });
   } catch (err) {
     console.error('Login error:', err);
 

@@ -20,9 +20,9 @@ export default async function HomePage() {
 
   return (
     <>
-      <Navbar user_id={user_id}/>
+      <Navbar user_id={user_id} />
       <div className="lg:mt-0 md:mt-12">
-        <Welcome user_id={user_id}/>
+        <Welcome user_id={user_id} />
         <RoomReservation />
         <UpcomingReservations user_id={user_id} />
       </div>

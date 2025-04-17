@@ -16,16 +16,19 @@ export async function POST(request: NextRequest) {
       user_msg: formData.message,
     });
 
-    if (error) throw new Error;
+    if (error) throw new Error();
 
     return NextResponse.json({ status: 200 });
   } catch {
-    return NextResponse.json({ error: "Please try again later.", status: 500, name: "Internal Server Error"}, { status: 500 });
+    return NextResponse.json(
+      { error: 'Please try again later.', status: 500, name: 'Internal Server Error' },
+      { status: 500 }
+    );
   }
 }
 
 export async function GET() {
-  console.log('GET Request Recieved')
+  console.log('GET Request Recieved');
   try {
     const supabase = await createClient();
     const { data, error } = await supabase.from('Reservation').select('*').eq('status', 'Pending');

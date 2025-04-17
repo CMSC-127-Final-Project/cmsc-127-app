@@ -45,9 +45,9 @@ export async function POST(request: NextRequest) {
         })
         .select('instructor_id')
         .single();
-      
-      console.log(instructorError)
-      if (instructorError) throw { message: "Please try again later." };
+
+      console.log(instructorError);
+      if (instructorError) throw { message: 'Please try again later.' };
     } else {
       const { error: studentError } = await supabase
         .from('User')
@@ -60,14 +60,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'User created successfully' }, { status: 200 });
   } catch (error) {
     const { message, status, name } = error as { message: string; status?: number; name?: string };
-    const userResponse = await supabase.auth.admin.getUserById(cookieStore.get('user')?.value || '');
+    const userResponse = await supabase.auth.admin.getUserById(
+      cookieStore.get('user')?.value || ''
+    );
     if (userResponse.data) {
-      const { error: supabaseError } = await supabase.auth.admin.deleteUser(cookieStore.get('user')?.value || '');
+      const { error: supabaseError } = await supabase.auth.admin.deleteUser(
+        cookieStore.get('user')?.value || ''
+      );
       if (supabaseError) console.log(supabaseError.message);
       cookieStore.delete('access_token');
       cookieStore.delete('refresh_token');
       cookieStore.delete('user');
     }
-    return NextResponse.json({ error: message, status: status || 500, name: name || "Internal Server Error"}, { status: status || 500 });
+    return NextResponse.json(
+      { error: message, status: status || 500, name: name || 'Internal Server Error' },
+      { status: status || 500 }
+    );
   }
 }
