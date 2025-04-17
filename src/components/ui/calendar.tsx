@@ -31,10 +31,7 @@ function Calendar({
         onChange={onChange}
         placeholderText={placeholderText}
         dateFormat="MMMM d, yyyy"
-        className={cn(
-          buttonVariants({ variant: 'outline' }),
-          'w-full text-left cursor-pointer'
-        )}
+        className={cn(buttonVariants({ variant: 'outline' }), 'w-full text-left cursor-pointer')}
         minDate={minDate}
         maxDate={maxDate}
         calendarClassName="z-50 rounded-md shadow-md"
