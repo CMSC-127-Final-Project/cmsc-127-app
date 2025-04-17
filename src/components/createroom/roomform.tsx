@@ -1,38 +1,38 @@
-"use client";
+'use client';
 
-import type React from "react";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import type React from 'react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+} from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 
 export function RoomForm() {
   const { toast } = useToast();
-  const [roomName, setRoomName] = useState("");
-  const [capacity, setCapacity] = useState("");
-  const [roomType, setRoomType] = useState("");
+  const [roomName, setRoomName] = useState('');
+  const [capacity, setCapacity] = useState('');
+  const [roomType, setRoomType] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!roomName || !capacity || !roomType) {
       toast({
-        title: "Error",
-        description: "Please fill in all fields",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Please fill in all fields',
+        variant: 'destructive',
       });
       return;
     }
 
-    const existingRooms = JSON.parse(localStorage.getItem("rooms") || "[]");
+    const existingRooms = JSON.parse(localStorage.getItem('rooms') || '[]');
 
     const newRoom = {
       id: Date.now(),
@@ -43,29 +43,25 @@ export function RoomForm() {
     };
 
     const updatedRooms = [...existingRooms, newRoom];
-    localStorage.setItem("rooms", JSON.stringify(updatedRooms));
+    localStorage.setItem('rooms', JSON.stringify(updatedRooms));
 
-    setRoomName("");
-    setCapacity("");
-    setRoomType("");
+    setRoomName('');
+    setCapacity('');
+    setRoomType('');
 
     toast({
-      title: "Success",
-      description: "Room added successfully",
+      title: 'Success',
+      description: 'Room added successfully',
     });
 
-    window.dispatchEvent(new Event("roomsUpdated"));
+    window.dispatchEvent(new Event('roomsUpdated'));
   };
 
   return (
     <div className="bg-white p-6 md:p-8 rounded-3xl shadow-md w-full font-roboto">
       <div className="mb-6">
-        <h2 className="text-lg md:text-2xl font-bold font-raleway text-gray-900">
-          Add New Room
-        </h2>
-        <p className="text-sm text-gray-600 font-raleway">
-          Enter the details for a new room
-        </p>
+        <h2 className="text-lg md:text-2xl font-bold font-raleway text-gray-900">Add New Room</h2>
+        <p className="text-sm text-gray-600 font-raleway">Enter the details for a new room</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 font-roboto">
@@ -77,7 +73,7 @@ export function RoomForm() {
             id="room-name"
             placeholder="e.g. Room 201"
             value={roomName}
-            onChange={(e) => setRoomName(e.target.value)}
+            onChange={e => setRoomName(e.target.value)}
             className="font-roboto"
           />
         </div>
@@ -92,7 +88,7 @@ export function RoomForm() {
             placeholder="e.g. 30"
             min="1"
             value={capacity}
-            onChange={(e) => setCapacity(e.target.value)}
+            onChange={e => setCapacity(e.target.value)}
             className="font-roboto"
           />
         </div>
