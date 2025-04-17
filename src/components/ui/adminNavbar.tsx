@@ -92,7 +92,12 @@ export default function Navbar({ username }: { username: string }) {
               <Sun className="w-5 h-5 text-gray-900 cursor-pointer" />
             )}
           </button>
-          <UserSearch className="w-5 h-5 text-gray-900 dark:text-white cursor-pointer" />
+          <UserSearch
+            className="w-5 h-5 text-gray-900 dark:text-white cursor-pointer"
+            onClick={
+              () => router.push('/users') // Redirect to search page
+            }
+          />
         </div>
 
         {/* Mobile Icons */}
