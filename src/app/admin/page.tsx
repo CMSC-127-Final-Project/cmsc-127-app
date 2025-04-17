@@ -2,7 +2,7 @@ import Navbar from '@/components/ui/adminNavbar';
 import WelcomeBanner from '@/components/admin/welcome';
 import Requests from '@/components/admin/requests';
 import type { Metadata } from 'next';
-import { cookies } from 'next/headers';
+import { createClient } from '@/utils/supabase/server';
 
 export const metadata: Metadata = {
   title: 'Admin',
@@ -13,31 +13,14 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminPage() {
-  const cookieStore = await cookies();
-  const user_id = cookieStore.get('user')?.value || '';
-
-  let nickname = '';
-  try {
-    const response = await fetch(`http://localhost:3000/api/user/${user_id}`, {
-      method: 'GET',
-    });
-
-    if (!response.ok) {
-      const { error } = await response.json();
-      throw new Error(error);
-    }
-
-    const data = await response.json();
-    nickname = data.nickname;
-  } catch (error) {
-    console.error('Error fetching nickname:', error);
-  }
+  const supabase = await createClient();
+  const user_id = await supabase.auth.getUser().then(({ data }) => data.user?.id || '');
 
   return (
     <>
-      <Navbar username={nickname} />
+      <Navbar user_id={user_id} />
       <div className="pt-16 md:pt-24">
-        <WelcomeBanner username={nickname} />
+        <WelcomeBanner user_id={user_id} />
         <Requests />
       </div>
     </>
