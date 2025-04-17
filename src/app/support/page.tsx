@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Navbar from '@/components/ui/navbar';
-import SupportForm from '@/components/support/supportForm';
-import Header from '@/components/profile/ProfileHeader';
+import ContactUs from '@/components/support/supportForm';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import ProfileSidebar from '@/components/profile/profilesidebar';
 import { createClient } from '@/utils/supabase/server';
 
@@ -15,14 +15,28 @@ export const metadata: Metadata = {
 
 export default async function SupportPage() {
   const supabase = await createClient();
-  const user_id = await supabase.auth.getUser().then(({ data }) => data.user?.id || '');
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const user_id = user?.id || '';
+
   return (
     <>
       <Navbar user_id={user_id} />
       <main className="container mx-auto py-6 px-4 md:px-6 flex flex-col md:flex-row gap-6">
         <div className="flex flex-col w-full md:w-3/4">
-          <Header user_id={user_id} />
-          <SupportForm />
+          <Card className="mb-6">
+            <CardHeader className="pb-3">
+              <div className="flex justify-between items-center">
+                <CardTitle className="text-2xl font-bold">Help and Support</CardTitle>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Message us in any of the following channels and we will get back to you as soon as
+                possible.
+              </p>
+            </CardHeader>
+          </Card>
+          <ContactUs />
         </div>
         <ProfileSidebar />
       </main>
