@@ -2,7 +2,7 @@ import Navbar from '@/components/ui/navbar';
 import Header from '@/components/profile/ProfileHeader';
 import ProfileSidebar from '@/components/profile/profilesidebar';
 import Settings from '@/components/profile/settings';
-import { cookies } from 'next/headers';
+import { createClient } from '@/utils/supabase/server';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -14,33 +14,16 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const cookieStore = await cookies();
-  const user_id = cookieStore.get('user')?.value || '';
-
-  let nickname = '';
-  try {
-    const response = await fetch(`http://localhost:3000/api/user/${user_id}`, {
-      method: 'GET',
-    });
-
-    if (!response.ok) {
-      const { error } = await response.json();
-      throw new Error(error);
-    }
-
-    const data = await response.json();
-    nickname = data.nickname;
-  } catch (error) {
-    console.error('Error fetching nickname:', error);
-  }
+  const supabase = await createClient();
+  const user_id = await supabase.auth.getUser().then(({ data }) => data.user?.id || '');
 
   return (
     <>
-      <Navbar user_id={nickname} />
+      <Navbar user_id={user_id} />
       <main className="container mx-auto py-6 px-4 md:px-6 flex flex-col md:flex-row gap-6">
         <div className="flex flex-col w-full md:w-3/4">
-          <Header />
-          <Settings />
+          <Header user_id={user_id}/>
+          <Settings user_id={user_id}/>
         </div>
         <ProfileSidebar />
       </main>

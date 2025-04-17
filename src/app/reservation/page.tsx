@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Navbar from '@/components/ui/navbar';
 import ReservationForm from '@/components/reservation/reservationForm';
-import { cookies } from 'next/headers';
+import { createClient } from '@/utils/supabase/server'; 
 
 export const metadata: Metadata = {
   title: 'Make a Reservation',
@@ -9,28 +9,11 @@ export const metadata: Metadata = {
 };
 
 export default async function ReservationPage() {
-  const cookieStore = await cookies();
-  const user_id = cookieStore.get('user')?.value || '';
-
-  let nickname = '';
-  try {
-    const response = await fetch(`http://localhost:3000/api/user/${user_id}`, {
-      method: 'GET',
-    });
-
-    if (!response.ok) {
-      const { error } = await response.json();
-      throw new Error(error);
-    }
-
-    const data = await response.json();
-    nickname = data.nickname;
-  } catch (error) {
-    console.error('Error fetching nickname:', error);
-  }
+  const supabase = await createClient();
+  const user_id = await supabase.auth.getUser().then(({ data }) => data.user?.id || '');
   return (
     <>
-      <Navbar user_id={nickname} />
+      <Navbar user_id={user_id} />
       <div className=" flex min-h-screen flex-col items-center justify-center px-4">
         <div className="flex-1 container mx-auto px-4 py-8 sm:mt-20">
           <div className="max-w-5xl bg-white rounded-lg p-8 shadow-sm">

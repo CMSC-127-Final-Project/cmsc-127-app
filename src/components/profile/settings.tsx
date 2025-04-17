@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,10 +10,37 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSearchParams } from 'next/navigation';
 
-export default function Settings() {
+export default function Settings({ user_id }: { user_id: string }) {
   const searchParams = useSearchParams();
   const defaultTab = searchParams.get('tab') || 'personal';
   const [activeTab, setActiveTab] = useState(defaultTab);
+  const [fname, setFname] = useState();
+  const [lname, setLname] = useState();
+  const [idnumber, setIdnumber] = useState();
+  const [nickname, setNickname] = useState();
+  const [email, setEmail] = useState();
+  const [department, setDepartment] = useState();
+
+  useEffect(() => {
+    const loadUserDetails = async () => {
+      try {
+        const response = await fetch(`/api/user/${user_id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch reservations');
+        }
+        const data = await response.json();
+        setFname(data[0].first_name || 'User');
+        setLname(data[0].last_name || 'OO');
+        setIdnumber(data[0].student_num || '20XX-XXXXX');
+        setNickname(data[0].nickname || 'Isko');
+        setEmail(data[0].email || 'example@email.com');
+        setDepartment(data[0].dept || 'Department');
+      } catch (err) {
+        console.error('Internal Server Error:', err);
+      }
+    };
+    loadUserDetails();
+  }, [user_id]);
 
   return (
     <div>
@@ -53,28 +80,28 @@ export default function Settings() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" placeholder="User" disabled />
+                  <Input id="firstName" placeholder={fname} disabled />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" placeholder="OO" disabled />
+                  <Input id="lastName" placeholder={lname} disabled />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="studentnumber">Student Number</Label>
-                  <Input id="studentnumber" type="text" placeholder="20XX-XXXXX" disabled />
+                  <Input id="studentnumber" type="text" placeholder={idnumber} disabled />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="nickname">Nickname</Label>
-                  <Input id="nickname" placeholder="Isko" />
+                  <Input id="nickname" placeholder={nickname} />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
-                <Input id="email" type="email" placeholder="useroo@college.edu" disabled />
+                <Input id="email" type="email" placeholder={email} disabled />
               </div>
 
               <div className="space-y-2">
@@ -86,7 +113,7 @@ export default function Settings() {
                 <Label htmlFor="department">Department</Label>
                 <select
                   id="department"
-                  defaultValue=""
+                  defaultValue={department}
                   className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6b1d1d] transition-colors duration-200"
                 >
                   <option value="" disabled>
