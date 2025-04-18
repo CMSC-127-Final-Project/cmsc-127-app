@@ -13,33 +13,56 @@ import { useSearchParams } from 'next/navigation';
 export default function Settings({ user_id }: { user_id: string }) {
   const searchParams = useSearchParams();
   const defaultTab = searchParams.get('tab') || 'personal';
+
+  useEffect(() => {
+    setActiveTab(defaultTab);
+  }, [defaultTab]);
+
   const [activeTab, setActiveTab] = useState(defaultTab);
-  const [fname, setFname] = useState();
-  const [lname, setLname] = useState();
-  const [idnumber, setIdnumber] = useState();
-  const [nickname, setNickname] = useState();
-  const [email, setEmail] = useState();
-  const [department, setDepartment] = useState();
+
+  const [fname, setFname] = useState('');
+  const [lname, setLname] = useState('');
+  const [idnumber, setIdnumber] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [email, setEmail] = useState('');
+  const [department, setDepartment] = useState('');
+  const [role, setRole] = useState('');
+  const [instructorOffice, setInstructorOffice] = useState('');
 
   useEffect(() => {
     const loadUserDetails = async () => {
       try {
         const response = await fetch(`/api/user/${user_id}`);
         if (!response.ok) {
-          throw new Error('Failed to fetch reservations');
+          throw new Error('Failed to fetch user details');
         }
         const data = await response.json();
-        setFname(data[0].first_name || 'User');
-        setLname(data[0].last_name || 'OO');
-        setIdnumber(data[0].student_num || '20XX-XXXXX');
-        setNickname(data[0].nickname || 'Isko');
-        setEmail(data[0].email || 'example@email.com');
-        setDepartment(data[0].dept || 'Department');
+        const user = data[0];
+
+        if (!user) {
+          throw new Error('No user data found');
+        }
+
+        setFname(user.first_name || 'User');
+        setLname(user.last_name || 'OO');
+        setIdnumber(user.student_num || '20XX-XXXXX');
+        setNickname(user.nickname || 'Isko');
+        setEmail(user.email || 'example@email.com');
+        setDepartment(user.dept || 'Department');
+        setRole(user.role || 'student');
+
+        if (user.role === 'Instructor') {
+          setInstructorOffice(user.instructor_office || '');
+        }
+        console.log('User role:', user.role);
       } catch (err) {
-        console.error('Internal Server Error:', err);
+        console.error('Error loading user details:', err);
       }
     };
-    loadUserDetails();
+
+    if (user_id) {
+      loadUserDetails();
+    }
   }, [user_id]);
 
   return (
@@ -90,24 +113,53 @@ export default function Settings({ user_id }: { user_id: string }) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="studentnumber">Student Number</Label>
-                  <Input id="studentnumber" type="text" placeholder={idnumber} disabled />
+                  <Label htmlFor="idnumber">
+                    {role === 'Instructor' ? 'Instructor ID' : 'Student Number'}
+                  </Label>
+                  <Input id="idnumber" placeholder={idnumber} disabled />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input id="email" type="email" placeholder={email} disabled />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="nickname">Nickname</Label>
                   <Input id="nickname" placeholder={nickname} />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input id="phone" type="tel" placeholder="(555) 123-4567" />
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input id="email" type="email" placeholder={email} disabled />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input id="phone" type="tel" placeholder="(555) 123-4567" />
-              </div>
+              {role === 'Instructor' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="facultyRank">Faculty Rank</Label>
+                    <select
+                      id="facultyRank"
+                      value={department}
+                      onChange={e => setDepartment(e.target.value)}
+                      className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6b1d1d] transition-colors duration-200"
+                    >
+                      <option value="" disabled>
+                        Select your rank
+                      </option>
+                      <option value="lecturer">Lecturer</option>
+                      <option value="asstprof">Assistant Professor</option>
+                      <option value="asscprof">Associate Professor</option>
+                      <option value="professor">Professor</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="instructorOffice">Instructor Office</Label>
+                    <Input id="instructorOffice" placeholder={instructorOffice} />
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="department">Department</Label>
