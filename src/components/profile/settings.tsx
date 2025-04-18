@@ -26,7 +26,7 @@ export default function Settings({ user_id }: { user_id: string }) {
   const [department, setDepartment] = useState('');
   const [phone, setPhone] = useState('');
   const [role, setRole] = useState('');
-  const [instructorOffice, setInstructorOffice] = useState('');;
+  const [instructorOffice, setInstructorOffice] = useState('');
   const [nickname, setNickname] = useState('');
   const [idnumber, setIdnumber] = useState();
   const [originalNickname, setOriginalNickname] = useState('');
@@ -67,7 +67,6 @@ export default function Settings({ user_id }: { user_id: string }) {
         }
         console.log('User role:', user.role);
       } catch (err) {
-
         console.error('Error loading user details:', err);
         toast({
           title: 'Error',
@@ -96,7 +95,7 @@ export default function Settings({ user_id }: { user_id: string }) {
       toast({
         title: 'Error',
         description: 'No changes to save.',
-      })
+      });
       setIsSaving(false);
       return;
     }
@@ -108,25 +107,25 @@ export default function Settings({ user_id }: { user_id: string }) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updates),
-    });
-    
-    const errorData = await response.json();
-    if (!response.ok) {
-      throw new Error(errorData.error || 'Failed to update user details');
-    }
+      });
 
-    toast({
-      title: 'Success',
-      description: 'Profile updated successfully!',
-    })
-    setOriginalNickname(nickname || '');
-    setOriginalPhone(phone || '');
+      const errorData = await response.json();
+      if (!response.ok) {
+        throw new Error(errorData.error || 'Failed to update user details');
+      }
+
+      toast({
+        title: 'Success',
+        description: 'Profile updated successfully!',
+      });
+      setOriginalNickname(nickname || '');
+      setOriginalPhone(phone || '');
     } catch (err) {
       console.error('Error updating profile:', err);
       toast({
         title: 'Error',
         description: 'Failed to update profile. Please try again later.',
-      })
+      });
     } finally {
       setIsSaving(false);
     }
@@ -141,7 +140,7 @@ export default function Settings({ user_id }: { user_id: string }) {
         });
         return;
       }
-  
+
       if (newPassword !== confirmPassword) {
         toast({
           title: 'Error',
@@ -149,7 +148,7 @@ export default function Settings({ user_id }: { user_id: string }) {
         });
         return;
       }
-  
+
       const response = await fetch('/api/user/change-password', {
         method: 'PATCH',
         headers: {
@@ -157,16 +156,16 @@ export default function Settings({ user_id }: { user_id: string }) {
         },
         body: JSON.stringify({ currentPassword, newPassword, confirmPassword }),
       });
-  
+
       const result = await response.json();
       if (!response.ok) {
         throw new Error(result.error || 'Failed to update password');
       }
-  
+
       toast({
         title: 'Success',
         description: 'Password updated successfully!',
-      })
+      });
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
@@ -241,28 +240,29 @@ export default function Settings({ user_id }: { user_id: string }) {
                   <Input id="idnumber" placeholder={idnumber} disabled />
                 </div>
                 <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input id="email" type="email" placeholder={email} disabled />
-              </div>
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input id="email" type="email" placeholder={email} disabled />
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="nickname">Nickname</Label>
-                  <Input 
+                  <Input
                     id="nickname"
                     placeholder={nickname}
-                    onChange={(e) => setNickname(e.target.value)} />
+                    onChange={e => setNickname(e.target.value)}
+                  />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
-                  <Input 
-                    id="phone" 
-                    type="tel" 
+                  <Input
+                    id="phone"
+                    type="tel"
                     placeholder={phone}
-                    onChange={(e) => {
-                      if(/^\d*$/.test(e.target.value)) {
+                    onChange={e => {
+                      if (/^\d*$/.test(e.target.value)) {
                         setPhone(e.target.value);
                       } else {
                         toast({
@@ -298,11 +298,7 @@ export default function Settings({ user_id }: { user_id: string }) {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="instructorOffice">Instructor Office</Label>
-                    <Input 
-                      id="instructorOffice" 
-                      placeholder={instructorOffice} 
-                      disabled
-                    />
+                    <Input id="instructorOffice" placeholder={instructorOffice} disabled />
                   </div>
                 </div>
               )}
@@ -345,39 +341,36 @@ export default function Settings({ user_id }: { user_id: string }) {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="currentPassword">Current Password</Label>
-                <Input 
-                  id="currentPassword" 
+                <Input
+                  id="currentPassword"
                   type="password"
                   value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  onChange={e => setCurrentPassword(e.target.value)}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="newPassword">New Password</Label>
-                <Input 
-                  id="newPassword" 
-                  type="password" 
+                <Input
+                  id="newPassword"
+                  type="password"
                   value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
+                  onChange={e => setNewPassword(e.target.value)}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                <Input 
-                  id="confirmPassword" 
+                <Input
+                  id="confirmPassword"
                   type="password"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)} 
+                  onChange={e => setConfirmPassword(e.target.value)}
                 />
               </div>
 
               <div className="flex justify-end">
-                <Button 
-                  className="bg-[#6b1d1d] hover:bg-[#5a1818]"
-                  onClick={handleChangePassword}
-                >
+                <Button className="bg-[#6b1d1d] hover:bg-[#5a1818]" onClick={handleChangePassword}>
                   Update Password
                 </Button>
               </div>

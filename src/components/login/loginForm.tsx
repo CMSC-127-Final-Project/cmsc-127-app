@@ -9,8 +9,8 @@ import { CardContent, CardFooter } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast'; 
-import { Key} from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { Key } from 'lucide-react';
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,7 +18,7 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const router = useRouter();
-  const { toast } = useToast(); 
+  const { toast } = useToast();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -112,7 +112,7 @@ export default function LoginPage() {
                     <p className="font-medium text-base text-gray-700">Forgot password?</p>
                     <div className="mt-2">
                       <p className="text-sm">
-                        Please go to the Administrator's office and bring your ID card.
+                        Please go to the Administrator&apos;s office and bring your ID card.
                       </p>
                     </div>
                   </div>
@@ -125,7 +125,6 @@ export default function LoginPage() {
                 </div>
               </div>
             )}
-
           </div>
           <div>
             <Input id="password" type={showPassword ? 'text' : 'password'} required />
@@ -149,7 +148,7 @@ export default function LoginPage() {
           <Checkbox
             id="remember-me"
             checked={rememberMe}
-            onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+            onCheckedChange={checked => setRememberMe(checked as boolean)}
           />
           <Label htmlFor="remember" className="h-4 w-4 rounded text-sm font-normal">
             Remember me

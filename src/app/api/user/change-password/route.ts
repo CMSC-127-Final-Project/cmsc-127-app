@@ -4,9 +4,9 @@ import { z } from 'zod';
 
 // Define the schema for validating the request body
 const changePasswordSchema = z.object({
-    currentPassword: z.string(),
-    newPassword: z.string().min(8),
-    confirmPassword: z.string(),
+  currentPassword: z.string(),
+  newPassword: z.string().min(8),
+  confirmPassword: z.string(),
 });
 
 export async function PATCH(req: NextRequest) {
@@ -27,19 +27,29 @@ export async function PATCH(req: NextRequest) {
     const parsedData = changePasswordSchema.safeParse(body);
 
     if (!parsedData.success) {
-      return NextResponse.json({ error: 'Password must be at least 8 characters long', details: parsedData.error.errors }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Password must be at least 8 characters long', details: parsedData.error.errors },
+        { status: 400 }
+      );
     }
 
     const { currentPassword, newPassword, confirmPassword } = parsedData.data;
 
     // Ensure the new password matches the confirmation password
     if (newPassword !== confirmPassword) {
-      return NextResponse.json({ error: 'New password and confirmation password do not match' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'New password and confirmation password do not match' },
+        { status: 400 }
+      );
     }
 
     // Verify the current password
     const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: user.user.email ?? (() => { throw new Error('User email is undefined'); })(),
+      email:
+        user.user.email ??
+        (() => {
+          throw new Error('User email is undefined');
+        })(),
       password: currentPassword,
     });
 

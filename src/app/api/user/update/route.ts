@@ -25,7 +25,7 @@ export async function PATCH(req: NextRequest) {
       .select('user_ID, nickname, phone')
       .eq('auth_id', sessionAuthId)
       .single();
-    
+
     if (userRecordError || !userRecord) {
       console.error('User record error:', userRecordError?.message || 'User not found');
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -37,10 +37,13 @@ export async function PATCH(req: NextRequest) {
     const parsedData = updateUserSchema.safeParse(body);
 
     if (!parsedData.success) {
-      return NextResponse.json({ error: 'Invalid input', details: parsedData.error.errors }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Invalid input', details: parsedData.error.errors },
+        { status: 400 }
+      );
     }
 
-    const filteredUpdates: Record<string, string> ={};
+    const filteredUpdates: Record<string, string> = {};
     if (parsedData.data.nickname && parsedData.data.nickname !== userRecord.nickname) {
       filteredUpdates.nickname = parsedData.data.nickname;
     }
