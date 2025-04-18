@@ -243,7 +243,9 @@ const ReservationRequests = () => {
                         onClick={async e => {
                           e.stopPropagation();
                           await removeReservation(reservation, toast);
-                          setReservations(prev => prev.filter(r => r.reservation_id !== reservation.reservation_id));
+                          setReservations(prev =>
+                            prev.filter(r => r.reservation_id !== reservation.reservation_id)
+                          );
                           setOpenDropdownId(null);
                         }}
                       >
