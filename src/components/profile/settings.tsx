@@ -17,9 +17,13 @@ export default function Settings({ user_id }: { user_id: string }) {
   const [fname, setFname] = useState();
   const [lname, setLname] = useState();
   const [idnumber, setIdnumber] = useState();
-  const [nickname, setNickname] = useState();
+  const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState();
   const [department, setDepartment] = useState();
+  const [phone, setPhone] = useState('');
+  const [originalNickname, setOriginalNickname] = useState('');
+  const [originalPhone, setOriginalPhone] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const loadUserDetails = async () => {
@@ -35,12 +39,56 @@ export default function Settings({ user_id }: { user_id: string }) {
         setNickname(data[0].nickname || 'Isko');
         setEmail(data[0].email || 'example@email.com');
         setDepartment(data[0].dept || 'Department');
+        setPhone(data[0].phone || '09123456789');
+        setOriginalNickname(data[0].nickname || '');
+        setOriginalPhone(data[0].phone || '');
       } catch (err) {
         console.error('Internal Server Error:', err);
       }
     };
     loadUserDetails();
   }, [user_id]);
+
+  const handleSaveChanges = async () => {
+    setIsSaving(true);
+
+    const updates: {
+      nickname?: string;
+      phone?: string;
+    } = {};
+    if (nickname !== originalNickname) updates.nickname = nickname;
+    if (phone !== originalPhone) updates.phone = phone;
+
+    if (Object.keys(updates).length === 0) {
+      alert('No changes to save.');
+      setIsSaving(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/user/update`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+    });
+    
+    const errorData = await response.json();
+    if (!response.ok) {
+      throw new Error(errorData.error || 'Failed to update user details');
+    }
+
+    alert('Profile updated successfully!');
+    setOriginalNickname(nickname || '');
+    setOriginalPhone(phone || '');
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      alert('Failed to update profile. Please try again later.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <div>
@@ -95,7 +143,10 @@ export default function Settings({ user_id }: { user_id: string }) {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="nickname">Nickname</Label>
-                  <Input id="nickname" placeholder={nickname} />
+                  <Input 
+                    id="nickname"
+                    placeholder={nickname}
+                    onChange={(e) => setNickname(e.target.value)} />
                 </div>
               </div>
 
@@ -106,7 +157,11 @@ export default function Settings({ user_id }: { user_id: string }) {
 
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone Number</Label>
-                <Input id="phone" type="tel" placeholder="(555) 123-4567" />
+                <Input 
+                id="phone" 
+                type="tel" 
+                placeholder={phone}
+                onChange={(e) => setPhone(e.target.value)} />
               </div>
 
               <div className="space-y-2">
@@ -115,6 +170,7 @@ export default function Settings({ user_id }: { user_id: string }) {
                   id="department"
                   defaultValue={department}
                   className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6b1d1d] transition-colors duration-200"
+                  disabled
                 >
                   <option value="" disabled>
                     Select your department
@@ -126,7 +182,13 @@ export default function Settings({ user_id }: { user_id: string }) {
               </div>
 
               <div className="flex justify-end">
-                <Button className="bg-[#6b1d1d] hover:bg-[#5a1818]">Save Changes</Button>
+                <Button
+                  className="bg-[#6b1d1d] hover:bg-[#5a1818]"
+                  onClick={handleSaveChanges}
+                  disabled={isSaving}
+                >
+                  {isSaving ? 'Saving...' : 'Save Changes'}
+                </Button>
               </div>
             </CardContent>
           </Card>
