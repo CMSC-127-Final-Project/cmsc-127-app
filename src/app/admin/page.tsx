@@ -17,12 +17,12 @@ export default async function AdminPage() {
   const user_id = await supabase.auth.getUser().then(({ data }) => data.user?.id || '');
 
   return (
-    <>
+    <div>
       <Navbar user_id={user_id} />
       <div>
         <WelcomeBanner user_id={user_id} />
         <Requests />
       </div>
-    </>
+    </div>
   );
 }

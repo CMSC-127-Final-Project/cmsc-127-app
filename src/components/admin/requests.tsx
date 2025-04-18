@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Reservation {
-  reservation_id: string;
+  created_at: string;
   room_num: string;
   date: string;
   capacity: number;
@@ -22,7 +22,7 @@ const acceptReservation = async (
   try {
     const response = await fetch('/api/reservations/accept', {
       method: 'PATCH',
-      body: JSON.stringify({ reservation_id: reservation.reservation_id }),
+      body: JSON.stringify({ created_at: reservation.created_at }), // use created_at
     });
 
     if (!response.ok) throw new Error('Failed to accept reservation');
@@ -133,14 +133,14 @@ const ReservationRequests = () => {
         <table className="w-full border-collapse shadow-sm rounded-lg overflow-hidden text-sm md:text-base">
           <thead>
             <tr className="bg-[#5D1A0B] text-white">
-              <th className="px-2 md:px-4 py-2 w-[20%] min-w-[150px] rounded-tl-lg">Schedule ID</th>
+              <th className="px-2 md:px-4 py-2 w-[20%] min-w-[150px] rounded-tl-lg">Created at</th>
+              <th className="px-2 md:px-4 py-2 w-[10%] min-w-[70px]">Capacity</th>
               <th className="px-2 md:px-4 py-2 w-[12%] min-w-[80px]">
                 Room
                 <br />
                 Number
               </th>
               <th className="px-2 md:px-4 py-2 w-[15%] min-w-[110px]">Date</th>
-              <th className="px-2 md:px-4 py-2 w-[10%] min-w-[70px]">Capacity</th>
               <th className="px-2 md:px-4 py-2 w-[12%] min-w-[90px]">Start Time</th>
               <th className="px-2 md:px-4 py-2 w-[12%] min-w-[90px]">End Time</th>
               <th className="px-2 md:px-4 py-2 w-[10%] min-w-[80px] rounded-tr-lg">Actions</th>
@@ -148,18 +148,18 @@ const ReservationRequests = () => {
           </thead>
           <tbody className="bg-white text-center">
             {reservations.map((reservation, index) => (
-              <tr key={index} className="border-t last:border-b">
+              <tr key={reservation.created_at} className="border-t last:border-b">
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                  {reservation.reservation_id}
+                  {new Date(reservation.created_at).toLocaleString()}
                 </td>
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
+                  {reservation.capacity}
+                </td>
+                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
                   {reservation.room_num}
                 </td>
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
                   {reservation.date}
-                </td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
-                  {reservation.capacity}
                 </td>
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
                   {reservation.start_time}
@@ -173,16 +173,14 @@ const ReservationRequests = () => {
                     onClick={e => {
                       e.stopPropagation();
                       setOpenDropdownId(
-                        openDropdownId === reservation.reservation_id
-                          ? null
-                          : reservation.reservation_id
+                        openDropdownId === reservation.created_at ? null : reservation.created_at
                       );
                     }}
                   >
                     <RxDotsHorizontal size={20} />
                   </button>
 
-                  {openDropdownId === reservation.reservation_id && (
+                  {openDropdownId === reservation.created_at && (
                     <div
                       className={`absolute right-0 ${
                         index >= reservations.length - 2 ? 'bottom-full mb-2' : 'mt-2'
