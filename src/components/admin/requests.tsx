@@ -9,7 +9,7 @@ interface Reservation {
   created_at: string;
   room_num: string;
   date: string;
-  capacity: number;
+  name: string; // Concatenated name from the API
   start_time: string;
   end_time: string;
 }
@@ -115,14 +115,15 @@ const ReservationRequests = () => {
         const response = await fetch('/api/reservations/reserve', {
           method: 'GET',
         });
-
         if (!response.ok) {
           throw new Error('Failed to fetch reservations');
         }
 
         const data = await response.json();
         setReservations(data.length > 0 ? data : []);
-      } catch {}
+      } catch (error) {
+        console.error('Error loading reservations:', error);
+      }
     };
 
     loadReservations();
@@ -148,7 +149,7 @@ const ReservationRequests = () => {
           <thead>
             <tr className="bg-[#5D1A0B] text-white">
               <th className="px-2 md:px-4 py-2 w-[20%] min-w-[150px] rounded-tl-lg">Created at</th>
-              <th className="px-2 md:px-4 py-2 w-[10%] min-w-[70px]">Capacity</th>
+              <th className="px-2 md:px-4 py-2 w-[10%] min-w-[70px]">Requested by</th>
               <th className="px-2 md:px-4 py-2 w-[12%] min-w-[80px]">
                 Room
                 <br />
@@ -162,12 +163,12 @@ const ReservationRequests = () => {
           </thead>
           <tbody className="bg-white text-center">
             {reservations.map((reservation, index) => (
-              <tr key={reservation.created_at} className="border-t last:border-b">
+              <tr key={reservation.reservation_id} className="border-t last:border-b">
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
                   {new Date(reservation.created_at).toLocaleString()}
                 </td>
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
-                  {reservation.capacity}
+                  {reservation.name || 'N/A'} {/* Ensure name is displayed */}
                 </td>
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
                   {reservation.room_num}
@@ -243,7 +244,9 @@ const ReservationRequests = () => {
                         onClick={async e => {
                           e.stopPropagation();
                           await removeReservation(reservation, toast);
-                          setReservations(prev => prev.filter(r => r.reservation_id !== reservation.reservation_id));
+                          setReservations(prev =>
+                            prev.filter(r => r.reservation_id !== reservation.reservation_id)
+                          );
                           setOpenDropdownId(null);
                         }}
                       >
