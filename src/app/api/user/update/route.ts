@@ -31,9 +31,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const userId = userRecord.user_ID;
-    console.log('User ID:', userId);
-
+    console.log('User ID:', userRecord.user_ID);
 
     const body = await req.json();
     const parsedData = updateUserSchema.safeParse(body);
@@ -42,14 +40,12 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid input', details: parsedData.error.errors }, { status: 400 });
     }
 
-    const updates = parsedData.data;
-
     const filteredUpdates: Record<string, string> ={};
-    if (updates.nickname && updates.nickname !== userRecord.nickname) {
-      filteredUpdates.nickname = updates.nickname;
+    if (parsedData.data.nickname && parsedData.data.nickname !== userRecord.nickname) {
+      filteredUpdates.nickname = parsedData.data.nickname;
     }
-    if (updates.phone && updates.phone !== userRecord.phone) {
-      filteredUpdates.phone = updates.phone;
+    if (parsedData.data.phone && parsedData.data.phone !== userRecord.phone) {
+      filteredUpdates.phone = parsedData.data.phone;
     }
 
     console.log('Filtered Updates:', filteredUpdates);
@@ -61,17 +57,13 @@ export async function PATCH(req: NextRequest) {
     const { data, error } = await supabase
       .from('User')
       .update(filteredUpdates)
-      .eq('user_ID', userId);
+      .eq('user_ID', userRecord.user_ID);
 
     if (error) {
       console.error('Database error:', error.message);
       return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
     }
 
-    // Return the updated profile data
-    console.log('Session Auth ID:', sessionAuthId);
-    console.log('Updates:', updates);
-    console.log('Update Result:', data);
     return NextResponse.json({ message: 'Profile updated successfully' }, { status: 200 });
   } catch (err) {
     console.error('Internal Server Error', err);
