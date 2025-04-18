@@ -8,6 +8,7 @@ export async function POST(request: NextRequest) {
     const formData = await request.json();
     const { error } = await supabase.from('Reservation').insert({
       user_id: formData.userId,
+      reservation_id: formData.reservationId,
       date: formData.date,
       start_time: formData.startTime,
       end_time: formData.endTime,

@@ -1,8 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { RxCheckCircled, RxCrossCircled, RxTrash, RxDotsHorizontal } from 'react-icons/rx';
-import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Reservation {
@@ -15,18 +14,16 @@ interface Reservation {
   end_time: string;
 }
 
-const acceptReservation = async (
-  reservation: Reservation,
-  toast: (options: { title: string; description: string }) => void
-) => {
+const acceptReservation = async (reservation: Reservation) => {
   console.log(reservation);
   try {
     const response = await fetch('/api/reservations/accept', {
       method: 'PATCH',
-      body: JSON.stringify({ created_at: reservation.created_at }), // use created_at
+      body: JSON.stringify({ created_at: reservation.created_at }),
     });
 
     if (!response.ok) throw new Error('Failed to accept reservation');
+
     localStorage.setItem(
       'reservation-toast',
       JSON.stringify({
@@ -58,6 +55,7 @@ const rejectReservation = async (
     });
 
     if (!response.ok) throw new Error('Failed to reject reservation');
+
     toast({
       title: 'Success',
       description: 'Rejected the reservation!',
@@ -83,6 +81,7 @@ const removeReservation = async (
     });
 
     if (!response.ok) throw new Error('Failed to delete reservation');
+
     toast({
       title: 'Success',
       description: 'Deleted the reservation!',
@@ -99,7 +98,6 @@ const removeReservation = async (
 const ReservationRequests = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
-
   const { toast } = useToast();
 
   useEffect(() => {
@@ -137,7 +135,7 @@ const ReservationRequests = () => {
       toast({ title, description });
       localStorage.removeItem('reservation-toast');
     }
-  }, []);
+  }, [toast]);
 
   return (
     <div className="bg-white p-6 md:p-10 rounded-3xl drop-shadow-[0_-4px_10px_rgba(0,0,0,0.1)] mx-4 md:mx-20 mt-1 mb-10">
@@ -206,7 +204,7 @@ const ReservationRequests = () => {
                         className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                         onClick={e => {
                           e.stopPropagation();
-                          acceptReservation(reservation, toast);
+                          acceptReservation(reservation);
                           setOpenDropdownId(null);
                           localStorage.setItem(
                             'reservation-toast',
@@ -242,18 +240,11 @@ const ReservationRequests = () => {
                       </button>
                       <button
                         className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                        onClick={e => {
+                        onClick={async e => {
                           e.stopPropagation();
-                          removeReservation(reservation, toast);
+                          await removeReservation(reservation, toast);
+                          setReservations(prev => prev.filter(r => r.reservation_id !== reservation.reservation_id));
                           setOpenDropdownId(null);
-                          localStorage.setItem(
-                            'reservation-toast',
-                            JSON.stringify({
-                              title: 'Success',
-                              description: 'Deleted the reservation!',
-                            })
-                          );
-                          window.location.reload();
                         }}
                       >
                         <RxTrash size={18} className="mr-2 text-gray-500" />
