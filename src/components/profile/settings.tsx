@@ -80,7 +80,7 @@ export default function Settings({ user_id }: { user_id: string }) {
     if (user_id) {
       loadUserDetails();
     }
-  }, [user_id]);
+  }, [user_id, toast]);
 
   const handleSaveChanges = async () => {
     setIsSaving(true);

@@ -54,7 +54,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'No updates provided' }, { status: 400 });
     }
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('User')
       .update(filteredUpdates)
       .eq('user_ID', userRecord.user_ID);
