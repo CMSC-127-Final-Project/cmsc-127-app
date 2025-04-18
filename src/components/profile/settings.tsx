@@ -24,6 +24,9 @@ export default function Settings({ user_id }: { user_id: string }) {
   const [originalNickname, setOriginalNickname] = useState('');
   const [originalPhone, setOriginalPhone] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   useEffect(() => {
     const loadUserDetails = async () => {
@@ -87,6 +90,45 @@ export default function Settings({ user_id }: { user_id: string }) {
       alert('Failed to update profile. Please try again later.');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    try {
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        alert('Please fill out all fields.');
+        return;
+      }
+  
+      if (newPassword !== confirmPassword) {
+        alert('New password and confirmation password do not match.');
+        return;
+      }
+  
+      const response = await fetch('/api/user/change-password', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ currentPassword, newPassword, confirmPassword }),
+      });
+  
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to update password');
+      }
+  
+      alert('Password updated successfully!');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (err) {
+      console.error('Error updating password:', err);
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert('An unknown error occurred.');
+      }
     }
   };
 
@@ -202,21 +244,41 @@ export default function Settings({ user_id }: { user_id: string }) {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="currentPassword">Current Password</Label>
-                <Input id="currentPassword" type="password" />
+                <Input 
+                  id="currentPassword" 
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="newPassword">New Password</Label>
-                <Input id="newPassword" type="password" />
+                <Input 
+                  id="newPassword" 
+                  type="password" 
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                <Input id="confirmPassword" type="password" />
+                <Input 
+                  id="confirmPassword" 
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)} 
+                />
               </div>
 
               <div className="flex justify-end">
-                <Button className="bg-[#6b1d1d] hover:bg-[#5a1818]">Update Password</Button>
+                <Button 
+                  className="bg-[#6b1d1d] hover:bg-[#5a1818]"
+                  onClick={handleChangePassword}
+                >
+                  Update Password
+                </Button>
               </div>
             </CardContent>
           </Card>
