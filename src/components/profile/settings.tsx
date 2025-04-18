@@ -22,13 +22,13 @@ export default function Settings({ user_id }: { user_id: string }) {
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [fname, setFname] = useState('');
   const [lname, setLname] = useState('');
-  const [idnumber, setIdnumber] = useState('');
   const [email, setEmail] = useState('');
   const [department, setDepartment] = useState('');
   const [phone, setPhone] = useState('');
   const [role, setRole] = useState('');
   const [instructorOffice, setInstructorOffice] = useState('');;
   const [nickname, setNickname] = useState('');
+  const [idnumber, setIdnumber] = useState();
   const [originalNickname, setOriginalNickname] = useState('');
   const [originalPhone, setOriginalPhone] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -57,6 +57,7 @@ export default function Settings({ user_id }: { user_id: string }) {
         setNickname(user.nickname || 'Isko');
         setEmail(user.email || 'example@email.com');
         setDepartment(user.dept || 'Department');
+        setPhone(data[0].phone || '09123456789');
         setRole(user.role || 'student');
         setOriginalNickname(user.nickname || '');
         setOriginalPhone(user.phone || '');
@@ -73,7 +74,6 @@ export default function Settings({ user_id }: { user_id: string }) {
           description: 'Failed to load user details. Please try again later.',
           variant: 'destructive',
         });
-
       }
     };
 
@@ -241,9 +241,9 @@ export default function Settings({ user_id }: { user_id: string }) {
                   <Input id="idnumber" placeholder={idnumber} disabled />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" type="email" placeholder={email} disabled />
-                </div>
+                <Label htmlFor="email">Email Address</Label>
+                <Input id="email" type="email" placeholder={email} disabled />
+              </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -306,11 +306,6 @@ export default function Settings({ user_id }: { user_id: string }) {
                   </div>
                 </div>
               )}
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input id="email" type="email" placeholder={email} disabled />
-              </div>
 
               <div className="space-y-2">
                 <Label htmlFor="department">Department</Label>
