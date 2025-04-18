@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Reservation {
+  reservation_id: string;
   created_at: string;
   room_num: string;
   date: string;
@@ -26,16 +27,22 @@ const acceptReservation = async (
     });
 
     if (!response.ok) throw new Error('Failed to accept reservation');
-    toast({
-      title: 'Success',
-      description: 'Accepted the reservation!',
-    });
+    localStorage.setItem(
+      'reservation-toast',
+      JSON.stringify({
+        title: 'Success',
+        description: 'Accepted the reservation!',
+      })
+    );
   } catch (error) {
     console.error(error);
-    toast({
-      title: 'Error',
-      description: 'Failed to accept reservation',
-    });
+    localStorage.setItem(
+      'reservation-toast',
+      JSON.stringify({
+        title: 'Error',
+        description: 'Failed to accept the reservation!',
+      })
+    );
   }
 };
 
@@ -123,6 +130,15 @@ const ReservationRequests = () => {
     loadReservations();
   }, []);
 
+  useEffect(() => {
+    const storedToast = localStorage.getItem('reservation-toast');
+    if (storedToast) {
+      const { title, description } = JSON.parse(storedToast);
+      toast({ title, description });
+      localStorage.removeItem('reservation-toast');
+    }
+  }, []);
+
   return (
     <div className="bg-white p-6 md:p-10 rounded-3xl drop-shadow-[0_-4px_10px_rgba(0,0,0,0.1)] mx-4 md:mx-20 mt-1 mb-10">
       <div className="flex flex-row justify-between items-center mb-4">
@@ -192,6 +208,14 @@ const ReservationRequests = () => {
                           e.stopPropagation();
                           acceptReservation(reservation, toast);
                           setOpenDropdownId(null);
+                          localStorage.setItem(
+                            'reservation-toast',
+                            JSON.stringify({
+                              title: 'Success',
+                              description: 'Accepted the reservation!',
+                            })
+                          );
+                          window.location.reload();
                         }}
                       >
                         <RxCheckCircled size={18} className="mr-2 text-green-500" />
@@ -203,6 +227,14 @@ const ReservationRequests = () => {
                           e.stopPropagation();
                           rejectReservation(reservation, toast);
                           setOpenDropdownId(null);
+                          localStorage.setItem(
+                            'reservation-toast',
+                            JSON.stringify({
+                              title: 'Success',
+                              description: 'Rejected the reservation!',
+                            })
+                          );
+                          window.location.reload();
                         }}
                       >
                         <RxCrossCircled size={18} className="mr-2 text-red-500" />
@@ -214,6 +246,14 @@ const ReservationRequests = () => {
                           e.stopPropagation();
                           removeReservation(reservation, toast);
                           setOpenDropdownId(null);
+                          localStorage.setItem(
+                            'reservation-toast',
+                            JSON.stringify({
+                              title: 'Success',
+                              description: 'Deleted the reservation!',
+                            })
+                          );
+                          window.location.reload();
                         }}
                       >
                         <RxTrash size={18} className="mr-2 text-gray-500" />
