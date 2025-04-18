@@ -14,6 +14,10 @@ export default function Settings({ user_id }: { user_id: string }) {
   const searchParams = useSearchParams();
   const defaultTab = searchParams.get('tab') || 'personal';
 
+  useEffect(() => {
+    setActiveTab(defaultTab);
+  }, [defaultTab]);
+
   const [activeTab, setActiveTab] = useState(defaultTab);
 
   const [fname, setFname] = useState('');
@@ -23,16 +27,21 @@ export default function Settings({ user_id }: { user_id: string }) {
   const [email, setEmail] = useState('');
   const [department, setDepartment] = useState('');
   const [role, setRole] = useState('');
-  const [facultyRank, setFacultyRank] = useState('');
   const [instructorOffice, setInstructorOffice] = useState('');
 
   useEffect(() => {
     const loadUserDetails = async () => {
       try {
         const response = await fetch(`/api/user/${user_id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch user details');
+        }
         const data = await response.json();
-
         const user = data[0];
+
+        if (!user) {
+          throw new Error('No user data found');
+        }
 
         setFname(user.first_name || 'User');
         setLname(user.last_name || 'OO');
@@ -43,16 +52,17 @@ export default function Settings({ user_id }: { user_id: string }) {
         setRole(user.role || 'student');
 
         if (user.role === 'Instructor') {
-          setFacultyRank(user.faculty_rank || '');
           setInstructorOffice(user.instructor_office || '');
         }
         console.log('User role:', user.role);
       } catch (err) {
-        console.error('Internal Server Error:', err);
+        console.error('Error loading user details:', err);
       }
     };
 
-    loadUserDetails();
+    if (user_id) {
+      loadUserDetails();
+    }
   }, [user_id]);
 
   return (
@@ -131,7 +141,8 @@ export default function Settings({ user_id }: { user_id: string }) {
                     <Label htmlFor="facultyRank">Faculty Rank</Label>
                     <select
                       id="facultyRank"
-                      defaultValue={department}
+                      value={department}
+                      onChange={e => setDepartment(e.target.value)}
                       className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6b1d1d] transition-colors duration-200"
                     >
                       <option value="" disabled>
