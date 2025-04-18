@@ -11,6 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast'; 
+import { Key} from 'lucide-react';
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -105,14 +106,19 @@ export default function LoginPage() {
               Forgot password?
             </button>
             {showPopup && (
-              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="bg-white p-6 rounded shadow-md">
-                  <p className="text-sm text-muted-foreground">
-                    To reset your password, go to the Administrator&apos;s Office and bring your
-                    identification card.
-                  </p>
+              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
+                <div className="bg-white rounded shadow-md p-10 pb-5">
+                  <div className="flex flex-col items-center justify-center text-gray-500">
+                    <Key className="w-16 h-16 mb-4 " />
+                    <p className="font-medium text-base text-gray-700">Forgot password?</p>
+                    <div className="mt-2">
+                      <p className="text-sm">
+                        Please go to the Administrator's office and bring your ID card.
+                      </p>
+                    </div>
+                  </div>
                   <button
-                    className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark mx-auto block"
+                    className="mt-10 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark mx-auto block"
                     onClick={() => setShowPopup(false)}
                   >
                     Close
@@ -122,7 +128,7 @@ export default function LoginPage() {
             )}
 
           </div>
-          <div className="relative">
+          <div>
             <Input id="password" type={showPassword ? 'text' : 'password'} required />
             <Button
               type="button"
