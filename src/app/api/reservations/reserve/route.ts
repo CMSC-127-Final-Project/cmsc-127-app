@@ -28,12 +28,14 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  console.log('GET Request Recieved');
   try {
     const supabase = await createClient();
-    const { data, error } = await supabase.from('Reservation').select('*').eq('status', 'Pending');
-    const { data: session } = await supabase.auth.getSession();
-    console.log('Session:', session);
+    const { data, error } = await supabase
+      .from('Reservation')
+      .select('*')
+      .eq('status', 'Pending')
+      .order('created_at', { ascending: false }); // Order by created_at
+
     if (error) throw new Error(error.message);
 
     return NextResponse.json(data, { status: 200 });
@@ -41,3 +43,4 @@ export async function GET() {
     return NextResponse.json({ message: error }, { status: 500 });
   }
 }
+ 
