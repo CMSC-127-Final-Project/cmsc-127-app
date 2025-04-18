@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSearchParams } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Settings({ user_id }: { user_id: string }) {
   const searchParams = useSearchParams();
@@ -27,6 +28,7 @@ export default function Settings({ user_id }: { user_id: string }) {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const { toast } = useToast();
 
   useEffect(() => {
     const loadUserDetails = async () => {
@@ -47,6 +49,11 @@ export default function Settings({ user_id }: { user_id: string }) {
         setOriginalPhone(data[0].phone || '');
       } catch (err) {
         console.error('Internal Server Error:', err);
+        toast({
+          title: 'Error',
+          description: 'Failed to load user details. Please try again later.',
+          variant: 'destructive',
+        });
       }
     };
     loadUserDetails();
@@ -63,7 +70,10 @@ export default function Settings({ user_id }: { user_id: string }) {
     if (phone !== originalPhone) updates.phone = phone;
 
     if (Object.keys(updates).length === 0) {
-      alert('No changes to save.');
+      toast({
+        title: 'Error',
+        description: 'No changes to save.',
+      })
       setIsSaving(false);
       return;
     }
@@ -82,12 +92,18 @@ export default function Settings({ user_id }: { user_id: string }) {
       throw new Error(errorData.error || 'Failed to update user details');
     }
 
-    alert('Profile updated successfully!');
+    toast({
+      title: 'Success',
+      description: 'Profile updated successfully!',
+    })
     setOriginalNickname(nickname || '');
     setOriginalPhone(phone || '');
     } catch (err) {
       console.error('Error updating profile:', err);
-      alert('Failed to update profile. Please try again later.');
+      toast({
+        title: 'Error',
+        description: 'Failed to update profile. Please try again later.',
+      })
     } finally {
       setIsSaving(false);
     }
@@ -96,12 +112,18 @@ export default function Settings({ user_id }: { user_id: string }) {
   const handleChangePassword = async () => {
     try {
       if (!currentPassword || !newPassword || !confirmPassword) {
-        alert('Please fill out all fields.');
+        toast({
+          title: 'Error',
+          description: 'Please fill in all fields.',
+        });
         return;
       }
   
       if (newPassword !== confirmPassword) {
-        alert('New password and confirmation password do not match.');
+        toast({
+          title: 'Error',
+          description: 'New password and confirmation do not match.',
+        });
         return;
       }
   
@@ -118,16 +140,26 @@ export default function Settings({ user_id }: { user_id: string }) {
         throw new Error(result.error || 'Failed to update password');
       }
   
-      alert('Password updated successfully!');
+      toast({
+        title: 'Success',
+        description: 'Password updated successfully!',
+      })
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
     } catch (err) {
       console.error('Error updating password:', err);
       if (err instanceof Error) {
-        alert(err.message);
+        toast({
+          title: 'Error',
+          description: err.message,
+          variant: 'destructive',
+        });
       } else {
-        alert('An unknown error occurred.');
+        toast({
+          title: 'Error',
+          description: 'Failed to update password. Please try again later.',
+        });
       }
     }
   };

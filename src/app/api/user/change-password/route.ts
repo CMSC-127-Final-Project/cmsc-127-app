@@ -5,7 +5,7 @@ import { z } from 'zod';
 // Define the schema for validating the request body
 const changePasswordSchema = z.object({
     currentPassword: z.string(),
-    newPassword: z.string().min(8, 'Password must be at least 8 characters long'),
+    newPassword: z.string().min(8),
     confirmPassword: z.string(),
 });
 
@@ -27,7 +27,7 @@ export async function PATCH(req: NextRequest) {
     const parsedData = changePasswordSchema.safeParse(body);
 
     if (!parsedData.success) {
-      return NextResponse.json({ error: 'Invalid input', details: parsedData.error.errors }, { status: 400 });
+      return NextResponse.json({ error: 'Password must be at least 8 characters long', details: parsedData.error.errors }, { status: 400 });
     }
 
     const { currentPassword, newPassword, confirmPassword } = parsedData.data;
