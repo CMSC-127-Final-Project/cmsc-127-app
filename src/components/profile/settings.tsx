@@ -232,10 +232,21 @@ export default function Settings({ user_id }: { user_id: string }) {
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone Number</Label>
                 <Input 
-                id="phone" 
-                type="tel" 
-                placeholder={phone}
-                onChange={(e) => setPhone(e.target.value)} />
+                  id="phone" 
+                  type="tel" 
+                  placeholder={phone}
+                  onChange={(e) => {
+                    if(/^\d*$/.test(e.target.value)) {
+                      setPhone(e.target.value);
+                    } else {
+                      toast({
+                        title: 'Error',
+                        description: 'Phone number must only contain numbers.',
+                        variant: 'destructive',
+                      });
+                    }
+                  }}
+                />
               </div>
 
               <div className="space-y-2">
