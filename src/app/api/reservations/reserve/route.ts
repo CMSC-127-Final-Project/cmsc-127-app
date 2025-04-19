@@ -50,7 +50,8 @@ export async function GET() {
 
     const { data, error } = await supabase
       .from('Reservation')
-      .select(`
+      .select(
+        `
         reservation_id,
         created_at,
         room_num,
@@ -63,7 +64,8 @@ export async function GET() {
           first_name,
           last_name
         )
-      `)
+      `
+      )
       .eq('status', 'Pending')
       .order('created_at', { ascending: false });
 
@@ -72,24 +74,26 @@ export async function GET() {
       throw error;
     }
 
-    const formattedData = (data as Array<{
-      reservation_id: string;
-      created_at: string;
-      room_num: string;
-      date: string;
-      start_time: string;
-      end_time: string;
-      status: string;
-      user_id: string;
-      User?: {
-        first_name?: string;
-        last_name?: string;
-      };
-    }>).map((item) => {
+    const formattedData = (
+      data as Array<{
+        reservation_id: string;
+        created_at: string;
+        room_num: string;
+        date: string;
+        start_time: string;
+        end_time: string;
+        status: string;
+        user_id: string;
+        User?: {
+          first_name?: string;
+          last_name?: string;
+        };
+      }>
+    ).map(item => {
       const fullName = item.User
         ? `${item.User.first_name ?? ''} ${item.User.last_name ?? ''}`.trim()
         : `Unknown Requestor (user_id: ${item.user_id})`;
-    
+
       return {
         ...item,
         name: fullName,

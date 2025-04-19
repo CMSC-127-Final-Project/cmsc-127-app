@@ -258,10 +258,7 @@ const ReservationRequests = () => {
               ))
             ) : (
               <tr>
-                <td
-                  colSpan={7}
-                  className="text-center px-3 md:px-5 py-3 text-gray-400"
-                >
+                <td colSpan={7} className="text-center px-3 md:px-5 py-3 text-gray-400">
                   No Reservations Found
                 </td>
               </tr>
