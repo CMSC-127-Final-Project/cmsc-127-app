@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { RxClipboard } from "react-icons/rx";
+import { RxClipboard } from 'react-icons/rx';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -45,13 +45,13 @@ export default function RoomReservation() {
   const [endTime, setEndTime] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const addSchedule = async (schedule: { 
-    room_number?: string; 
-    regular: boolean; 
-    start_time: string | null; 
-    end_time: string | null; 
-    days?: string[]; 
-    date?: string | null; 
+  const addSchedule = async (schedule: {
+    room_number?: string;
+    regular: boolean;
+    start_time: string | null;
+    end_time: string | null;
+    days?: string[];
+    date?: string | null;
   }) => {
     try {
       const response = await fetch('/api/schedule/add', {
@@ -94,11 +94,11 @@ export default function RoomReservation() {
         description: 'Schedule removed successfully!',
         variant: 'default',
       });
-      setSelectedRoom((prevRoom) => {
+      setSelectedRoom(prevRoom => {
         if (!prevRoom) return null;
         return {
           ...prevRoom,
-          schedules: prevRoom.schedules.filter((schedule) => schedule.timeslot_id !== scheduleId),
+          schedules: prevRoom.schedules.filter(schedule => schedule.timeslot_id !== scheduleId),
         };
       });
     } catch (error) {
@@ -170,7 +170,7 @@ export default function RoomReservation() {
             id="roomNumber"
             type="text"
             placeholder="Search for room..."
-            onChange={(e) => setRoomNumber(e.target.value)}
+            onChange={e => setRoomNumber(e.target.value)}
             className="w-full"
           />
         </div>
@@ -199,9 +199,7 @@ export default function RoomReservation() {
               ) : (
                 <span className="block">&ndash;</span>
               )}
-              {room.schedules.length > 3 && (
-                <span className="block text-gray-400">...more</span>
-              )}
+              {room.schedules.length > 3 && <span className="block text-gray-400">...more</span>}
             </p>
             <div className="mt-auto flex justify-end gap-2">
               <Button
@@ -218,11 +216,9 @@ export default function RoomReservation() {
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="rounded-xl space-y-4 w-full max-w-3xl">
-            <DialogHeader>
+          <DialogHeader>
             <DialogTitle>Schedules for {selectedRoom?.room_number}</DialogTitle>
-            <DialogDescription>
-              Manage the schedules for this room.
-            </DialogDescription>
+            <DialogDescription>Manage the schedules for this room.</DialogDescription>
           </DialogHeader>
 
           <div className="overflow-x-auto font-roboto max-h-60 overflow-y-auto">
@@ -250,7 +246,9 @@ export default function RoomReservation() {
                         {schedule.end_time || '-'}
                       </td>
                       <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
-                        {Array.isArray(schedule.days) ? schedule.days.join(', ') : schedule.date || '-'}
+                        {Array.isArray(schedule.days)
+                          ? schedule.days.join(', ')
+                          : schedule.date || '-'}
                       </td>
                       <td className="px-3 md:px-5 py-3 text-center hover:bg-gray-100">
                         <Button
@@ -292,11 +290,7 @@ export default function RoomReservation() {
           </DialogHeader>
           <div className="flex items-center space-x-2">
             <Label htmlFor="recurring">Recurring</Label>
-            <Switch
-              id="recurring"
-              checked={isRecurring}
-              onCheckedChange={setIsRecurring}
-            />
+            <Switch id="recurring" checked={isRecurring} onCheckedChange={setIsRecurring} />
           </div>
           {isRecurring ? (
             <div className="space-y-4">
@@ -318,14 +312,14 @@ export default function RoomReservation() {
                   <Input
                     type="time"
                     value={startTime || ''}
-                    onChange={(e) => setStartTime(e.target.value)}
+                    onChange={e => setStartTime(e.target.value)}
                     className="w-full"
                   />
                   <span>-</span>
                   <Input
                     type="time"
                     value={endTime || ''}
-                    onChange={(e) => setEndTime(e.target.value)}
+                    onChange={e => setEndTime(e.target.value)}
                     className="w-full"
                   />
                 </div>
@@ -337,14 +331,11 @@ export default function RoomReservation() {
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" className="w-full">
-                    {selectedDate ? selectedDate.toDateString() : "Pick a date"}
+                    {selectedDate ? selectedDate.toDateString() : 'Pick a date'}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent>
-                  <Calendar
-                    selected={selectedDate}
-                    onChange={setSelectedDate}
-                  />
+                  <Calendar selected={selectedDate} onChange={setSelectedDate} />
                 </PopoverContent>
               </Popover>
               <div className="space-y-2">
@@ -353,14 +344,14 @@ export default function RoomReservation() {
                   <Input
                     type="time"
                     value={startTime || ''}
-                    onChange={(e) => setStartTime(e.target.value)}
+                    onChange={e => setStartTime(e.target.value)}
                     className="w-full"
                   />
                   <span>-</span>
                   <Input
                     type="time"
                     value={endTime || ''}
-                    onChange={(e) => setEndTime(e.target.value)}
+                    onChange={e => setEndTime(e.target.value)}
                     className="w-full"
                   />
                 </div>
@@ -380,8 +371,9 @@ export default function RoomReservation() {
               onClick={() => {
                 const selectedDays = Array.from(
                   new Set(
-                  Array.from(document.querySelectorAll('[data-state="on"]'))
-                    .map((el) => el.textContent)
+                    Array.from(document.querySelectorAll('[data-state="on"]')).map(
+                      el => el.textContent
+                    )
                   )
                 ).filter((day): day is string => day !== null);
 
@@ -391,8 +383,8 @@ export default function RoomReservation() {
                   start_time: startTime,
                   end_time: endTime,
                   ...(isRecurring
-                  ? { days: selectedDays }
-                  : { date: selectedDate ? selectedDate.toLocaleDateString('en-CA') : null }),
+                    ? { days: selectedDays }
+                    : { date: selectedDate ? selectedDate.toLocaleDateString('en-CA') : null }),
                 };
                 addSchedule(newSchedule);
               }}

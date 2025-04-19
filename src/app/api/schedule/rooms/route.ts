@@ -23,13 +23,13 @@ export async function GET() {
     }
 
     // Map schedules to their respective rooms
-    const formattedData = rooms.map((room) => {
+    const formattedData = rooms.map(room => {
       return {
         ...room,
         schedules: schedules
-          .filter((schedule) => schedule.room_num === room.room_number)
+          .filter(schedule => schedule.room_num === room.room_number)
           .sort((a, b) => Number(b.regular) - Number(a.regular)) // Sort by regular (true first)
-          .map((schedule) => ({
+          .map(schedule => ({
             ...schedule,
             time_range: schedule.regular
               ? `${schedule.start_time.slice(0, 5)} - ${schedule.end_time.slice(0, 5)} ${schedule.days.join(', ')}`
