@@ -113,7 +113,7 @@ export function RoomList() {
         throw new Error('Failed to update room');
       }
 
-      await loadRooms(); // Refresh the list
+      await loadRooms();
       closeEditModal();
     } catch (error) {
       console.error('Error updating room:', error);
@@ -151,7 +151,7 @@ export function RoomList() {
         <div className="rounded-lg border border-gray-200 overflow-hidden">
           <Table>
             <TableHeader className="bg-[#5D1A0B]">
-              <TableRow>
+              <TableRow className="hover:bg-[#5D1A0B]">
                 <TableHead className="font-semibold text-sm text-white font-roboto">
                   Room Name
                 </TableHead>

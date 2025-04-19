@@ -23,6 +23,7 @@ export function RoomForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     if (!room_number || !capacity || !room_type) {
       toast({
@@ -30,13 +31,14 @@ export function RoomForm() {
         description: 'Please fill in all fields',
         variant: 'destructive',
       });
+      setLoading(false);
       return;
     }
 
     const newRoom = {
-      room_number: room_number,
+      room_number,
       capacity: Number.parseInt(capacity),
-      room_type: room_type,
+      room_type,
     };
 
     try {
@@ -63,14 +65,16 @@ export function RoomForm() {
       setCapacity('');
       setRoomType('');
       window.dispatchEvent(new Event('roomsUpdated'));
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'An unexpected error occurred';
       toast({
         title: 'Error',
-        description: err.message,
+        description: message,
         variant: 'destructive',
       });
+    } finally {
+      setLoading(false);
     }
-    
   };
 
   return (
