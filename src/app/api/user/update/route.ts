@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
-import { z } from 'zod';
-
-const updateUserSchema = z.object({
-  nickname: z.string().optional(),
-  phone: z.string().optional(),
-});
+import { updateUserSchema } from '@/utils/schemas';
 
 export async function PATCH(req: NextRequest) {
   const supabase = await createClient();
