@@ -1,21 +1,20 @@
 import Index from '@/components/index';
-import { cookies } from 'next/headers';
+import { createClient } from '@/utils/supabase/server';
 
 export default async function Home() {
-  const cookieStore = await cookies();
-  const access_token = cookieStore.get('access_token')?.value;
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
 
-  if (!access_token) {
-    console.log('No access token found, redirecting to login...');
+  if (data) {
     return (
       <div>
-        <Index action={''} />
+        <Index action={true} />
       </div>
     );
   } else {
     return (
       <div>
-        <Index action={'access_token'} />
+        <Index action={false} />
       </div>
     );
   }

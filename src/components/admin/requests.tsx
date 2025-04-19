@@ -14,32 +14,29 @@ interface Reservation {
   end_time: string;
 }
 
-const acceptReservation = async (reservation: Reservation) => {
+const acceptReservation = async (
+  reservation: Reservation,
+  toast: (options: { title: string; description: string }) => void
+) => {
   console.log(reservation);
   try {
     const response = await fetch('/api/reservations/accept', {
       method: 'PATCH',
-      body: JSON.stringify({ created_at: reservation.created_at }),
+      body: JSON.stringify({ reservation_id: reservation.reservation_id }),
     });
 
-    if (!response.ok) throw new Error('Failed to accept reservation');
+    if (!response.ok) throw new Error('Failed to reject reservation');
 
-    localStorage.setItem(
-      'reservation-toast',
-      JSON.stringify({
-        title: 'Success',
-        description: 'Accepted the reservation!',
-      })
-    );
+    toast({
+      title: 'Success',
+      description: 'Rejected the reservation!',
+    });
   } catch (error) {
     console.error(error);
-    localStorage.setItem(
-      'reservation-toast',
-      JSON.stringify({
-        title: 'Error',
-        description: 'Failed to accept the reservation!',
-      })
-    );
+    toast({
+      title: 'Error',
+      description: 'Failed to reject reservation',
+    });
   }
 };
 
@@ -76,21 +73,21 @@ const removeReservation = async (
   console.log(reservation);
   try {
     const response = await fetch('/api/reservations/remove', {
-      method: 'DELETE',
+      method: 'PATCH',
       body: JSON.stringify({ reservation_id: reservation.reservation_id }),
     });
 
-    if (!response.ok) throw new Error('Failed to delete reservation');
+    if (!response.ok) throw new Error('Failed to reject reservation');
 
     toast({
       title: 'Success',
-      description: 'Deleted the reservation!',
+      description: 'Rejected the reservation!',
     });
   } catch (error) {
     console.error(error);
     toast({
       title: 'Error',
-      description: 'Failed to delete reservation',
+      description: 'Failed to reject reservation',
     });
   }
 };
@@ -162,102 +159,113 @@ const ReservationRequests = () => {
             </tr>
           </thead>
           <tbody className="bg-white text-center">
-            {reservations.map((reservation, index) => (
-              <tr key={reservation.reservation_id} className="border-t last:border-b">
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                  {new Date(reservation.created_at).toLocaleString()}
-                </td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
-                  {reservation.name || 'N/A'} {/* Ensure name is displayed */}
-                </td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                  {reservation.room_num}
-                </td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                  {reservation.date}
-                </td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                  {reservation.start_time}
-                </td>
-                <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                  {reservation.end_time}
-                </td>
-                <td className="px-0 md:px-0 py-5 relative text-center">
-                  <button
-                    className="text-gray-500 px-2 py-1 rounded-md"
-                    onClick={e => {
-                      e.stopPropagation();
-                      setOpenDropdownId(
-                        openDropdownId === reservation.created_at ? null : reservation.created_at
-                      );
-                    }}
-                  >
-                    <RxDotsHorizontal size={20} />
-                  </button>
-
-                  {openDropdownId === reservation.created_at && (
-                    <div
-                      className={`absolute right-0 ${
-                        index >= reservations.length - 2 ? 'bottom-full mb-2' : 'mt-2'
-                      } py-2 bg-white rounded-md shadow-xl z-10 border border-gray-200`}
+            {reservations.length > 0 ? (
+              reservations.map((reservation, index) => (
+                <tr key={reservation.reservation_id} className="border-t last:border-b">
+                  <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                    {new Date(reservation.created_at).toLocaleString()}
+                  </td>
+                  <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
+                    {reservation.name || 'N/A'} {/* Ensure name is displayed */}
+                  </td>
+                  <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                    {reservation.room_num}
+                  </td>
+                  <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                    {reservation.date}
+                  </td>
+                  <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                    {reservation.start_time}
+                  </td>
+                  <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                    {reservation.end_time}
+                  </td>
+                  <td className="px-0 md:px-0 py-5 relative text-center">
+                    <button
+                      className="text-gray-500 px-2 py-1 rounded-md"
+                      onClick={e => {
+                        e.stopPropagation();
+                        setOpenDropdownId(
+                          openDropdownId === reservation.created_at ? null : reservation.created_at
+                        );
+                      }}
                     >
-                      <button
-                        className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                        onClick={e => {
-                          e.stopPropagation();
-                          acceptReservation(reservation);
-                          setOpenDropdownId(null);
-                          localStorage.setItem(
-                            'reservation-toast',
-                            JSON.stringify({
-                              title: 'Success',
-                              description: 'Accepted the reservation!',
-                            })
-                          );
-                          window.location.reload();
-                        }}
+                      <RxDotsHorizontal size={20} />
+                    </button>
+
+                    {openDropdownId === reservation.created_at && (
+                      <div
+                        className={`absolute right-0 ${
+                          index >= reservations.length - 2 ? 'bottom-full mb-2' : 'mt-2'
+                        } py-2 bg-white rounded-md shadow-xl z-10 border border-gray-200`}
                       >
-                        <RxCheckCircled size={18} className="mr-2 text-green-500" />
-                        Accept
-                      </button>
-                      <button
-                        className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                        onClick={e => {
-                          e.stopPropagation();
-                          rejectReservation(reservation, toast);
-                          setOpenDropdownId(null);
-                          localStorage.setItem(
-                            'reservation-toast',
-                            JSON.stringify({
-                              title: 'Success',
-                              description: 'Rejected the reservation!',
-                            })
-                          );
-                          window.location.reload();
-                        }}
-                      >
-                        <RxCrossCircled size={18} className="mr-2 text-red-500" />
-                        Reject
-                      </button>
-                      <button
-                        className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                        onClick={async e => {
-                          e.stopPropagation();
-                          await removeReservation(reservation, toast);
-                          setReservations(prev =>
-                            prev.filter(r => r.reservation_id !== reservation.reservation_id)
-                          );
-                          setOpenDropdownId(null);
-                        }}
-                      >
-                        <RxTrash size={18} className="mr-2 text-gray-500" />
-                        Remove
-                      </button>
-                    </div>
-                  )}
+                        <button
+                          className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                          onClick={e => {
+                            e.stopPropagation();
+                            acceptReservation(reservation, toast);
+                            setOpenDropdownId(null);
+                            localStorage.setItem(
+                              'reservation-toast',
+                              JSON.stringify({
+                                title: 'Success',
+                                description: 'Accepted the reservation!',
+                              })
+                            );
+                            window.location.reload();
+                          }}
+                        >
+                          <RxCheckCircled size={18} className="mr-2 text-green-500" />
+                          Accept
+                        </button>
+                        <button
+                          className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                          onClick={e => {
+                            e.stopPropagation();
+                            rejectReservation(reservation, toast);
+                            setOpenDropdownId(null);
+                            localStorage.setItem(
+                              'reservation-toast',
+                              JSON.stringify({
+                                title: 'Success',
+                                description: 'Rejected the reservation!',
+                              })
+                            );
+                            window.location.reload();
+                          }}
+                        >
+                          <RxCrossCircled size={18} className="mr-2 text-red-500" />
+                          Reject
+                        </button>
+                        <button
+                          className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                          onClick={async e => {
+                            e.stopPropagation();
+                            await removeReservation(reservation, toast);
+                            setReservations(prev =>
+                              prev.filter(r => r.reservation_id !== reservation.reservation_id)
+                            );
+                            setOpenDropdownId(null);
+                          }}
+                        >
+                          <RxTrash size={18} className="mr-2 text-gray-500" />
+                          Remove
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={7}
+                  className="text-center px-3 md:px-5 py-3 text-gray-400"
+                >
+                  No Reservations Found
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
