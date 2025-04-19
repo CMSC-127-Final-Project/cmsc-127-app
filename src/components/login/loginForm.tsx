@@ -1,32 +1,40 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import { LogInIcon } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
 import { CardContent, CardFooter } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { Key } from 'lucide-react';
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
   const [rememberMe, setRememberMe] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const router = useRouter();
+  const { toast } = useToast();
 
-  // Function to handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-    setError(null);
 
     const email = (event.currentTarget.elements.namedItem('email') as HTMLInputElement).value;
     const password = (event.currentTarget.elements.namedItem('password') as HTMLInputElement).value;
+
+    if (!email || !password) {
+      toast({
+        title: 'Error',
+        description: 'Please fill in both email and password fields.',
+      });
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const response = await fetch('/api/auth/login', {
@@ -40,21 +48,33 @@ export default function LoginPage() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Login failed');
+        if (response.status === 401) {
+          throw new Error('Invalid email or password. Please try again.');
+        } else if (response.status === 500) {
+          throw new Error('Internal server error. Please try again later.');
+        } else {
+          throw new Error(result.error || 'Login failed. Please try again.');
+        }
       }
+
+      toast({
+        title: 'Success',
+        description: 'You have successfully logged in!',
+      });
 
       router.push('/homepage');
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
       console.error('Login failed:', errorMessage);
-      setError(errorMessage);
+
+      toast({
+        title: 'Error',
+        description: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
   };
-
-  // State for the popup
-  const [showPopup, setShowPopup] = useState(false);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -85,14 +105,19 @@ export default function LoginPage() {
               Forgot password?
             </button>
             {showPopup && (
-              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="bg-white p-6 rounded shadow-md">
-                  <p className="text-sm text-muted-foreground">
-                    To reset your password, go to the Administrator&apos;s Office and bring your
-                    identification card.
-                  </p>
+              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
+                <div className="bg-white rounded shadow-md p-10 pb-5">
+                  <div className="flex flex-col items-center justify-center text-gray-500">
+                    <Key className="w-16 h-16 mb-4 " />
+                    <p className="font-medium text-base text-gray-700">Forgot password?</p>
+                    <div className="mt-2">
+                      <p className="text-sm">
+                        Please go to the Administrator&apos;s office and bring your ID card.
+                      </p>
+                    </div>
+                  </div>
                   <button
-                    className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark mx-auto block"
+                    className="mt-10 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark mx-auto block"
                     onClick={() => setShowPopup(false)}
                   >
                     Close
@@ -101,7 +126,7 @@ export default function LoginPage() {
               </div>
             )}
           </div>
-          <div className="relative">
+          <div>
             <Input id="password" type={showPassword ? 'text' : 'password'} required />
             <Button
               type="button"
@@ -119,7 +144,6 @@ export default function LoginPage() {
             </Button>
           </div>
         </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
         <div className="space-x-2">
           <Checkbox
             id="remember-me"
@@ -140,12 +164,6 @@ export default function LoginPage() {
           <LogInIcon className="mr-2 h-4 w-4" />
           {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
-        <div className="w-full text-center text-sm text-muted-foreground underline-offset-4">
-          Don&apos;t have an account?{' '}
-          <Link href="/signup" className="underline hover:text-primary">
-            Sign up
-          </Link>
-        </div>
       </CardFooter>
     </form>
   );

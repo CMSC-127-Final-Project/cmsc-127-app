@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSearchParams } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Settings({ user_id }: { user_id: string }) {
   const searchParams = useSearchParams();
@@ -19,15 +20,22 @@ export default function Settings({ user_id }: { user_id: string }) {
   }, [defaultTab]);
 
   const [activeTab, setActiveTab] = useState(defaultTab);
-
   const [fname, setFname] = useState('');
   const [lname, setLname] = useState('');
-  const [idnumber, setIdnumber] = useState('');
-  const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
   const [department, setDepartment] = useState('');
+  const [phone, setPhone] = useState('');
   const [role, setRole] = useState('');
   const [instructorOffice, setInstructorOffice] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [idnumber, setIdnumber] = useState();
+  const [originalNickname, setOriginalNickname] = useState('');
+  const [originalPhone, setOriginalPhone] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const { toast } = useToast();
 
   useEffect(() => {
     const loadUserDetails = async () => {
@@ -49,7 +57,10 @@ export default function Settings({ user_id }: { user_id: string }) {
         setNickname(user.nickname || 'Isko');
         setEmail(user.email || 'example@email.com');
         setDepartment(user.dept || 'Department');
+        setPhone(data[0].phone || '09123456789');
         setRole(user.role || 'student');
+        setOriginalNickname(user.nickname || '');
+        setOriginalPhone(user.phone || '');
 
         if (user.role === 'Instructor') {
           setInstructorOffice(user.instructor_office || '');
@@ -57,13 +68,123 @@ export default function Settings({ user_id }: { user_id: string }) {
         console.log('User role:', user.role);
       } catch (err) {
         console.error('Error loading user details:', err);
+        toast({
+          title: 'Error',
+          description: 'Failed to load user details. Please try again later.',
+          variant: 'destructive',
+        });
       }
     };
 
     if (user_id) {
       loadUserDetails();
     }
-  }, [user_id]);
+  }, [user_id, toast]);
+
+  const handleSaveChanges = async () => {
+    setIsSaving(true);
+
+    const updates: {
+      nickname?: string;
+      phone?: string;
+    } = {};
+    if (nickname !== originalNickname) updates.nickname = nickname;
+    if (phone !== originalPhone) updates.phone = phone;
+
+    if (Object.keys(updates).length === 0) {
+      toast({
+        title: 'Error',
+        description: 'No changes to save.',
+      });
+      setIsSaving(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/user/update`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+      });
+
+      const errorData = await response.json();
+      if (!response.ok) {
+        throw new Error(errorData.error || 'Failed to update user details');
+      }
+
+      toast({
+        title: 'Success',
+        description: 'Profile updated successfully!',
+      });
+      setOriginalNickname(nickname || '');
+      setOriginalPhone(phone || '');
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      toast({
+        title: 'Error',
+        description: 'Failed to update profile. Please try again later.',
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    try {
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        toast({
+          title: 'Error',
+          description: 'Please fill in all fields.',
+        });
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        toast({
+          title: 'Error',
+          description: 'New password and confirmation do not match.',
+        });
+        return;
+      }
+
+      const response = await fetch('/api/user/change-password', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ currentPassword, newPassword, confirmPassword }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to update password');
+      }
+
+      toast({
+        title: 'Success',
+        description: 'Password updated successfully!',
+      });
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (err) {
+      console.error('Error updating password:', err);
+      if (err instanceof Error) {
+        toast({
+          title: 'Error',
+          description: err.message,
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: 'Error',
+          description: 'Failed to update password. Please try again later.',
+        });
+      }
+    }
+  };
 
   return (
     <div>
@@ -127,11 +248,31 @@ export default function Settings({ user_id }: { user_id: string }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="nickname">Nickname</Label>
-                  <Input id="nickname" placeholder={nickname} />
+                  <Input
+                    id="nickname"
+                    placeholder={nickname}
+                    onChange={e => setNickname(e.target.value)}
+                  />
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
-                  <Input id="phone" type="tel" placeholder="(555) 123-4567" />
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder={phone}
+                    onChange={e => {
+                      if (/^\d*$/.test(e.target.value)) {
+                        setPhone(e.target.value);
+                      } else {
+                        toast({
+                          title: 'Error',
+                          description: 'Phone number must only contain numbers.',
+                          variant: 'destructive',
+                        });
+                      }
+                    }}
+                  />
                 </div>
               </div>
 
@@ -144,6 +285,7 @@ export default function Settings({ user_id }: { user_id: string }) {
                       value={department}
                       onChange={e => setDepartment(e.target.value)}
                       className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6b1d1d] transition-colors duration-200"
+                      disabled
                     >
                       <option value="" disabled>
                         Select your rank
@@ -156,7 +298,7 @@ export default function Settings({ user_id }: { user_id: string }) {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="instructorOffice">Instructor Office</Label>
-                    <Input id="instructorOffice" placeholder={instructorOffice} />
+                    <Input id="instructorOffice" placeholder={instructorOffice} disabled />
                   </div>
                 </div>
               )}
@@ -167,6 +309,7 @@ export default function Settings({ user_id }: { user_id: string }) {
                   id="department"
                   defaultValue={department}
                   className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6b1d1d] transition-colors duration-200"
+                  disabled
                 >
                   <option value="" disabled>
                     Select your department
@@ -178,7 +321,13 @@ export default function Settings({ user_id }: { user_id: string }) {
               </div>
 
               <div className="flex justify-end">
-                <Button className="bg-[#6b1d1d] hover:bg-[#5a1818]">Save Changes</Button>
+                <Button
+                  className="bg-[#6b1d1d] hover:bg-[#5a1818]"
+                  onClick={handleSaveChanges}
+                  disabled={isSaving}
+                >
+                  {isSaving ? 'Saving...' : 'Save Changes'}
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -192,21 +341,38 @@ export default function Settings({ user_id }: { user_id: string }) {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="currentPassword">Current Password</Label>
-                <Input id="currentPassword" type="password" />
+                <Input
+                  id="currentPassword"
+                  type="password"
+                  value={currentPassword}
+                  onChange={e => setCurrentPassword(e.target.value)}
+                />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="newPassword">New Password</Label>
-                <Input id="newPassword" type="password" />
+                <Input
+                  id="newPassword"
+                  type="password"
+                  value={newPassword}
+                  onChange={e => setNewPassword(e.target.value)}
+                />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                <Input id="confirmPassword" type="password" />
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                />
               </div>
 
               <div className="flex justify-end">
-                <Button className="bg-[#6b1d1d] hover:bg-[#5a1818]">Update Password</Button>
+                <Button className="bg-[#6b1d1d] hover:bg-[#5a1818]" onClick={handleChangePassword}>
+                  Update Password
+                </Button>
               </div>
             </CardContent>
           </Card>
