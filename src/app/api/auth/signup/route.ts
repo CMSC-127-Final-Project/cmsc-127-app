@@ -1,15 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
+import { signupSchema } from '@/utils/schemas';
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const cookieStore = await cookies();
+
   try {
     const formData = await request.json();
+    const parsedData = signupSchema.safeParse(formData);
+
+    if (!parsedData.success) {
+      return NextResponse.json(
+        { error: 'Invalid input', details: parsedData.error.errors },
+        { status: 400 }
+      );
+    }
+
+    const validatedData = parsedData.data;
+
     const { data, error } = await supabase.auth.signUp({
-      email: formData.email,
-      password: formData.password,
+      email: validatedData.email,
+      password: validatedData.password,
     });
 
     if (error) throw { message: error.message, status: error.status, name: error.name };
@@ -20,28 +33,28 @@ export async function POST(request: NextRequest) {
 
     const { error: insertError } = await supabase.from('User').insert({
       auth_id: data.user?.id,
-      last_name: formData.lname,
-      first_name: formData.fname,
-      nickname: formData.nickname,
-      email: formData.email,
-      role: formData.role,
-      dept: formData.department,
+      last_name: validatedData.lname,
+      first_name: validatedData.fname,
+      nickname: validatedData.nickname,
+      email: validatedData.email,
+      role: validatedData.role,
+      dept: validatedData.department,
     });
 
-    if (formData.role === 'Instructor') {
+    if (validatedData.role === 'Instructor') {
       const { error: updateError } = await supabase
         .from('User')
-        .update({ instructor_id: formData.instructorID })
-        .eq('email', formData.email);
+        .update({ instructor_id: validatedData.instructorID })
+        .eq('email', validatedData.email);
 
       if (updateError) throw { message: updateError.message, name: updateError.name };
 
       const { error: instructorError } = await supabase
         .from('Instructor')
         .insert({
-          instructor_id: formData.instructorID,
-          office: formData.instructorOffice,
-          faculty_rank: formData.facultyRank,
+          instructor_id: validatedData.instructorID,
+          office: validatedData.instructorOffice,
+          faculty_rank: validatedData.facultyRank,
         })
         .select('instructor_id')
         .single();
@@ -51,8 +64,8 @@ export async function POST(request: NextRequest) {
     } else {
       const { error: studentError } = await supabase
         .from('User')
-        .update({ student_num: formData.studentNumber })
-        .eq('email', formData.email);
+        .update({ student_num: validatedData.studentNumber })
+        .eq('email', validatedData.email);
       if (studentError) throw { message: studentError.message, name: studentError.name };
     }
 
