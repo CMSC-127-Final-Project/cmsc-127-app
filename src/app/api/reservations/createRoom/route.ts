@@ -9,13 +9,13 @@ export async function POST(req: NextRequest) {
   if (!room_number || !capacity || !room_type) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
   }
-  
+
   const { data, error } = await supabase.from('Room').insert([
     {
       room_number,
       capacity,
       room_type,
-      status: 'Available', 
+      status: 'Available',
       created_at: new Date().toISOString(),
     },
   ]);

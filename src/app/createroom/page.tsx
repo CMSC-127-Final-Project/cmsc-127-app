@@ -2,7 +2,7 @@ import { RoomForm } from '@/components/createroom/roomform';
 import { RoomList } from '@/components/createroom/roomlist';
 import Navbar from '@/components/ui/adminNavbar';
 import { createClient } from '@/utils/supabase/server';
-import { Metadata } from 'next';  
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Create Room',
