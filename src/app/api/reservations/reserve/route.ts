@@ -1,4 +1,5 @@
 import { createClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/utils/supabase/admin';
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 
@@ -45,7 +46,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    const supabase = await createClient();
+    const supabase = await createAdminClient();
 
     const { data, error } = await supabase
       .from('Reservation')
@@ -71,12 +72,24 @@ export async function GET() {
       throw error;
     }
 
-    // Format with fallback
-    const formattedData = data.map((item: any) => {
+    const formattedData = (data as Array<{
+      reservation_id: string;
+      created_at: string;
+      room_num: string;
+      date: string;
+      start_time: string;
+      end_time: string;
+      status: string;
+      user_id: string;
+      User?: {
+        first_name?: string;
+        last_name?: string;
+      };
+    }>).map((item) => {
       const fullName = item.User
         ? `${item.User.first_name ?? ''} ${item.User.last_name ?? ''}`.trim()
         : `Unknown Requestor (user_id: ${item.user_id})`;
-
+    
       return {
         ...item,
         name: fullName,
@@ -84,8 +97,12 @@ export async function GET() {
     });
 
     return NextResponse.json(formattedData, { status: 200 });
-  } catch (error: any) {
-    console.error('API error:', error.message);
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('API error:', error.message);
+      return NextResponse.json({ message: error.message }, { status: 500 });
+    }
+    console.error('API error: An unknown error occurred');
+    return NextResponse.json({ message: 'An unknown error occurred' }, { status: 500 });
   }
 }

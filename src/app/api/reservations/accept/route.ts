@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 
 export async function PATCH(request: NextRequest) {
-  const supabase = await createClient();
   const { reservation_id } = await request.json();
+  const supabase = await createClient();
   try {
     const { error } = await supabase
       .from('Reservation')
