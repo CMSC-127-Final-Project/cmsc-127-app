@@ -190,7 +190,7 @@ export default function Settings({ user_id }: { user_id: string }) {
     <div>
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid grid-cols-3 mb-4">
-          <TabsTrigger value="personal">Personal Information</TabsTrigger>
+          <TabsTrigger value="personal">Personal</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
           <TabsTrigger value="preferences">Preferences</TabsTrigger>
         </TabsList>
