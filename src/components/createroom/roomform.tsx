@@ -16,14 +16,15 @@ import { useToast } from '@/hooks/use-toast';
 
 export function RoomForm() {
   const { toast } = useToast();
-  const [roomName, setRoomName] = useState('');
+  const [room_number, setRoomName] = useState('');
   const [capacity, setCapacity] = useState('');
-  const [roomType, setRoomType] = useState('');
+  const [room_type, setRoomType] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!roomName || !capacity || !roomType) {
+    if (!room_number || !capacity || !room_type) {
       toast({
         title: 'Error',
         description: 'Please fill in all fields',
@@ -32,29 +33,44 @@ export function RoomForm() {
       return;
     }
 
-    const existingRooms = JSON.parse(localStorage.getItem('rooms') || '[]');
-
     const newRoom = {
-      id: Date.now(),
-      name: roomName,
+      room_number: room_number,
       capacity: Number.parseInt(capacity),
-      type: roomType,
-      createdAt: new Date().toISOString(),
+      room_type: room_type,
     };
 
-    const updatedRooms = [...existingRooms, newRoom];
-    localStorage.setItem('rooms', JSON.stringify(updatedRooms));
+    try {
+      const response = await fetch('/api/reservations/createRoom', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newRoom),
+      });
 
-    setRoomName('');
-    setCapacity('');
-    setRoomType('');
+      const result = await response.json();
 
-    toast({
-      title: 'Success',
-      description: 'Room added successfully',
-    });
+      if (!response.ok) {
+        throw new Error(result.error || 'Something went wrong');
+      }
 
-    window.dispatchEvent(new Event('roomsUpdated'));
+      toast({
+        title: 'Success',
+        description: 'Room added successfully',
+      });
+
+      setRoomName('');
+      setCapacity('');
+      setRoomType('');
+      window.dispatchEvent(new Event('roomsUpdated'));
+    } catch (err: any) {
+      toast({
+        title: 'Error',
+        description: err.message,
+        variant: 'destructive',
+      });
+    }
+    
   };
 
   return (
@@ -67,12 +83,12 @@ export function RoomForm() {
       <form onSubmit={handleSubmit} className="space-y-6 font-roboto">
         <div className="space-y-2">
           <Label htmlFor="room-name" className="font-roboto">
-            Room Name
+            Room Number
           </Label>
           <Input
             id="room-name"
             placeholder="e.g. Room 201"
-            value={roomName}
+            value={room_number}
             onChange={e => setRoomName(e.target.value)}
             className="font-roboto"
           />
@@ -97,23 +113,30 @@ export function RoomForm() {
           <Label htmlFor="room-type" className="font-roboto">
             Room Type
           </Label>
-          <Select value={roomType} onValueChange={setRoomType}>
+          <Select value={room_type} onValueChange={setRoomType}>
             <SelectTrigger id="room-type">
-              <SelectValue placeholder="Select room type" />
+              <SelectValue placeholder="Select room type" className="font-roboto" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="classroom">Classroom</SelectItem>
-              <SelectItem value="laboratory">Laboratory</SelectItem>
-              <SelectItem value="conference-room">Conference Room</SelectItem>
+              <SelectItem value="classroom" className="font-roboto">
+                Classroom
+              </SelectItem>
+              <SelectItem value="laboratory" className="font-roboto">
+                Laboratory
+              </SelectItem>
+              <SelectItem value="conference-room" className="font-roboto">
+                Conference Room
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <Button
           type="submit"
+          disabled={loading}
           className="w-full bg-[#5D1A0B] hover:bg-[#731f10] text-white rounded-2xl font-raleway"
         >
-          Add Room
+          {loading ? 'Adding...' : 'Add Room'}
         </Button>
       </form>
     </div>

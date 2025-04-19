@@ -14,10 +14,11 @@ import { Button } from '@/components/ui/button';
 
 type Room = {
   id: number;
-  name: string;
+  room_number: string;
   capacity: number;
-  type: string;
-  createdAt: string;
+  room_type: string;
+  status: string;
+  created_at: string;
 };
 
 type ActionMode = 'edit' | 'delete' | null;
@@ -28,15 +29,45 @@ export function RoomList() {
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [editedRoom, setEditedRoom] = useState<Room | null>(null);
 
-  const loadRooms = () => {
-    const storedRooms = JSON.parse(localStorage.getItem('rooms') || '[]');
-    setRooms(storedRooms);
+  const loadRooms = async () => {
+    try {
+      const res = await fetch('/api/reservations/showRoom');
+      const result = await res.json();
+      if (res.ok) {
+        setRooms(result.data);
+      } else {
+        console.error(result.error);
+      }
+    } catch (error) {
+      console.error('Failed to fetch rooms:', error);
+    }
+  };
+
+  const handleDelete = async (roomNumber: string) => {
+    try {
+      const res = await fetch('/api/reservations/deleteRoom', {
+        method: 'PATCH', // <-- Change this from DELETE to PATCH
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          room_number: roomNumber,
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || `Failed to delete room: ${res.status}`);
+      }
+
+      await loadRooms();
+    } catch (error) {
+      console.error('Error in handleDelete:', error);
+    }
   };
 
   useEffect(() => {
     loadRooms();
-    window.addEventListener('roomsUpdated', loadRooms);
-    return () => window.removeEventListener('roomsUpdated', loadRooms);
   }, []);
 
   const formatRoomType = (type: string) => {
@@ -61,12 +92,32 @@ export function RoomList() {
     setEditedRoom(null);
   };
 
-  const saveRoom = () => {
+  const saveRoom = async () => {
     if (!editedRoom) return;
-    const updatedRooms = rooms.map(room => (room.id === editedRoom.id ? editedRoom : room));
-    localStorage.setItem('rooms', JSON.stringify(updatedRooms));
-    setRooms(updatedRooms);
-    closeEditModal();
+
+    try {
+      const res = await fetch('/api/reservations/editRoom', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          old_room_number: selectedRoom?.room_number,
+          room_number: editedRoom.room_number,
+          capacity: editedRoom.capacity,
+          room_type: editedRoom.room_type,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to update room');
+      }
+
+      await loadRooms(); // Refresh the list
+      closeEditModal();
+    } catch (error) {
+      console.error('Error updating room:', error);
+    }
   };
 
   return (
@@ -119,7 +170,7 @@ export function RoomList() {
             </TableHeader>
             <TableBody>
               {rooms.length === 0 ? (
-                <TableRow>
+                <TableRow key="empty-row">
                   <TableCell
                     colSpan={actionMode ? 4 : 3}
                     className="text-center py-6 text-gray-500 italic"
@@ -129,21 +180,27 @@ export function RoomList() {
                 </TableRow>
               ) : (
                 rooms.map(room => (
-                  <TableRow key={room.id} className="hover:bg-[#fdf7f6]">
+                  <TableRow key={`room-${room.room_number}`} className="hover:bg-[#fdf7f6]">
                     <TableCell className="font-medium text-gray-800 font-roboto">
-                      {room.name}
+                      {room.room_number}
                     </TableCell>
                     <TableCell className="text-gray-700 font-roboto">{room.capacity}</TableCell>
                     <TableCell className="text-gray-700 font-roboto">
-                      {formatRoomType(room.type)}
+                      {formatRoomType(room.room_type)}
                     </TableCell>
                     {actionMode === 'delete' && (
                       <TableCell className="text-center text-red-500">
-                        <Trash2 className="w-5 h-5 cursor-pointer hover:scale-110 transition" />
+                        <Trash2
+                          className="w-5 h-5 cursor-pointer hover:scale-110 transition"
+                          onClick={() => handleDelete(room.room_number)}
+                        />
                       </TableCell>
                     )}
                     {actionMode === 'edit' && (
-                      <TableCell className="text-center text-blue-500">
+                      <TableCell
+                        key={`edit-${room.room_number}`}
+                        className="text-center text-blue-500"
+                      >
                         <Pencil
                           className="w-5 h-5 cursor-pointer hover:scale-110 transition"
                           onClick={() => openEditModal(room)}
@@ -168,8 +225,8 @@ export function RoomList() {
                 <label className="block text-sm font-medium text-gray-700">Room Name</label>
                 <input
                   type="text"
-                  value={editedRoom.name}
-                  onChange={e => setEditedRoom({ ...editedRoom, name: e.target.value })}
+                  value={editedRoom.room_number}
+                  onChange={e => setEditedRoom({ ...editedRoom, room_number: e.target.value })}
                   className="mt-1 w-full border rounded-lg px-3 py-2 text-sm"
                 />
               </div>
@@ -191,8 +248,8 @@ export function RoomList() {
                 <label className="block text-sm font-medium text-gray-700">Room Type</label>
                 <input
                   type="text"
-                  value={editedRoom.type}
-                  onChange={e => setEditedRoom({ ...editedRoom, type: e.target.value })}
+                  value={editedRoom.room_type}
+                  onChange={e => setEditedRoom({ ...editedRoom, room_type: e.target.value })}
                   className="mt-1 w-full border rounded-lg px-3 py-2 text-sm"
                 />
               </div>

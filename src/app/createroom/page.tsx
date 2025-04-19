@@ -1,32 +1,25 @@
 import { RoomForm } from '@/components/createroom/roomform';
 import { RoomList } from '@/components/createroom/roomlist';
 import Navbar from '@/components/ui/adminNavbar';
-import { cookies } from 'next/headers';
+import { createClient } from '@/utils/supabase/server';
+import { Metadata } from 'next';  
+
+export const metadata: Metadata = {
+  title: 'Create Room',
+  description: 'Create and manage rooms',
+  icons: {
+    icon: 'upfavicon.ico',
+  },
+};
 
 export default async function CreateRoom() {
-  const cookieStore = await cookies();
-  const user_id = cookieStore.get('user')?.value || '';
-
-  let nickname = '';
-  try {
-    const response = await fetch(`http://localhost:3000/api/user/${user_id}`, {
-      method: 'GET',
-    });
-
-    if (!response.ok) {
-      const { error } = await response.json();
-      throw new Error(error);
-    }
-
-    const data = await response.json();
-    nickname = data.nickname;
-  } catch (error) {
-    console.error('Error fetching nickname:', error);
-  }
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+  const user_id = data.user?.id || '';
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <Navbar user_id={nickname} />
+    <div className="bg-white min-h-screen">
+      <Navbar user_id={user_id} />
 
       <div className="px-6 md:px-10">
         <div className="max-w-7xl mx-auto pt-4">
