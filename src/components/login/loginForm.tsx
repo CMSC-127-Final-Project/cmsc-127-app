@@ -105,8 +105,8 @@ export default function LoginPage() {
               Forgot password?
             </button>
             {showPopup && (
-              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
-                <div className="bg-white rounded shadow-md p-10 pb-5">
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+                <div className="bg-white rounded shadow-md p-10 pb-5 z-60">
                   <div className="flex flex-col items-center justify-center text-gray-500">
                     <Key className="w-16 h-16 mb-4 " />
                     <p className="font-medium text-base text-gray-700">Forgot password?</p>
@@ -126,7 +126,7 @@ export default function LoginPage() {
               </div>
             )}
           </div>
-          <div>
+          <div className="relative">
             <Input id="password" type={showPassword ? 'text' : 'password'} required />
             <Button
               type="button"
