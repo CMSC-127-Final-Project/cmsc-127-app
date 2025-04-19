@@ -1,19 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
-import { z } from 'zod';
-
-// Define the schema for validating the request body
-const changePasswordSchema = z.object({
-  currentPassword: z.string(),
-  newPassword: z.string().min(8),
-  confirmPassword: z.string(),
-});
+import { changePasswordSchema } from '@/utils/schemas';
 
 export async function PATCH(req: NextRequest) {
   const supabase = await createClient();
 
   try {
-    // Authenticate the session
     const { data: user, error: userError } = await supabase.auth.getUser();
     if (userError || !user) {
       console.error('Authentication error:', userError?.message || 'No active session');
