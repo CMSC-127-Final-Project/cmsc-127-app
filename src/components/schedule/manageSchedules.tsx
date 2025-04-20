@@ -18,6 +18,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useToast } from '@/hooks/use-toast';
+import posthog from 'posthog-js';
 
 interface Room {
   room_number: string;
@@ -61,6 +62,7 @@ export default function RoomReservation() {
       });
 
       if (!response.ok) throw new Error('Failed to add schedule');
+      posthog.capture('my event', { property: 'value' })
 
       toast({
         title: 'Success',
