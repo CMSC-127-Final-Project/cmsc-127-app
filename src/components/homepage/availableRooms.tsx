@@ -266,7 +266,7 @@ export default function RoomReservation() {
               .map((room, roomIndex) => (
                 <div
                   key={room.id || roomIndex}
-                  className="border rounded-2xl shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-in-out p-4"
+                  className="border rounded-2xl shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-in-out p-4 flex flex-col h-full"
                 >
                   <div className="flex justify-between items-center mb-2">
                     <h4 className="font-semibold text-[#5D1A0B]">{room.number}</h4>
@@ -290,7 +290,7 @@ export default function RoomReservation() {
                       </span>
                     ))}
                   </p>
-                  <div className="mt-4 justify-end flex gap-2">
+                  <div className="mt-auto flex justify-end">
                     <Button
                       onClick={() => handleReserveClick(room)}
                       className="bg-[#5D1A0B] hover:bg-[#731f10] text-white"
