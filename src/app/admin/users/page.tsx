@@ -17,7 +17,6 @@ export default async function UserManagementPage() {
   return (
     <>
       <Navbar user_id={user_id} />
-      <div className="pt-16 md:pt-24">
         <div className="p-4 md:p-6 md:ml-16">
           <h1 className="text-2xl md:text-5xl font-bold font-raleway flex flex-wrap items-center gap-2">
             Manage Users
@@ -27,7 +26,6 @@ export default async function UserManagementPage() {
           </p>
         </div>
         <Users />
-      </div>
     </>
   );
 }
