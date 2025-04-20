@@ -96,23 +96,6 @@ export default function Navbar({ user_id }: { user_id: string }) {
   const toggleDarkMode = () => setDarkMode(!darkMode);
   const toggleSidebar = () => setSidebarOpen(prev => !prev);
 
-  useEffect(() => {
-    function handleResize() {
-      if (sidebarOpen) {
-        document.body.classList.add('sidebar-open');
-      } else {
-        document.body.classList.remove('sidebar-open');
-      }
-    }
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      document.body.classList.remove('sidebar-open');
-    };
-  }, [sidebarOpen]);
-
   return (
     <>
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
@@ -249,6 +232,13 @@ export default function Navbar({ user_id }: { user_id: string }) {
           </div>
         </div>
       </nav>
+
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-30 z-40"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
       <main
         className={`main-content pt-5 md:pt-12 lg:pt-12 transition-all duration-300 ${sidebarOpen ? 'ml-56' : ''}`}

@@ -122,7 +122,7 @@ export function RoomList() {
 
   return (
     <>
-      <div className="bg-white p-6 md:p-8 rounded-3xl shadow-md w-full font-roboto relative">
+      <div className="bg-white p-6 md:p-8 rounded-3xl shadow-md w-full font-roboto relative mb-8">
         <div className="flex justify-between items-center mb-6">
           <div>
             <h2 className="text-lg md:text-2xl font-bold font-raleway text-gray-900">Room List</h2>
