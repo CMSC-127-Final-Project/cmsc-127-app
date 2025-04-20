@@ -3,44 +3,50 @@ import { createAdminClient } from '@/utils/supabase/admin';
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   const supabase = await createClient();
+  const { room_number, date, start_time, end_time, reason } = await req.json();
+
   try {
-    const formData = await request.json();
+    // Check for conflicts
+    const { data: conflicts, error: conflictError } = await supabase
+      .from('Scheduled Time')
+      .select('*')
+      .eq('room_num', room_number)
+      .eq('date', date)
+      .or(`start_time.lt.${end_time},end_time.gt.${start_time}`);
 
-    // Validate user_id
-    const { data: user, error: userError } = await supabase
-      .from('User')
-      .select('id')
-      .eq('id', formData.userId)
-      .single();
+    if (conflictError) {
+      throw new Error('Error checking for conflicts');
+    }
 
-    if (userError || !user) {
+    if (conflicts.length > 0) {
       return NextResponse.json(
-        { error: 'Invalid user_id. User does not exist.', status: 400 },
-        { status: 400 }
+        { error: 'The selected time conflicts with an existing schedule.' },
+        { status: 409 }
       );
     }
 
-    const { error } = await supabase.from('Reservation').insert({
-      user_id: formData.userId,
-      reservation_id: formData.reservationId,
-      date: formData.date,
-      start_time: formData.startTime,
-      end_time: formData.endTime,
-      room_num: formData.roomNum,
-      reason: formData.reason,
-      user_msg: formData.message,
+    // Insert reservation
+    const { error: insertError } = await supabase.from('Reservation').insert({
+      user_id: (await supabase.auth.getUser()).data.user?.id,
+      room_num: room_number,
+      date,
+      start_time,
+      end_time,
+      reason,
     });
 
-    if (error) throw new Error();
+    console.error('Insert error:', insertError);
 
-    return NextResponse.json({ status: 200 });
-  } catch {
-    return NextResponse.json(
-      { error: 'Please try again later.', status: 500, name: 'Internal Server Error' },
-      { status: 500 }
-    );
+    if (insertError) {
+      throw new Error('Error inserting reservation');
+    }
+
+    return NextResponse.json({ message: 'Reservation successful' }, { status: 200 });
+  } catch (error) {
+    console.error('Error processing reservation:', error);
+    return NextResponse.json({ error: 'Could not process reservation.' }, { status: 500 });
   }
 }
 
