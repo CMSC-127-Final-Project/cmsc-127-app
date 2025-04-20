@@ -1,5 +1,4 @@
 import { createClient } from '@/utils/supabase/server';
-import { createAdminClient } from '@/utils/supabase/admin';
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
@@ -8,7 +7,7 @@ import { userSchema } from '@/utils/schemas';
 const UsersListSchema = z.array(userSchema);
 
 export async function POST(request: NextRequest) {
-  const supabase = await createAdminClient();
+  const supabase = await createClient();
 
   try {
     const rawBody = await request.text();
@@ -56,7 +55,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    const supabase = await createAdminClient();
+    const supabase = await createClient();
 
     // Fetch data from the User table
     const { data, error } = await supabase
