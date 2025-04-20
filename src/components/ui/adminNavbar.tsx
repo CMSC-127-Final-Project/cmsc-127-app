@@ -151,11 +151,17 @@ export default function Navbar({ user_id }: { user_id: string }) {
                 <Sun className="w-5 h-5 text-gray-900 cursor-pointer" />
               )}
             </button>
-            <UserSearch className="w-5 h-5 text-gray-900 dark:text-white cursor-pointer" />
+            <UserSearch
+              onClick={() => router.push('/admin/users')}
+              className="w-5 h-5 text-gray-900 dark:text-white cursor-pointer"
+            />
           </div>
 
           <div className="flex md:hidden items-center space-x-4">
-            <UserSearch className="w-5 h-5 text-gray-900 dark:text-white cursor-pointer" />
+            <UserSearch
+              onClick={() => router.push('/admin/users')}
+              className="w-5 h-5 text-gray-900 dark:text-white cursor-pointer"
+            />
             <button
               onClick={toggleDarkMode}
               className="focus:outline-none transition-colors duration-200"
