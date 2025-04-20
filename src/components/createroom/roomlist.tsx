@@ -122,10 +122,10 @@ export function RoomList() {
 
   return (
     <>
-      <div className="bg-white p-6 md:p-8 rounded-3xl shadow-md w-full font-roboto relative">
+      <div className="bg-white p-6 md:p-8 rounded-3xl shadow-md w-full font-roboto relative mb-8">
         <div className="flex justify-between items-center mb-6">
-          <div>
-            <h2 className="text-lg md:text-2xl font-bold font-raleway text-gray-900">Room List</h2>
+          <div className="font-raleway">
+            <h2 className="text-lg md:text-2xl font-bold text-gray-900">Room List</h2>
             <p className="text-sm text-gray-600">View all available rooms</p>
           </div>
           <div className="flex gap-2">
@@ -149,7 +149,7 @@ export function RoomList() {
         </div>
 
         <div className="rounded-lg border border-gray-200 overflow-hidden">
-          <Table>
+          <Table className="p-6">
             <TableHeader className="bg-[#5D1A0B]">
               <TableRow className="hover:bg-[#5D1A0B]">
                 <TableHead className="font-semibold text-sm text-white font-roboto">

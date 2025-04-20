@@ -1,17 +1,19 @@
-import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
+import type { Metadata } from 'next';
+import { Raleway, Roboto } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
 import { PostHogProvider } from './providers';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const roboto = Roboto({
+  variable: '--font-roboto',
   subsets: ['latin'],
+  display: 'swap',
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const raleway = Raleway({
+  variable: '--font-raleway',
   subsets: ['latin'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -25,8 +27,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en" className={`${roboto.variable} ${raleway.variable}`}>
+      <body className="font-roboto antialiased">
         <Toaster />
         <PostHogProvider>{children}</PostHogProvider>
       </body>

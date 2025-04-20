@@ -53,8 +53,8 @@ export default {
         },
       },
       fontFamily: {
-        raleway: ['Raleway', 'sans-serif'],
-        roboto: ['Roboto', 'sans-serif'],
+        roboto: ['var(--font-roboto)', 'sans-serif'],
+        raleway: ['var(--font-raleway)', 'sans-serif'],
       },
       borderRadius: {
         lg: 'var(--radius)',

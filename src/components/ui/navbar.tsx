@@ -97,23 +97,6 @@ export default function Navbar({ user_id }: { user_id: string }) {
   const toggleDarkMode = () => setDarkMode(!darkMode);
   const toggleSidebar = () => setSidebarOpen(prev => !prev);
 
-  useEffect(() => {
-    function handleResize() {
-      if (sidebarOpen) {
-        document.body.classList.add('sidebar-open');
-      } else {
-        document.body.classList.remove('sidebar-open');
-      }
-    }
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      document.body.classList.remove('sidebar-open');
-    };
-  }, [sidebarOpen]);
-
   return (
     <>
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
@@ -194,9 +177,7 @@ export default function Navbar({ user_id }: { user_id: string }) {
                     <UserCircle className="text-gray-600 dark:text-gray-300 w-12 h-12" />
                     <div>
                       <p className="font-semibold font-raleway dark:text-white">{username}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 font-raleway">
-                        20XX-XXXXX
-                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">20XX-XXXXX</p>
                     </div>
                   </div>
                   <ul className="mt-2 text-sm font-raleway border-b pb-2 dark:border-gray-600">
@@ -251,9 +232,14 @@ export default function Navbar({ user_id }: { user_id: string }) {
         </div>
       </nav>
 
-      <main
-        className={`main-content pt-2 lg:pt-16 transition-all duration-300 ${sidebarOpen ? 'ml-56' : ''}`}
-      >
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-30 z-40"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <main className="main-content pt-2 lg:pt-16">
         <div className="content-wrapper px-4 md:px-8 py-6 max-w-7xl mx-auto w-full">
           {/* Content will be rendered inside this wrapper */}
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
 import { RxCheckCircled, RxCrossCircled, RxTrash, RxDotsHorizontal } from 'react-icons/rx';
 import { useToast } from '@/hooks/use-toast';
 
@@ -9,92 +10,61 @@ interface Reservation {
   created_at: string;
   room_num: string;
   date: string;
-  name: string; // Concatenated name from the API
+  name: string;
   start_time: string;
   end_time: string;
 }
 
-const acceptReservation = async (
-  reservation: Reservation,
-  toast: (options: { title: string; description: string }) => void
-) => {
-  console.log(reservation);
-  try {
-    const response = await fetch('/api/reservations/accept', {
-      method: 'PATCH',
-      body: JSON.stringify({ reservation_id: reservation.reservation_id }),
-    });
+const DropdownPortal: React.FC<{
+  children: React.ReactNode;
+  triggerRef: React.RefObject<HTMLElement>;
+  isOpen: boolean;
+}> = ({ children, triggerRef, isOpen }) => {
+  const [styles, setStyles] = useState<React.CSSProperties>({});
 
-    if (!response.ok) throw new Error('Failed to reject reservation');
+  useEffect(() => {
+    if (triggerRef.current && isOpen) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setStyles({
+        position: 'absolute',
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+        zIndex: 9999,
+      });
+    }
+  }, [isOpen, triggerRef]);
 
-    toast({
-      title: 'Success',
-      description: 'Rejected the reservation!',
-    });
-  } catch (error) {
-    console.error(error);
-    toast({
-      title: 'Error',
-      description: 'Failed to reject reservation',
-    });
-  }
+  if (!isOpen) return null;
+
+  return ReactDOM.createPortal(<div style={styles}>{children}</div>, document.body);
 };
 
-const rejectReservation = async (
-  reservation: Reservation,
+const handleReservationAction = async (
+  endpoint: string,
+  reservation_id: string,
+  successMessage: string,
+  errorMessage: string,
   toast: (options: { title: string; description: string }) => void
 ) => {
-  console.log(reservation);
   try {
-    const response = await fetch('/api/reservations/reject', {
+    const response = await fetch(endpoint, {
       method: 'PATCH',
-      body: JSON.stringify({ reservation_id: reservation.reservation_id }),
+      body: JSON.stringify({ reservation_id }),
     });
 
-    if (!response.ok) throw new Error('Failed to reject reservation');
+    if (!response.ok) throw new Error(errorMessage);
 
-    toast({
-      title: 'Success',
-      description: 'Rejected the reservation!',
-    });
+    toast({ title: 'Success', description: successMessage });
   } catch (error) {
     console.error(error);
-    toast({
-      title: 'Error',
-      description: 'Failed to reject reservation',
-    });
-  }
-};
-
-const removeReservation = async (
-  reservation: Reservation,
-  toast: (options: { title: string; description: string }) => void
-) => {
-  console.log(reservation);
-  try {
-    const response = await fetch('/api/reservations/remove', {
-      method: 'PATCH',
-      body: JSON.stringify({ reservation_id: reservation.reservation_id }),
-    });
-
-    if (!response.ok) throw new Error('Failed to reject reservation');
-
-    toast({
-      title: 'Success',
-      description: 'Rejected the reservation!',
-    });
-  } catch (error) {
-    console.error(error);
-    toast({
-      title: 'Error',
-      description: 'Failed to reject reservation',
-    });
+    toast({ title: 'Error', description: errorMessage });
   }
 };
 
 const ReservationRequests = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+  const dropdownRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const { toast } = useToast();
 
   useEffect(() => {
@@ -109,13 +79,8 @@ const ReservationRequests = () => {
   useEffect(() => {
     const loadReservations = async () => {
       try {
-        const response = await fetch('/api/reservations/reserve', {
-          method: 'GET',
-        });
-        if (!response.ok) {
-          throw new Error('Failed to fetch reservations');
-        }
-
+        const response = await fetch('/api/reservations/reserve', { method: 'GET' });
+        if (!response.ok) throw new Error('Failed to fetch reservations');
         const data = await response.json();
         setReservations(data.length > 0 ? data : []);
       } catch (error) {
@@ -140,7 +105,6 @@ const ReservationRequests = () => {
       <div className="flex flex-row justify-between items-center mb-4">
         <h2 className="text-lg md:text-2xl font-bold font-raleway">Reservation Requests</h2>
       </div>
-
       <div className="overflow-x-auto">
         <table className="w-full border-collapse shadow-sm rounded-lg overflow-hidden text-sm md:text-base">
           <thead>
@@ -160,102 +124,129 @@ const ReservationRequests = () => {
           </thead>
           <tbody className="bg-white text-center">
             {reservations.length > 0 ? (
-              reservations.map((reservation, index) => (
-                <tr key={reservation.reservation_id} className="border-t last:border-b">
-                  <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                    {new Date(reservation.created_at).toLocaleString()}
-                  </td>
-                  <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
-                    {reservation.name || 'N/A'} {/* Ensure name is displayed */}
-                  </td>
-                  <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                    {reservation.room_num}
-                  </td>
-                  <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                    {reservation.date}
-                  </td>
-                  <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                    {reservation.start_time}
-                  </td>
-                  <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                    {reservation.end_time}
-                  </td>
-                  <td className="px-0 md:px-0 py-5 relative text-center">
-                    <button
-                      className="text-gray-500 px-2 py-1 rounded-md"
-                      onClick={e => {
-                        e.stopPropagation();
-                        setOpenDropdownId(
-                          openDropdownId === reservation.created_at ? null : reservation.created_at
-                        );
-                      }}
-                    >
-                      <RxDotsHorizontal size={20} />
-                    </button>
-
-                    {openDropdownId === reservation.created_at && (
-                      <div
-                        className={`absolute right-0 ${
-                          index >= reservations.length - 2 ? 'bottom-full mb-2' : 'mt-2'
-                        } py-2 bg-white rounded-md shadow-xl z-10 border border-gray-200`}
+              reservations.map(reservation => {
+                const ref = (el: HTMLButtonElement | null) => {
+                  dropdownRefs.current[reservation.reservation_id] = el;
+                };
+                return (
+                  <tr key={reservation.reservation_id} className="border-t last:border-b">
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                      {new Date(reservation.created_at).toLocaleString()}
+                    </td>
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
+                      {reservation.name || 'N/A'}
+                    </td>
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                      {reservation.room_num}
+                    </td>
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                      {reservation.date}
+                    </td>
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                      {reservation.start_time}
+                    </td>
+                    <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
+                      {reservation.end_time}
+                    </td>
+                    <td className="px-0 md:px-0 py-5 relative text-center">
+                      <button
+                        ref={ref}
+                        className="text-gray-500 px-2 py-1 rounded-md"
+                        onClick={e => {
+                          e.stopPropagation();
+                          setOpenDropdownId(
+                            openDropdownId === reservation.reservation_id
+                              ? null
+                              : reservation.reservation_id
+                          );
+                        }}
                       >
-                        <button
-                          className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                          onClick={e => {
-                            e.stopPropagation();
-                            acceptReservation(reservation, toast);
-                            setOpenDropdownId(null);
-                            localStorage.setItem(
-                              'reservation-toast',
-                              JSON.stringify({
-                                title: 'Success',
-                                description: 'Accepted the reservation!',
-                              })
-                            );
-                            window.location.reload();
-                          }}
-                        >
-                          <RxCheckCircled size={18} className="mr-2 text-green-500" />
-                          Accept
-                        </button>
-                        <button
-                          className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                          onClick={e => {
-                            e.stopPropagation();
-                            rejectReservation(reservation, toast);
-                            setOpenDropdownId(null);
-                            localStorage.setItem(
-                              'reservation-toast',
-                              JSON.stringify({
-                                title: 'Success',
-                                description: 'Rejected the reservation!',
-                              })
-                            );
-                            window.location.reload();
-                          }}
-                        >
-                          <RxCrossCircled size={18} className="mr-2 text-red-500" />
-                          Reject
-                        </button>
-                        <button
-                          className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                          onClick={async e => {
-                            e.stopPropagation();
-                            await removeReservation(reservation, toast);
-                            setReservations(prev =>
-                              prev.filter(r => r.reservation_id !== reservation.reservation_id)
-                            );
-                            setOpenDropdownId(null);
-                          }}
-                        >
-                          <RxTrash size={18} className="mr-2 text-gray-500" />
-                          Remove
-                        </button>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              ))
+                        <RxDotsHorizontal size={20} />
+                      </button>
+                      <DropdownPortal
+                        isOpen={openDropdownId === reservation.reservation_id}
+                        triggerRef={{
+                          current:
+                            dropdownRefs.current[reservation.reservation_id] ?? document.body,
+                        }}
+                      >
+                        <div className="py-2 bg-white rounded-md shadow-xl border border-gray-200 w-40">
+                          <button
+                            className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                            onClick={async e => {
+                              e.stopPropagation();
+                              await handleReservationAction(
+                                '/api/reservations/accept',
+                                reservation.reservation_id,
+                                'Accepted the reservation!',
+                                'Failed to accept reservation',
+                                toast
+                              );
+                              setOpenDropdownId(null);
+                              localStorage.setItem(
+                                'reservation-toast',
+                                JSON.stringify({
+                                  title: 'Success',
+                                  description: 'Accepted the reservation!',
+                                })
+                              );
+                              window.location.reload();
+                            }}
+                          >
+                            <RxCheckCircled size={18} className="mr-2 text-green-500" />
+                            Accept
+                          </button>
+                          <button
+                            className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                            onClick={async e => {
+                              e.stopPropagation();
+                              await handleReservationAction(
+                                '/api/reservations/reject',
+                                reservation.reservation_id,
+                                'Rejected the reservation!',
+                                'Failed to reject reservation',
+                                toast
+                              );
+                              setOpenDropdownId(null);
+                              localStorage.setItem(
+                                'reservation-toast',
+                                JSON.stringify({
+                                  title: 'Success',
+                                  description: 'Rejected the reservation!',
+                                })
+                              );
+                              window.location.reload();
+                            }}
+                          >
+                            <RxCrossCircled size={18} className="mr-2 text-red-500" />
+                            Reject
+                          </button>
+                          <button
+                            className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                            onClick={async e => {
+                              e.stopPropagation();
+                              await handleReservationAction(
+                                '/api/reservations/remove',
+                                reservation.reservation_id,
+                                'Removed the reservation!',
+                                'Failed to remove reservation',
+                                toast
+                              );
+                              setReservations(prev =>
+                                prev.filter(r => r.reservation_id !== reservation.reservation_id)
+                              );
+                              setOpenDropdownId(null);
+                            }}
+                          >
+                            <RxTrash size={18} className="mr-2 text-gray-500" />
+                            Remove
+                          </button>
+                        </div>
+                      </DropdownPortal>
+                    </td>
+                  </tr>
+                );
+              })
             ) : (
               <tr>
                 <td colSpan={7} className="text-center px-3 md:px-5 py-3 text-gray-400">

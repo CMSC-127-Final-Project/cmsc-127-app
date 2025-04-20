@@ -10,9 +10,9 @@ export default function ProfileSidebar() {
     <div className="w-full md:w-1/4">
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Account Options</CardTitle>
+          <CardTitle className="text-lg font-raleway">Account Options</CardTitle>
         </CardHeader>
-        <CardContent className="p-0">
+        <CardContent className="p-0 font-raleway">
           <div className="divide-y">
             <div
               className="p-3 hover:bg-gray-50 cursor-pointer flex items-center"
