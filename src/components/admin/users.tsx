@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Search, List } from 'lucide-react';
-import { RxDotsHorizontal, RxTrash } from 'react-icons/rx';
+import { RxDotsHorizontal, RxPencil1, RxTrash, RxLockOpen1 } from 'react-icons/rx';
 
 interface User {
   id: number;
@@ -216,14 +216,17 @@ export default function Users() {
                     className="text-gray-500 px-2 py-1 rounded-md"
                     onClick={e => {
                       e.stopPropagation();
-                      setOpenDropdownId(openDropdownId);
+                      setOpenDropdownId(openDropdownId === user.id ? null : user.id);
                     }}
                   >
                     <RxDotsHorizontal size={20} />
                   </button>
 
-                  {openDropdownId && (
-                    <div className="absolute right-0 mt-2 py-2 bg-white rounded-md shadow-xl z-10 border border-g</div>ray-200">
+                  {openDropdownId === user.id && (
+                    <div
+                      className="absolute right-0 mt-2 py-2 bg-white rounded-md shadow-xl z-50 border border-gray-200"
+                      style={{ position: 'absolute', top: '100%', right: '0' }}
+                    >
                       <button
                         className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                         onClick={e => {
@@ -231,6 +234,7 @@ export default function Users() {
                           setOpenDropdownId(null);
                         }}
                       >
+                        <RxPencil1 size={18} className="mr-2 text-gray-500" />
                         Update
                       </button>
 
@@ -243,6 +247,17 @@ export default function Users() {
                       >
                         <RxTrash size={18} className="mr-2 text-gray-500" />
                         Delete
+                      </button>
+
+                      <button
+                        className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                        onClick={e => {
+                          e.stopPropagation();
+                          setOpenDropdownId(null);
+                        }}
+                      >
+                        <RxLockOpen1 size={18} className="mr-2 text-gray-500" />
+                        Change password
                       </button>
                     </div>
                   )}
