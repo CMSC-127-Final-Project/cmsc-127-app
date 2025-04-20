@@ -194,7 +194,7 @@ export default function RoomReservation() {
       )}
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="rounded-xl space-y-2">
+        <DialogContent className="rounded-xl space-y-2 w-full max-w-[95%] sm:max-w-md p-4 sm:p-6 text-sm sm:text-base">
           <DialogHeader>
             <DialogTitle>Reserve {selectedRoom?.number}</DialogTitle>
             <DialogDescription>
@@ -222,7 +222,7 @@ export default function RoomReservation() {
             />
           </div>
 
-          <DialogFooter className="mt-4">
+          <DialogFooter className="mt-4 flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
             <Button
               variant="outline"
               onClick={() => setShowDialog(false)}

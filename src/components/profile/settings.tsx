@@ -189,7 +189,7 @@ export default function Settings({ user_id }: { user_id: string }) {
   return (
     <div>
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid grid-cols-3 mb-4">
+        <TabsList className="grid grid-cols-3 mb-4 font-roboto">
           <TabsTrigger value="personal">Personal</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
           <TabsTrigger value="preferences">Preferences</TabsTrigger>
@@ -203,7 +203,7 @@ export default function Settings({ user_id }: { user_id: string }) {
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-4">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src="/placeholder.svg?height=96&width=96" alt="Profile picture" />
+                  <AvatarImage src="https://avatar.iran.liara.run/public/18" alt="Profile picture" />
                   <AvatarFallback>UO</AvatarFallback>
                 </Avatar>
                 <div className="space-y-2">
