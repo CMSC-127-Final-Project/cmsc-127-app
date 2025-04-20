@@ -199,7 +199,7 @@ export default function Users() {
               </tr>
             )}
             {filteredUsers?.map(user => (
-              <tr key={user.id || user.email} className="border-t last:border-b">
+              <tr key={user.id} className="border-t last:border-b">
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
                   {user.number}
                 </td>
