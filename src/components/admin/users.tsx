@@ -42,6 +42,7 @@ export default function Users() {
 
         // Map the API response to match the User interface
         const mappedUsers = data.map((user: any) => ({
+          id: user.id,
           number: user.student_num || user.instructor_id || 'N/A',
           firstName: user.first_name,
           lastName: user.last_name,
@@ -174,7 +175,7 @@ export default function Users() {
               </tr>
             )}
             {filteredUsers?.map(user => (
-              <tr key={user.id} className="border-t last:border-b">
+              <tr key={user.id || user.email} className="border-t last:border-b">
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
                   {user.number}
                 </td>
@@ -208,6 +209,7 @@ export default function Users() {
                   </button>
 
                   {openDropdownId === user.id && (
+                    console.log("Showing dropdown for: ${user.id}"),
                     <div
                       className="absolute right-0 mt-2 py-2 bg-white rounded-md shadow-xl z-50 border border-gray-200"
                       style={{ position: 'absolute', top: '100%', right: '0' }}

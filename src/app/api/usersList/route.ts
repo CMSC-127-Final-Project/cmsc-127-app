@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
 
     const { error } = await supabase.from('User').insert(
       validatedFormData.map(user => ({
+        user_ID: user.user_ID,
         student_num: user.student_num,
         instructor_id: user.instructor_id,
         first_name: user.first_name,
@@ -60,6 +61,7 @@ export async function GET() {
     // Fetch data from the User table
     const { data, error } = await supabase.from('User').select(
       `
+        user_ID,
         email,
         first_name,
         last_name,
