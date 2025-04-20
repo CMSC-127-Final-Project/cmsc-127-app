@@ -203,7 +203,10 @@ export default function Settings({ user_id }: { user_id: string }) {
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-4">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src="https://avatar.iran.liara.run/public/18" alt="Profile picture" />
+                  <AvatarImage
+                    src="https://avatar.iran.liara.run/public/18"
+                    alt="Profile picture"
+                  />
                   <AvatarFallback>UO</AvatarFallback>
                 </Avatar>
                 <div className="space-y-2">

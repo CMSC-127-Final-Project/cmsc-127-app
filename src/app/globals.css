@@ -259,7 +259,6 @@
 
 /* For mobile, ensure the content doesn't get shifted when sidebar is open */
 @media (max-width: 767px) {
-
   .sidebar-open .container,
   .sidebar-open .content-section,
   .sidebar-open .rounded-3xl {
