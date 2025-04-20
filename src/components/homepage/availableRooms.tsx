@@ -71,19 +71,29 @@ export default function RoomReservation() {
       if (!response.ok) throw new Error('Failed to fetch available rooms');
 
       const data = await response.json();
-      
-      const mappedData = data.map((room: { id: string; room_number: string; capacity: number; notes?: string; freeSlots: { start: string; end: string }[] }) => ({
-        ...room,
-        number: room.room_number,
-      }));
 
-      const filteredRooms = startTime && endTime
-        ? mappedData.filter((room: Room) =>
-            room.freeSlots.some((slot: { start: string; end: string }) =>
-              startTime >= slot.start && endTime <= slot.end
+      const mappedData = data.map(
+        (room: {
+          id: string;
+          room_number: string;
+          capacity: number;
+          notes?: string;
+          freeSlots: { start: string; end: string }[];
+        }) => ({
+          ...room,
+          number: room.room_number,
+        })
+      );
+
+      const filteredRooms =
+        startTime && endTime
+          ? mappedData.filter((room: Room) =>
+              room.freeSlots.some(
+                (slot: { start: string; end: string }) =>
+                  startTime >= slot.start && endTime <= slot.end
+              )
             )
-          )
-        : mappedData;
+          : mappedData;
 
       setAvailableRooms(filteredRooms);
       setHasSearched(true);
@@ -282,7 +292,9 @@ export default function RoomReservation() {
                           hour: '2-digit',
                           minute: '2-digit',
                           hour12: true,
-                        })} - {new Date(`1970-01-01T${slot.end}`).toLocaleTimeString([], {
+                        })}{' '}
+                        -{' '}
+                        {new Date(`1970-01-01T${slot.end}`).toLocaleTimeString([], {
                           hour: '2-digit',
                           minute: '2-digit',
                           hour12: true,

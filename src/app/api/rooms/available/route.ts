@@ -12,7 +12,6 @@ export async function POST(req: NextRequest) {
       .select('room_number, room_type, capacity');
     if (roomError) throw new Error('Error fetching rooms');
 
-
     // Fetch schedules for the given date
     const { data: schedules, error: scheduleError } = await supabase
       .from('Scheduled Time')
