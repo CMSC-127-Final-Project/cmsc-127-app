@@ -74,9 +74,6 @@ export async function GET() {
       `
     );
 
-    // Log raw data for debugging
-    console.log('Raw Data from Supabase:', data);
-
     // Handle Supabase errors
     if (error) {
       console.error('Supabase error:', error.message);
