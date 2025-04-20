@@ -6,7 +6,6 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { room_num, regular, start_time, end_time, days, date } = body;
-    console.log(days);
 
     // Validate required fields
     if (!room_num || !start_time || !end_time || (!regular && !date)) {

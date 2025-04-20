@@ -5,7 +5,6 @@ export async function PATCH(request: Request) {
   const supabase = await createClient();
   try {
     const { schedule_id } = await request.json();
-    console.log(schedule_id);
 
     if (!schedule_id) throw new Error('Missing schedule_id');
 

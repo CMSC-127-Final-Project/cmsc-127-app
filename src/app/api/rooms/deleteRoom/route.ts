@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminClient } from '@/utils/supabase/admin';
+import { createClient } from '@/utils/supabase/server';
 
 export async function PATCH(request: NextRequest) {
   const { room_number } = await request.json();
-  const supabase = await createAdminClient();
+  const supabase = await createClient();
   try {
     const { error } = await supabase.from('Room').delete().eq('room_number', room_number);
     if (error) throw new Error();

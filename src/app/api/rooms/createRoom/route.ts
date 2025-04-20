@@ -1,8 +1,8 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { createAdminClient } from '@/utils/supabase/admin';
+import { createClient } from '@/utils/supabase/server';
 
 export async function POST(req: NextRequest) {
-  const supabase = await createAdminClient();
+  const supabase = await createClient();
   const body = await req.json();
   const { room_number, capacity, room_type } = body;
 
