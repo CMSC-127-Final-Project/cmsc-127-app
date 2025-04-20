@@ -24,61 +24,46 @@ export default function Users() {
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [showEmptyState, setShowEmptyState] = useState(true);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>();
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const [users] = useState<User[]>([
-    {
-      id: 1,
-      number: '2021001',
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john.doe@example.com',
-      phone: '1234567890',
-      role: 'Student',
-      department: 'Computer Science',
-    },
-    {
-      id: 2,
-      number: '2021002',
-      firstName: 'Jane',
-      lastName: 'Smith',
-      email: 'jane.smith@example.com',
-      phone: '0987654321',
-      role: 'Faculty',
-      department: 'Mathematics',
-    },
-    {
-      id: 3,
-      number: '2021003',
-      firstName: 'Alice',
-      lastName: 'Johnson',
-      email: 'alice.johnson@example.com',
-      phone: '1122334455',
-      role: 'Staff',
-      department: 'Physics',
-    },
-    {
-      id: 4,
-      number: '2021004',
-      firstName: 'Bob',
-      lastName: 'Brown',
-      email: 'bob.brown@example.com',
-      phone: '5566778899',
-      role: 'Student',
-      department: 'Chemistry',
-    },
-    {
-      id: 5,
-      number: '2021005',
-      firstName: 'Charlie',
-      lastName: 'Davis',
-      email: 'charlie.davis@example.com',
-      phone: '6677889900',
-      role: 'Admin',
-      department: 'Biology',
-    },
-  ]);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/usersList');
+        const data = await response.json();
 
-  const [filteredUsers, setFilteredUsers] = useState<User[]>(users);
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to fetch users');
+        }
+
+        // Map the API response to match the User interface
+        const mappedUsers = data.map((user: any) => ({
+          number: user.student_num || user.instructor_id || 'N/A',
+          firstName: user.first_name,
+          lastName: user.last_name,
+          email: user.email,
+          phone: user.phone,
+          role: user.role,
+          department: user.dept,
+        }));
+
+        setUsers(mappedUsers);
+        setFilteredUsers(mappedUsers);
+        setShowEmptyState(mappedUsers.length === 0);
+      } catch (err: any) {
+        console.error('Error fetching users:', err.message);
+        setError(err.message || 'An unknown error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleSearch = () => {
     setHasSearched(true);
@@ -188,7 +173,7 @@ export default function Users() {
                 </td>
               </tr>
             )}
-            {filteredUsers.map(user => (
+            {filteredUsers?.map(user => (
               <tr key={user.id} className="border-t last:border-b">
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
                   {user.number}
