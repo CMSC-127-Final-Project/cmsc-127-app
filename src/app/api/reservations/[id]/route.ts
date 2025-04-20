@@ -7,7 +7,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const { id } = await params;
 
   try {
-    const { data, error } = await supabase.from('Reservation').select('*').eq('user_id', id).order('created_at', { ascending: false });
+    const { data, error } = await supabase
+      .from('Reservation')
+      .select('*')
+      .eq('user_id', id)
+      .order('created_at', { ascending: false });
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
