@@ -124,7 +124,7 @@ const ReservationRequests = () => {
           </thead>
           <tbody className="bg-white text-center">
             {reservations.length > 0 ? (
-              reservations.map((reservation, index) => {
+              reservations.map((reservation) => {
                 const ref = (el: HTMLButtonElement | null) => {
                   dropdownRefs.current[reservation.reservation_id] = el;
                 };
