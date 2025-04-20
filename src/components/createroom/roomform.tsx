@@ -42,7 +42,7 @@ export function RoomForm() {
     };
 
     try {
-      const response = await fetch('/api/reservations/createRoom', {
+      const response = await fetch('/api/rooms/createRoom', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,13 +122,13 @@ export function RoomForm() {
               <SelectValue placeholder="Select room type" className="font-roboto" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="classroom" className="font-roboto">
+              <SelectItem value="Classroom" className="font-roboto">
                 Classroom
               </SelectItem>
-              <SelectItem value="laboratory" className="font-roboto">
+              <SelectItem value="Laboratory" className="font-roboto">
                 Laboratory
               </SelectItem>
-              <SelectItem value="conference-room" className="font-roboto">
+              <SelectItem value="Conference Room" className="font-roboto">
                 Conference Room
               </SelectItem>
             </SelectContent>

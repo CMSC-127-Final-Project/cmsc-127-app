@@ -31,7 +31,7 @@ export function RoomList() {
 
   const loadRooms = async () => {
     try {
-      const res = await fetch('/api/reservations/showRoom');
+      const res = await fetch('/api/rooms/getRooms');
       const result = await res.json();
       if (res.ok) {
         setRooms(result.data);
@@ -45,7 +45,7 @@ export function RoomList() {
 
   const handleDelete = async (roomNumber: string) => {
     try {
-      const res = await fetch('/api/reservations/deleteRoom', {
+      const res = await fetch('/api/rooms/deleteRoom', {
         method: 'PATCH', // <-- Change this from DELETE to PATCH
         headers: {
           'Content-Type': 'application/json',

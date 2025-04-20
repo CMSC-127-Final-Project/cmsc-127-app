@@ -18,7 +18,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useToast } from '@/hooks/use-toast';
-import posthog from 'posthog-js';
 
 interface Room {
   room_number: string;
@@ -44,7 +43,15 @@ export default function RoomReservation() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState<string | null>(null);
   const [endTime, setEndTime] = useState<string | null>(null);
+  const [scheduleUpdated, setScheduleUpdated] = useState(false);
   const { toast } = useToast();
+
+  const formatRoomType = (type: string) => {
+    return type
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
 
   const addSchedule = async (schedule: {
     room_number?: string;
@@ -62,7 +69,6 @@ export default function RoomReservation() {
       });
 
       if (!response.ok) throw new Error('Failed to add schedule');
-      posthog.capture('my event', { property: 'value' });
 
       toast({
         title: 'Success',
@@ -70,7 +76,7 @@ export default function RoomReservation() {
         variant: 'default',
       });
       setShowAddScheduleDialog(false);
-      window.location.reload();
+      setScheduleUpdated(prev => !prev); // Trigger reload
     } catch (error) {
       console.error('Error adding schedule:', error);
       toast({
@@ -103,6 +109,7 @@ export default function RoomReservation() {
           schedules: prevRoom.schedules.filter(schedule => schedule.timeslot_id !== scheduleId),
         };
       });
+      setScheduleUpdated(prev => !prev); // Trigger reload
     } catch (error) {
       console.error('Error removing schedule:', error);
       toast({
@@ -145,7 +152,7 @@ export default function RoomReservation() {
       }
     };
     loadReservations();
-  }, []);
+  }, [scheduleUpdated]);
 
   useEffect(() => {
     setFilteredRooms(availableRooms); // Initialize filteredRooms with all availableRooms
@@ -187,7 +194,7 @@ export default function RoomReservation() {
             <div className="flex justify-between items-center mb-2">
               <h4 className="font-semibold text-[#5D1A0B]">{room.room_number}</h4>
               <span className="text-sm bg-[#5D1A0B]/10 text-[#5D1A0B] px-2 py-1 rounded-full">
-                Type: {room.room_type}
+                Type: {formatRoomType(room.room_type)}
               </span>
             </div>
             <p className="text-sm text-gray-500 mb-2">
