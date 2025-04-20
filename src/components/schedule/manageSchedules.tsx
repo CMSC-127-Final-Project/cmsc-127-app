@@ -62,7 +62,7 @@ export default function RoomReservation() {
       });
 
       if (!response.ok) throw new Error('Failed to add schedule');
-      posthog.capture('my event', { property: 'value' })
+      posthog.capture('my event', { property: 'value' });
 
       toast({
         title: 'Success',
