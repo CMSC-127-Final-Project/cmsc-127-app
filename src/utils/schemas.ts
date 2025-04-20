@@ -24,3 +24,15 @@ export const signupSchema = z.object({
   instructorOffice: z.string().optional(),
   facultyRank: z.string().optional(),
 });
+
+export const userSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  first_name: z.string().min(1, 'First name is required'),
+  last_name: z.string().min(1, 'Last name is required'),
+  student_num: z.string().nullable(),
+  instructor_id: z.string().nullable(),
+  phone: z.string().regex(/^\d+$/, 'Phone number must contain only digits').nullable(),
+  dept: z.string().min(1, 'Department is required'),
+  role: z.enum(['Student', 'Instructor', 'Admin']),
+  nickname: z.string().nullable(),
+});
