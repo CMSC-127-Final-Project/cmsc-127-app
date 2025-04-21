@@ -19,38 +19,93 @@ import {
 } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast'; // Import toast hook
 
 interface Room {
   id: string;
   number: string;
   capacity: number;
   notes?: string;
+  freeSlots: { start: string; end: string }[];
 }
 
 export default function RoomReservation() {
   const [date, setDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [availableRooms] = useState<Room[]>([
-    { id: '1', number: 'Room 227', capacity: 50, notes: 'Chairs Broken' },
-    { id: '2', number: 'Room 203', capacity: 25, notes: 'No electricity' },
-    { id: '3', number: 'Room 201', capacity: 20 },
-    { id: '4', number: 'Room 222', capacity: 30 },
-    { id: '5', number: 'Food Laboratory', capacity: 30 },
-    { id: '6', number: 'Computer Laboratory', capacity: 10 },
-    { id: '7', number: 'Room 226', capacity: 24 },
-  ]);
-
+  const [availableRooms, setAvailableRooms] = useState<Room[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [showEmptyState, setShowEmptyState] = useState(true);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [showDialog, setShowDialog] = useState(false);
   const [reason, setReason] = useState('');
+  const { toast } = useToast(); // Initialize toast
+  const [selectedSlot, setSelectedSlot] = useState<{ start: string; end: string } | null>(null);
 
-  const handleSearch = () => {
-    const isInputComplete = date && startTime && endTime;
-    setHasSearched(true);
-    setShowEmptyState(!isInputComplete);
+  const handleSearch = async () => {
+    if (!date) {
+      toast({
+        title: 'Error',
+        description: 'Please select a date.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (startTime && endTime && startTime >= endTime) {
+      toast({
+        title: 'Error',
+        description: 'Start time must be earlier than end time.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/rooms/available/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date: date.toLocaleDateString('en-CA') }),
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch available rooms');
+
+      const data = await response.json();
+
+      const mappedData = data.map(
+        (room: {
+          id: string;
+          room_number: string;
+          capacity: number;
+          notes?: string;
+          freeSlots: { start: string; end: string }[];
+        }) => ({
+          ...room,
+          number: room.room_number,
+        })
+      );
+
+      const filteredRooms =
+        startTime && endTime
+          ? mappedData.filter((room: Room) =>
+              room.freeSlots.some(
+                (slot: { start: string; end: string }) =>
+                  startTime >= slot.start && endTime <= slot.end
+              )
+            )
+          : mappedData;
+
+      setAvailableRooms(filteredRooms);
+      setHasSearched(true);
+      setShowEmptyState(filteredRooms.length === 0);
+    } catch (error) {
+      console.error('Error fetching available rooms:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to fetch available rooms. Please try again later.',
+        variant: 'destructive',
+      });
+    }
   };
 
   const handleReserveClick = (room: Room) => {
@@ -58,21 +113,83 @@ export default function RoomReservation() {
     setShowDialog(true);
   };
 
-  const confirmReservation = () => {
-    if (selectedRoom && date && startTime && endTime && reason.trim()) {
-      console.log('Reservation Info:', {
-        room: selectedRoom.number,
-        date: format(date, 'yyyy-MM-dd'),
-        startTime,
-        endTime,
-        reason,
+  const confirmReservation = async () => {
+    if (!selectedRoom || !date || !reason.trim()) {
+      toast({
+        title: 'Error',
+        description: 'Please fill in all required fields.',
+        variant: 'destructive',
       });
-      alert(`Room ${selectedRoom.number} reserved for: ${reason}`);
+      return;
+    }
+
+    const reservationStart = selectedSlot ? selectedSlot.start : startTime;
+    const reservationEnd = selectedSlot ? selectedSlot.end : endTime;
+
+    if (!reservationStart || !reservationEnd) {
+      toast({
+        title: 'Error',
+        description: 'Please select or specify a valid time range.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Validate custom time against available slots
+    if (!selectedSlot) {
+      const isValid = selectedRoom.freeSlots.some(
+        slot =>
+          reservationStart >= slot.start &&
+          reservationEnd <= slot.end &&
+          reservationStart < reservationEnd
+      );
+
+      if (!isValid) {
+        toast({
+          title: 'Error',
+          description: 'Specified time does not fit within available slots.',
+          variant: 'destructive',
+        });
+        return;
+      }
+    }
+
+    try {
+      const response = await fetch('/api/reservations/reserve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          room_number: selectedRoom.number,
+          date: format(date, 'yyyy-MM-dd'),
+          start_time: reservationStart,
+          end_time: reservationEnd,
+          reason,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to reserve room');
+      }
+
+      toast({
+        title: 'Success',
+        description: `Room ${selectedRoom.number} reserved successfully!`,
+        variant: 'default',
+      });
+
       setShowDialog(false);
       setSelectedRoom(null);
       setReason('');
-    } else {
-      alert('Please fill in all required fields.');
+      setSelectedSlot(null);
+      setStartTime('');
+      setEndTime('');
+    } catch (error) {
+      console.error('Error reserving room:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to reserve room. Please try again later.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -154,41 +271,48 @@ export default function RoomReservation() {
         <>
           <h3 className="text-xl font-semibold font-raleway mb-4 mt-10">Available Rooms</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {availableRooms.map(room => (
-              <div
-                key={room.id}
-                className="border rounded-2xl shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-in-out p-4"
-              >
-                <div className="flex justify-between items-center mb-2">
-                  <h4 className="font-semibold text-[#5D1A0B]">{room.number}</h4>
-                  <span className="text-sm bg-[#5D1A0B]/10 text-[#5D1A0B] px-2 py-1 rounded-full">
-                    Capacity: {room.capacity}
-                  </span>
-                </div>
-                <p className="text-sm text-gray-500 mb-1">
-                  <span className="font-medium text-gray-700">Date:</span>{' '}
-                  {date ? format(date, 'MMMM d, yyyy') : '&ndash;'}
-                </p>
-                <p className="text-sm text-gray-500 mb-2">
-                  <span className="font-medium text-gray-700">Time:</span> {startTime} &ndash;{' '}
-                  {endTime}
-                </p>
-                {room.notes && (
-                  <p className="text-sm text-amber-700 mt-1">
-                    <span className="font-medium">Notes:</span> {room.notes}
+            {availableRooms
+              .filter(room => room.freeSlots.length > 0) // Exclude rooms with no available slots
+              .map((room, roomIndex) => (
+                <div
+                  key={room.id || roomIndex}
+                  className="border rounded-2xl shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-in-out p-4 flex flex-col h-full"
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="font-semibold text-[#5D1A0B]">{room.number}</h4>
+                    <span className="text-sm bg-[#5D1A0B]/10 text-[#5D1A0B] px-2 py-1 rounded-full">
+                      Capacity: {room.capacity}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-500 mb-2">
+                    <span className="font-medium text-gray-700">Available Slots:</span>
+                    {room.freeSlots.map((slot, slotIndex) => (
+                      <span key={`${room.id || roomIndex}-${slotIndex}`} className="block">
+                        {new Date(`1970-01-01T${slot.start}`).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: true,
+                        })}{' '}
+                        -{' '}
+                        {new Date(`1970-01-01T${slot.end}`).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: true,
+                        })}
+                      </span>
+                    ))}
                   </p>
-                )}
-                <div className="mt-4 justify-end flex gap-2">
-                  <Button
-                    onClick={() => handleReserveClick(room)}
-                    className="bg-[#5D1A0B] hover:bg-[#731f10] text-white"
-                  >
-                    <RxPlus size={20} className="mr-2" />
-                    <span className="hidden md:inline">Reserve Room</span>
-                  </Button>
+                  <div className="mt-auto flex justify-end">
+                    <Button
+                      onClick={() => handleReserveClick(room)}
+                      className="bg-[#5D1A0B] hover:bg-[#731f10] text-white"
+                    >
+                      <RxPlus size={20} className="mr-2" />
+                      <span className="hidden md:inline">Reserve Room</span>
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </>
       )}
@@ -202,24 +326,76 @@ export default function RoomReservation() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-2">
+          <div className="space-y-4">
             <p>
               <strong>Date:</strong> {date ? format(date, 'MMMM d, yyyy') : '&ndash;'}
             </p>
-            <p>
-              <strong>Time:</strong> {startTime} &ndash; {endTime}
-            </p>
-          </div>
+            <div>
+              <Label>Select a Time Slot</Label>
+              <div className="flex flex-col gap-2 mt-2">
+                {selectedRoom?.freeSlots.map((slot, index) => (
+                  <Button
+                    key={index}
+                    variant={selectedSlot === slot ? 'default' : 'outline'}
+                    onClick={() => {
+                      setSelectedSlot(slot);
+                      setStartTime('');
+                      setEndTime('');
+                    }}
+                  >
+                    {new Date(`1970-01-01T${slot.start}`).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true,
+                    })}{' '}
+                    -{' '}
+                    {new Date(`1970-01-01T${slot.end}`).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true,
+                    })}
+                  </Button>
+                ))}
+              </div>
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="reason">Reason for Reservation:</Label>
-            <Textarea
-              id="reason"
-              value={reason}
-              onChange={e => setReason(e.target.value)}
-              placeholder="Enter reason..."
-              className="h-32"
-            />
+            <div className="space-y-2">
+              <Label htmlFor="custom-time">Or Specify a Custom Time</Label>
+              <div className="flex items-center gap-2">
+                <Input
+                  id="custom-start-time"
+                  type="time"
+                  value={startTime}
+                  onChange={e => {
+                    setStartTime(e.target.value);
+                    setSelectedSlot(null);
+                  }}
+                  className="w-full"
+                />
+                <span>-</span>
+                <Input
+                  id="custom-end-time"
+                  type="time"
+                  value={endTime}
+                  onChange={e => {
+                    setEndTime(e.target.value);
+                    setSelectedSlot(null);
+                  }}
+                  className="w-full"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="reason">Reason for Reservation:</Label>
+              <Textarea
+                id="reason"
+                value={reason}
+                onChange={e => setReason(e.target.value)}
+                placeholder="Enter reason..."
+                className="h-32"
+              />
+            </div>
           </div>
 
           <DialogFooter className="mt-4 flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
