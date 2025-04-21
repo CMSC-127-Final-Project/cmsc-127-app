@@ -59,8 +59,10 @@ export async function GET() {
     const supabase = await createAdminClient();
 
     // Fetch data from the User table
-    const { data, error } = await supabase.from('User').select(
-      `
+    const { data, error } = await supabase
+      .from('User')
+      .select(
+        `
         user_ID,
         email,
         first_name,
@@ -72,7 +74,9 @@ export async function GET() {
         role,
         nickname
       `
-    );
+      )
+
+      .order('last_name', { ascending: true });
 
     // Handle Supabase errors
     if (error) {
