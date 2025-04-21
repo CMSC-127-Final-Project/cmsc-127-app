@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Search, List } from 'lucide-react';
 import { RxDotsHorizontal, RxPencil1, RxTrash, RxLockOpen1 } from 'react-icons/rx';
+import { useRouter } from 'next/navigation';
+import UserActionsDropdown from '@/components/admin/actionsDropdown';
 
 interface User {
   id: number;
@@ -28,6 +30,7 @@ export default function Users() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -93,6 +96,27 @@ export default function Users() {
     setHasSearched(false);
     setFilteredUsers(users);
     setShowEmptyState(false);
+  };
+
+  const handleDelete = async (userId: number) => {
+    console.log('Deleting user with ID:', userId);
+    try {
+      const response = await fetch(`/api/user/${userId}`, {
+        method: 'DELETE',
+      });
+      console.log('API Call:', `/api/user/${userId}`);
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to delete user.');
+      }
+
+      setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
+      setFilteredUsers(prevUsers => prevUsers?.filter(user => user.id !== userId));
+    } catch (err: any) {
+      console.error('Error deleting user:', err.message);
+      alert(err.message || 'Failed to delete user.');
+    }
   };
 
   return (
@@ -209,43 +233,11 @@ export default function Users() {
                   </button>
 
                   {openDropdownId === user.id && (
-                    <div
-                      className="absolute right-0 mt-2 py-2 bg-white rounded-md shadow-xl z-50 border border-gray-200"
-                      style={{ position: 'absolute', top: '100%', right: '0' }}
-                    >
-                      <button
-                        className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                        onClick={e => {
-                          e.stopPropagation();
-                          setOpenDropdownId(null);
-                        }}
-                      >
-                        <RxPencil1 size={18} className="mr-2 text-gray-500" />
-                        Update
-                      </button>
-
-                      <button
-                        className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                        onClick={e => {
-                          e.stopPropagation();
-                          setOpenDropdownId(null);
-                        }}
-                      >
-                        <RxTrash size={18} className="mr-2 text-gray-500" />
-                        Delete
-                      </button>
-
-                      <button
-                        className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                        onClick={e => {
-                          e.stopPropagation();
-                          setOpenDropdownId(null);
-                        }}
-                      >
-                        <RxLockOpen1 size={18} className="mr-2 text-gray-500" />
-                        Change password
-                      </button>
-                    </div>
+                    <UserActionsDropdown
+                      userId={user.id}
+                      onDelete={handleDelete}
+                      onClose={() => setOpenDropdownId(null)}
+                    />
                   )}
                 </td>
               </tr>
