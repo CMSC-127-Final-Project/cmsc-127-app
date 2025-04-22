@@ -4,12 +4,12 @@ import { useRouter } from 'next/navigation';
 import { RxPencil1, RxTrash, RxLockOpen1 } from 'react-icons/rx';
 
 interface UserActionsDropdownProps {
-  userId: number;
-  onDelete: (userId: number) => void;
+  authId: string;
+  onDelete: (authId: string) => void;
   onClose: () => void;
 }
 
-export default function UserActionsDropdown({ userId, onDelete, onClose }: UserActionsDropdownProps) {
+export default function UserActionsDropdown({ authId, onDelete, onClose }: UserActionsDropdownProps) {
   const router = useRouter();
 
   return (
@@ -21,7 +21,7 @@ export default function UserActionsDropdown({ userId, onDelete, onClose }: UserA
       <button
         className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
         onClick={() => {
-          router.push(`/admin/edit-profile?user_ID=${userId}`);
+          router.push(`/admin/edit-profile?user_ID=${authId}`);
           onClose();
         }}
       >
@@ -32,7 +32,7 @@ export default function UserActionsDropdown({ userId, onDelete, onClose }: UserA
       <button
         className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
         onClick={() => {
-          onDelete(userId);
+          onDelete(authId);
           onClose();
         }}
       >

@@ -23,7 +23,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   const supabase = await createAdminClient();
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
 
   if (userError || !user) {
     console.error('Error fetching user:', userError?.message);
@@ -55,4 +58,19 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
   }
 
   return NextResponse.json({ message: 'User deleted successfully.' }, { status: 200 });
+}
+
+export async function PUT(request: Request, { params }: { params: { user_ID: string } }) {
+  const userId = Number(params.user_ID);
+  const body = await request.json();
+
+  const supabase = await createAdminClient();
+
+  const { error } = await supabase.from('User').update(body).eq('user_ID', userId);
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ message: 'User updated successfully' });
 }
