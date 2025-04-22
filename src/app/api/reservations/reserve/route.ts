@@ -56,7 +56,8 @@ export async function GET() {
 
     const { data, error } = await supabase
       .from('Reservation')
-      .select(`
+      .select(
+        `
         reservation_id,
         created_at,
         room_num,
@@ -65,10 +66,11 @@ export async function GET() {
         end_time,
         status,
         user_id
-      `)
+      `
+      )
       .eq('status', 'Pending')
       .order('created_at', { ascending: false });
-    
+
     if (!data) {
       throw new Error('No data returned from Supabase');
     }
@@ -90,7 +92,8 @@ export async function GET() {
       user_id: string;
     }>) {
       const { data: userData, error: userError } = await supabase
-        .from('User').select('first_name, last_name')
+        .from('User')
+        .select('first_name, last_name')
         .eq('auth_id', item.user_id)
         .single();
 
