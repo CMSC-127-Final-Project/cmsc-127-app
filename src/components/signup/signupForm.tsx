@@ -133,12 +133,10 @@ export default function SignupForm() {
 
       if (!response.ok) {
         const { error, status, name } = await response.json();
-        console.log(name);
         throw { message: error, status: status, error_name: name };
       }
 
-      setIsLoading(false);
-      router.push('/login');
+      router.push('/homepage');
     } catch (error) {
       const { message, status, error_name } = error as {
         message: string;

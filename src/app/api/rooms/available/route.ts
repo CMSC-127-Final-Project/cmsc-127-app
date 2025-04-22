@@ -1,9 +1,9 @@
-import { createAdminClient } from '@/utils/supabase/admin';
+import { createClient } from '@/utils/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   const { date } = await req.json();
-  const supabase = await createAdminClient();
+  const supabase = await createClient();
 
   try {
     // Fetch all rooms

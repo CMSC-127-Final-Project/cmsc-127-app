@@ -14,7 +14,6 @@ export default function Welcome({ user_id }: { user_id: string }) {
           throw new Error('Failed to fetch reservations');
         }
         const data = await response.json();
-        console.log('Fetched user data:', data);
         setUsername(data[0].nickname || 'User');
       } catch (err) {
         console.error('Internal Server Error:', err);
