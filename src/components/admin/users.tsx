@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import UserActionsDropdown from '@/components/admin/actionsDropdown';
 
 interface User {
-  id: number;
+  auth_id: string;
   number: string;
   firstName: string;
   lastName: string;
@@ -23,7 +23,7 @@ interface User {
 export default function Users() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [showEmptyState, setShowEmptyState] = useState(true);
   const [filteredUsers, setFilteredUsers] = useState<User[]>();
@@ -43,9 +43,8 @@ export default function Users() {
           throw new Error(data.message || 'Failed to fetch users');
         }
 
-        // Map the API response to match the User interface
         const mappedUsers = data.map((user: any) => ({
-          id: user.user_ID,
+          auth_id: user.auth_id,
           number: user.student_num || user.instructor_id || 'N/A',
           firstName: user.first_name,
           lastName: user.last_name,
@@ -98,21 +97,21 @@ export default function Users() {
     setShowEmptyState(false);
   };
 
-  const handleDelete = async (userId: number) => {
-    console.log('Deleting user with ID:', userId);
+  const handleDelete = async (authId: string) => {
+    console.log('Deleting user with ID:', authId);
     try {
-      const response = await fetch(`/api/user/${userId}`, {
+      const response = await fetch(`/api/user/${authId}`, {
         method: 'DELETE',
       });
-      console.log('API Call:', `/api/user/${userId}`);
+      console.log('API Call:', `/api/user/${authId}`);
 
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.error || 'Failed to delete user.');
       }
 
-      setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
-      setFilteredUsers(prevUsers => prevUsers?.filter(user => user.id !== userId));
+      setUsers(prevUsers => prevUsers.filter(user => user.auth_id !== authId));
+      setFilteredUsers(prevUsers => prevUsers?.filter(user => user.auth_id !== authId));
     } catch (err: any) {
       console.error('Error deleting user:', err.message);
       alert(err.message || 'Failed to delete user.');
@@ -199,7 +198,7 @@ export default function Users() {
               </tr>
             )}
             {filteredUsers?.map(user => (
-              <tr key={user.id} className="border-t last:border-b">
+              <tr key={user.auth_id || user.email} className="border-t last:border-b">
                 <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
                   {user.number}
                 </td>
@@ -226,15 +225,15 @@ export default function Users() {
                     className="text-gray-500 px-2 py-1 rounded-md"
                     onClick={e => {
                       e.stopPropagation();
-                      setOpenDropdownId(openDropdownId === user.id ? null : user.id);
+                      setOpenDropdownId(openDropdownId === user.auth_id ? null : user.auth_id);
                     }}
                   >
                     <RxDotsHorizontal size={20} />
                   </button>
 
-                  {openDropdownId === user.id && (
+                  {openDropdownId === user.auth_id && (
                     <UserActionsDropdown
-                      userId={user.id}
+                      authId={user.auth_id}
                       onDelete={handleDelete}
                       onClose={() => setOpenDropdownId(null)}
                     />
