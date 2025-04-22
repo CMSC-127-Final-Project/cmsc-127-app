@@ -71,7 +71,7 @@ export default function LoginPage() {
         title: 'Error',
         description: errorMessage,
       });
-    } finally {
+
       setIsLoading(false);
     }
   };

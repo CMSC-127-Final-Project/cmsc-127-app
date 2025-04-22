@@ -96,7 +96,7 @@ export function RoomList() {
     if (!editedRoom) return;
 
     try {
-      const res = await fetch('/api/reservations/editRoom', {
+      const res = await fetch('/api/rooms/editRoom', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
