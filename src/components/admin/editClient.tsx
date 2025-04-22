@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { set } from 'date-fns';
 
 export default function EditClientProfile() {
   const searchParams = useSearchParams();
@@ -22,10 +23,19 @@ export default function EditClientProfile() {
   const [email, setEmail] = useState('');
   const [department, setDepartment] = useState('');
   const [phone, setPhone] = useState('');
-  const [role, setRole] = useState('');
+  const [role] = useState('');
+  const [rank, setRank] = useState('');
   const [instructorOffice, setInstructorOffice] = useState('');
   const [nickname, setNickname] = useState('');
-  const [idnumber, setIdnumber] = useState();
+  const [idnumber, setIdnumber] = useState<string | undefined>(undefined);
+
+  const [originalFname, setOriginalFname] = useState('');
+  const [originalLname, setOriginalLname] = useState('');
+  const [originalIdnumber, setOriginalIdnumber] = useState('');
+  const [originalEmail, setOriginalEmail] = useState('');
+  const [originalDepartment, setOriginalDepartment] = useState('');
+  const [originalRank, setOriginalRank] = useState('');
+  const [originalInstructorOffice, setOriginalInstructorOffice] = useState('');
   const [originalNickname, setOriginalNickname] = useState('');
   const [originalPhone, setOriginalPhone] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -44,19 +54,35 @@ export default function EditClientProfile() {
           throw new Error('No user data found');
         }
 
+        setUser(user);
+
+        setOriginalFname(user.first_name || 'User');
         setFname(user.first_name || 'User');
+        setOriginalLname(user.last_name || 'OO');
         setLname(user.last_name || 'OO');
-        setIdnumber(user.student_num || '20XX-XXXXX');
+        if (user.role === 'Instructor') {
+          setOriginalIdnumber(user.instructor_id || '20XX-XXXXX');
+          setIdnumber(user.instructor_id || '20XX-XXXXX');
+        } else if (user.role === 'Student') {
+          setOriginalIdnumber(user.student_num || '20XX-XXXXX');
+          setIdnumber(user.student_num || '20XX-XXXXX');
+        }
+        setOriginalNickname(user.nickname || 'Isko');
         setNickname(user.nickname || 'Isko');
-        setEmail(user.email || 'example@email.com');
+        setOriginalEmail(user.email || 'example@email.com');
+        setEmail(user.email || '');
+        setOriginalDepartment(user.dept || 'Department');
         setDepartment(user.dept || 'Department');
-        setPhone(data[0].phone || '09123456789');
-        setRole(user.role || 'student');
+        setOriginalPhone(user.phone || '09123456789');
+        setPhone(user.phone || '09123456789');
         setOriginalNickname(user.nickname || '');
-        setOriginalPhone(user.phone || '');
+        setNickname(user.nickname || '');
 
         if (user.role === 'Instructor') {
+          setOriginalInstructorOffice(user.instructor_office || '');
           setInstructorOffice(user.instructor_office || '');
+          setOriginalRank(user.instructor_rank || '');
+          setRank(user.instructor_rank || '');
         }
         console.log('User role:', user.role);
       } catch (err) {
@@ -78,11 +104,30 @@ export default function EditClientProfile() {
     setIsSaving(true);
 
     const updates: {
+      first_name?: string;
+      last_name?: string;
+      id_number?: string;
+      instructor_rank?: string;
+      email?: string;
+      instructor_office?: number;
+      dept?: string;
       nickname?: string;
       phone?: string;
     } = {};
+    if (fname !== originalFname) updates.first_name = fname;
+    if (lname !== originalLname) updates.last_name = lname;
+    if (idnumber !== originalIdnumber) updates.id_number = idnumber;
+    if (email !== originalEmail) updates.email = email;
+    if (department !== originalDepartment) updates.dept = department;
     if (nickname !== originalNickname) updates.nickname = nickname;
     if (phone !== originalPhone) updates.phone = phone;
+
+    if (user.role === 'Instructor') {
+      if (instructorOffice !== originalInstructorOffice) {
+        updates.instructor_office = parseInt(instructorOffice, 10);
+      }
+      if (rank !== originalRank) updates.instructor_rank = rank;
+    }
 
     if (Object.keys(updates).length === 0) {
       toast({
@@ -111,8 +156,18 @@ export default function EditClientProfile() {
         title: 'Success',
         description: 'Profile updated successfully!',
       });
+      setOriginalFname(fname || '');
+      setOriginalLname(lname || '');
+      setOriginalIdnumber(idnumber || '');
+      setOriginalEmail(email || '');
+      setOriginalDepartment(department || '');
       setOriginalNickname(nickname || '');
       setOriginalPhone(phone || '');
+
+      if (user.role === 'Instructor') {
+        setOriginalInstructorOffice(user.instructor_office || '');
+        setOriginalRank(user.instructor_rank || '');
+      }
     } catch (err) {
       console.error('Error updating profile:', err);
       toast({
@@ -153,11 +208,11 @@ export default function EditClientProfile() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="firstName">First Name</Label>
-              <Input id="firstName" placeholder={fname} />
+              <Input id="firstName" value={fname || ''} onChange={e => setFname(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="lastName">Last Name</Label>
-              <Input id="lastName" placeholder={lname} />
+              <Input id="lastName" value={lname || ''} onChange={e => setLname(e.target.value)} />
             </div>
           </div>
 
@@ -166,22 +221,23 @@ export default function EditClientProfile() {
               <Label htmlFor="idnumber">
                 {role === 'Instructor' ? 'Instructor ID' : 'Student Number'}
               </Label>
-              <Input id="idnumber" placeholder={idnumber} />
+              <Input id="idnumber" value={idnumber || ''} onChange={e => setIdnumber(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email Address</Label>
-              <Input id="email" type="email" placeholder={email} />
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+              />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="nickname">Nickname</Label>
-              <Input
-                id="nickname"
-                placeholder={nickname}
-                onChange={e => setNickname(e.target.value)}
-              />
+              <Input id="nickname" value={nickname || ''} onChange={e => setNickname(e.target.value)} />
             </div>
 
             <div className="space-y-2">
@@ -189,7 +245,7 @@ export default function EditClientProfile() {
               <Input
                 id="phone"
                 type="tel"
-                placeholder={phone}
+                value={phone || ''}
                 onChange={e => {
                   if (/^\d*$/.test(e.target.value)) {
                     setPhone(e.target.value);
@@ -211,8 +267,8 @@ export default function EditClientProfile() {
                 <Label htmlFor="facultyRank">Faculty Rank</Label>
                 <select
                   id="facultyRank"
-                  value={department}
-                  onChange={e => setDepartment(e.target.value)}
+                  defaultValue={rank}
+                  onChange={e => setRank(e.target.value)}
                   className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6b1d1d] transition-colors duration-200"
                 >
                   <option value="" disabled>
@@ -226,7 +282,11 @@ export default function EditClientProfile() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="instructorOffice">Instructor Office</Label>
-                <Input id="instructorOffice" placeholder={instructorOffice} />
+                <Input
+                  id="instructorOffice"
+                  placeholder={instructorOffice || ''}
+                  onChange={e => setInstructorOffice(e.target.value)}
+                />
               </div>
             </div>
           )}
@@ -235,7 +295,8 @@ export default function EditClientProfile() {
             <Label htmlFor="department">Department</Label>
             <select
               id="department"
-              defaultValue={department}
+              defaultValue={department || ''}
+              onChange={e => setDepartment(e.target.value)}
               className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6b1d1d] transition-colors duration-200"
             >
               <option value="" disabled>
