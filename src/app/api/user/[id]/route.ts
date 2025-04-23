@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
-import { createAdminClient } from '@/utils/supabase/admin';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createClient();
@@ -22,7 +21,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const supabase = await createAdminClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error: userError,
@@ -64,7 +63,7 @@ export async function PUT(request: Request, { params }: { params: { user_ID: str
   const userId = Number(params.user_ID);
   const body = await request.json();
 
-  const supabase = await createAdminClient();
+  const supabase = await createClient();
 
   const { error } = await supabase.from('User').update(body).eq('user_ID', userId);
 
@@ -83,7 +82,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const supabase = await createAdminClient();
+    const supabase = await createClient();
     const { error } = await supabase
       .from('User')
       .update({ password: newPassword }) // Assuming `password` is the column name
