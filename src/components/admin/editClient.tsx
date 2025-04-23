@@ -8,9 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { resetUserPassword } from '@/utils/api/user';
 import { set } from 'date-fns';
 
-export default function EditClientProfile() {
+export function EditClientProfile() {
   const searchParams = useSearchParams();
   const auth_id = searchParams.get('user_ID');
   const [user, setUser] = useState<any>(null);
@@ -221,7 +222,11 @@ export default function EditClientProfile() {
               <Label htmlFor="idnumber">
                 {role === 'Instructor' ? 'Instructor ID' : 'Student Number'}
               </Label>
-              <Input id="idnumber" value={idnumber || ''} onChange={e => setIdnumber(e.target.value)} />
+              <Input
+                id="idnumber"
+                value={idnumber || ''}
+                onChange={e => setIdnumber(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email Address</Label>
@@ -237,7 +242,11 @@ export default function EditClientProfile() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="nickname">Nickname</Label>
-              <Input id="nickname" value={nickname || ''} onChange={e => setNickname(e.target.value)} />
+              <Input
+                id="nickname"
+                value={nickname || ''}
+                onChange={e => setNickname(e.target.value)}
+              />
             </div>
 
             <div className="space-y-2">
@@ -320,5 +329,104 @@ export default function EditClientProfile() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export function SetPassword() {
+  const searchParams = useSearchParams();
+  const userId = searchParams.get('user_ID');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const { toast } = useToast();
+
+  const handleChangePassword = async () => {
+    try {
+      if (!newPassword || !confirmPassword) {
+        toast({
+          title: 'Error',
+          description: 'Please fill in all fields.',
+        });
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        toast({
+          title: 'Error',
+          description: 'New password and confirmation do not match.',
+        });
+        return;
+      }
+
+      if (!userId) {
+        toast({
+          title: 'Error',
+          description: 'User ID is missing. Please try again.',
+          variant: 'destructive',
+        });
+        return;
+      }
+      const response = await resetUserPassword(userId, newPassword);
+
+      if (response.success) {
+        toast({
+          title: 'Success',
+          description: 'Password reset successfully!',
+        });
+        setNewPassword('');
+        setConfirmPassword('');
+      } else {
+        throw new Error(response.message || 'Failed to reset password');
+      }
+    } catch (err) {
+      console.error('Error resetting password:', err);
+      if (err instanceof Error) {
+        toast({
+          title: 'Error',
+          description: err.message,
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: 'Error',
+          description: 'Failed to update password. Please try again later.',
+          variant: 'destructive',
+        });
+      }
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Change Password</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="newPassword">New Password</Label>
+          <Input
+            id="newPassword"
+            type="password"
+            value={newPassword}
+            onChange={e => setNewPassword(e.target.value)}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="confirmPassword">Confirm New Password</Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            value={confirmPassword}
+            onChange={e => setConfirmPassword(e.target.value)}
+          />
+        </div>
+
+        <div className="flex justify-end">
+          <Button className="bg-[#6b1d1d] hover:bg-[#5a1818]" onClick={handleChangePassword}>
+            Update Password
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

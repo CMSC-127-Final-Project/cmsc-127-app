@@ -42,7 +42,10 @@ export default function UserActionsDropdown({ authId, onDelete, onClose }: UserA
 
       <button
         className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-        onClick={onClose}
+        onClick={() => {
+          router.push(`/admin/set-password?user_ID=${authId}`);
+          onClose();
+        }}
       >
         <RxLockOpen1 size={18} className="mr-2 text-gray-500" />
         Change password

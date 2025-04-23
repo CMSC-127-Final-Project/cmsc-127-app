@@ -74,3 +74,29 @@ export async function PUT(request: Request, { params }: { params: { user_ID: str
 
   return NextResponse.json({ message: 'User updated successfully' });
 }
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const { userId, newPassword } = await req.json();
+
+    if (!userId || !newPassword) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    const supabase = await createAdminClient();
+    const { error } = await supabase
+      .from('User')
+      .update({ password: newPassword }) // Assuming `password` is the column name
+      .eq('auth_id', userId);
+
+    if (error) {
+      console.error('Error resetting password:', error.message);
+      return NextResponse.json({ error: 'Failed to reset password' }, { status: 500 });
+    }
+
+    return NextResponse.json({ message: 'Password reset successfully!' }, { status: 200 });
+  } catch (err: any) {
+    console.error('Error in password reset API:', err.message);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
