@@ -268,38 +268,38 @@ const manageUsers = () => {
                             <RxPencil1 size={18} className="mr-2 text-green-500" />
                             Update
                           </button>
-                            <button
+                          <button
                             className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                             onClick={e => {
                               e.stopPropagation();
                               const confirmDelete = window.confirm(
-                              'Are you sure you want to delete the user?'
+                                'Are you sure you want to delete the user?'
                               );
                               if (confirmDelete) {
-                              handleUserAction(
-                                user.auth_id,
-                                'Deleted the user!',
-                                'Failed to delete the user',
-                                toast
-                              ).then(() => {
-                                setOpenDropdownId(null);
-                                localStorage.setItem(
-                                'user-toast',
-                                JSON.stringify({
-                                  title: 'Success',
-                                  description: 'Deleted the user!',
-                                })
-                                );
-                                window.location.reload();
-                              });
+                                handleUserAction(
+                                  user.auth_id,
+                                  'Deleted the user!',
+                                  'Failed to delete the user',
+                                  toast
+                                ).then(() => {
+                                  setOpenDropdownId(null);
+                                  localStorage.setItem(
+                                    'user-toast',
+                                    JSON.stringify({
+                                      title: 'Success',
+                                      description: 'Deleted the user!',
+                                    })
+                                  );
+                                  window.location.reload();
+                                });
                               } else {
-                              setOpenDropdownId(null);
+                                setOpenDropdownId(null);
                               }
                             }}
-                            >
+                          >
                             <RxTrash size={18} className="mr-2 text-red-500" />
                             Delete
-                            </button>
+                          </button>
                           <button
                             className="flex items-center w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                             onClick={async e => {

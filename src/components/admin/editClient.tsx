@@ -8,12 +8,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { resetUserPassword } from '@/utils/api/user';
-
-const searchParams = useSearchParams();
-const auth_id = searchParams.get('user_ID');
+import { createClient } from '@/utils/supabase/client';
 
 export function EditClientProfile() {
+  const searchParams = useSearchParams();
+  const auth_id = searchParams.get('user_ID');
   const [user, setUser] = useState<any>(null);
   const { toast } = useToast();
 
@@ -208,11 +207,19 @@ export function EditClientProfile() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="firstName">First Name</Label>
-              <Input id="firstName" placeholder={fname || ''} onChange={e => setFname(e.target.value)} />
+              <Input
+                id="firstName"
+                placeholder={fname || ''}
+                onChange={e => setFname(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="lastName">Last Name</Label>
-              <Input id="lastName" placeholder={lname || ''} onChange={e => setLname(e.target.value)} />
+              <Input
+                id="lastName"
+                placeholder={lname || ''}
+                onChange={e => setLname(e.target.value)}
+              />
             </div>
           </div>
 
@@ -332,63 +339,62 @@ export function EditClientProfile() {
 }
 
 export function SetPassword() {
+  const searchParams = useSearchParams();
+  const auth_id = searchParams.get('user_ID');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const handleChangePassword = async () => {
+    const supabase = createClient();
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
     try {
       if (!newPassword || !confirmPassword) {
-        toast({
-          title: 'Error',
-          description: 'Please fill in all fields.',
-        });
+        toast({ title: 'Error', description: 'Please fill in all fields.' });
         return;
       }
-
+      if (newPassword.length < 6) {
+        toast({ title: 'Error', description: 'Password must be at least 6 characters.' });
+        return;
+      }
       if (newPassword !== confirmPassword) {
-        toast({
-          title: 'Error',
-          description: 'New password and confirmation do not match.',
-        });
+        toast({ title: 'Error', description: 'Passwords do not match.' });
         return;
       }
-
       if (!auth_id) {
-        toast({
-          title: 'Error',
-          description: 'User ID is missing. Please try again.',
-          variant: 'destructive',
-        });
+        toast({ title: 'Error', description: 'User ID is missing.', variant: 'destructive' });
         return;
       }
-      const response = await resetUserPassword(auth_id, newPassword);
 
-      if (response.success) {
-        toast({
-          title: 'Success',
-          description: 'Password reset successfully!',
-        });
-        setNewPassword('');
-        setConfirmPassword('');
-      } else {
-        throw new Error(response.message || 'Failed to reset password');
-      }
+      setIsLoading(true);
+
+      const response = await fetch(`/api/user/${auth_id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify({ newPassword }),
+      });
+
+      if (!response.ok) throw new Error('Failed to reset password.');
+
+      toast({ title: 'Success', description: 'Password reset successfully!' });
+      setNewPassword('');
+      setConfirmPassword('');
     } catch (err) {
-      console.error('Error resetting password:', err);
-      if (err instanceof Error) {
-        toast({
-          title: 'Error',
-          description: err.message,
-          variant: 'destructive',
-        });
-      } else {
-        toast({
-          title: 'Error',
-          description: 'Failed to update password. Please try again later.',
-          variant: 'destructive',
-        });
-      }
+      toast({
+        title: 'Error',
+        description: err instanceof Error ? err.message : 'Failed to reset password.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -419,8 +425,13 @@ export function SetPassword() {
         </div>
 
         <div className="flex justify-end">
-          <Button className="bg-[#6b1d1d] hover:bg-[#5a1818]" onClick={handleChangePassword}>
-            Update Password
+          <Button
+            className="bg-[#6b1d1d] hover:bg-[#5a1818]"
+            onClick={handleChangePassword}
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Resetting...' : 'Reset Password'}
           </Button>
         </div>
       </CardContent>

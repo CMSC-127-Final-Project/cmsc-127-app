@@ -1,14 +1,15 @@
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import { supabaseAdmin } from '@/utils/supabase/admin';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const supabase = await createClient();
+  const supabase = createClient();
 
   const { id } = await params;
 
   try {
-    const { data, error } = await supabase.from('User').select('*').eq('auth_id', id);
+    const { data, error } = await (await supabase).from('User').select('*').eq('auth_id', id);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
@@ -32,9 +33,8 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  console.log ('User ID:', user.id); // Log the user ID for debugging
+  console.log('User ID:', user.id);
 
-  // Check if the logged in user is an admin
   const { data: adminCheck, error: roleError } = await supabase
     .from('User')
     .select('role')
@@ -63,43 +63,47 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
   return NextResponse.json({ message: 'User deleted successfully.' }, { status: 200 });
 }
 
-export async function PUT(request: Request, { params }: { params: { user_ID: string } }) {
-  const userId = Number(params.user_ID);
-  const body = await request.json();
-
+export async function POST(req: Request) {
   const supabase = await createClient();
 
-  const { error } = await supabase.from('User').update(body).eq('user_ID', userId);
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json({ message: 'User updated successfully' });
-}
-
-export async function PATCH(req: NextRequest) {
   try {
-    const { userId, newPassword } = await req.json();
-
-    if (!userId || !newPassword) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-    }
-
-    const supabase = await createClient();
-    const { error } = await supabase
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const { data: userData } = await supabase
       .from('User')
-      .update({ password: newPassword }) // Assuming `password` is the column name
-      .eq('auth_id', userId);
+      .select('role')
+      .eq('auth_id', user?.id)
+      .single();
 
-    if (error) {
-      console.error('Error resetting password:', error.message);
-      return NextResponse.json({ error: 'Failed to reset password' }, { status: 500 });
+    console.log('User Data:', userData);
+
+    if (userData?.role !== 'Admin') {
+      return NextResponse.json({ error: 'Admin privileges required' }, { status: 403 });
     }
 
-    return NextResponse.json({ message: 'Password reset successfully!' }, { status: 200 });
-  } catch (err: any) {
-    console.error('Error in password reset API:', err.message);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    const { newPassword } = await req.json();
+    const userId = new URL(req.url).pathname.split('/').pop();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'User ID is missing or invalid.' }, { status: 400 });
+    }
+
+    const { error } = await supabaseAdmin().auth.admin.updateUserById(userId, {
+      password: newPassword,
+    });
+
+    if (error) throw error;
+
+    return NextResponse.json(
+      { success: true, message: 'Password reset successfully.' },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('Admin password reset error:', error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'An unknown error occurred' },
+      { status: 500 }
+    );
   }
 }
