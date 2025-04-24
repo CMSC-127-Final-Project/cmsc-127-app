@@ -215,8 +215,8 @@ const manageUsers = () => {
             </tr>
           </thead>
           <tbody className="bg-white text-center">
-            {users.length > 0 ? (
-              users.map(user => {
+            {filteredUsers && filteredUsers.length > 0 ? (
+              filteredUsers?.map(user => {
                 const ref = (el: HTMLButtonElement | null) => {
                   dropdownRefs.current[user.auth_id] = el;
                 };
