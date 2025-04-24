@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { updateUserSchema } from '@/utils/schemas';
 
-export async function PATCH(req: NextRequest) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createClient();
+
+  const { id } = await params;
 
   try {
     const { data: user, error: userError } = await supabase.auth.getUser();
@@ -18,7 +20,7 @@ export async function PATCH(req: NextRequest) {
     const { data: userRecord, error: userRecordError } = await supabase
       .from('User')
       .select('*')
-      .eq('auth_id', sessionAuthId)
+      .eq('auth_id', id)
       .single();
 
     if (userRecordError || !userRecord) {
@@ -26,7 +28,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const body = await req.json();
+    const body = await request.json();
     const parsedData = updateUserSchema.safeParse(body);
 
     if (!parsedData.success) {

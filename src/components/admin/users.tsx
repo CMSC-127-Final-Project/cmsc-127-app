@@ -46,7 +46,7 @@ const DropdownPortal: React.FC<{
 
 const handleUserAction = async (
   endpoint: string,
-  reservation_id: string,
+  auth_id: string,
   successMessage: string,
   errorMessage: string,
   toast: (options: { title: string; description: string }) => void
@@ -54,7 +54,7 @@ const handleUserAction = async (
   try {
     const response = await fetch(endpoint, {
       method: 'PATCH',
-      body: JSON.stringify({ reservation_id }),
+      body: JSON.stringify({ auth_id }),
     });
 
     if (!response.ok) throw new Error(errorMessage);
@@ -286,7 +286,7 @@ const manageUsers = () => {
                                 'user-toast',
                                 JSON.stringify({
                                   title: 'Success',
-                                  description: 'Deleted the reservation!',
+                                  description: 'Deleted the user!',
                                 })
                               );
                               window.location.reload();
@@ -314,8 +314,15 @@ const manageUsers = () => {
               })
             ) : (
               <tr>
-                <td colSpan={7} className="text-center px-3 md:px-5 py-3 text-gray-400">
-                  No Users Found
+                <td colSpan={9} className="py-10">
+                  <div className="flex flex-col items-center justify-center text-center mt-16 text-gray-500">
+                    <List className="w-12 h-12 mb-4" />
+                    <p className="font-medium text-base text-gray-700">No users searched</p>
+                    <p className="text-sm mt-1">
+                      Input the first or last name of the user then click &quot;Search&quot; to find
+                      the user.
+                    </p>
+                  </div>
                 </td>
               </tr>
             )}

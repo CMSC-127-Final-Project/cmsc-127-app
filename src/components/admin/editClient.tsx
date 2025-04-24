@@ -9,22 +9,20 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { resetUserPassword } from '@/utils/api/user';
-import { set } from 'date-fns';
+
+const searchParams = useSearchParams();
+const auth_id = searchParams.get('user_ID');
 
 export function EditClientProfile() {
-  const searchParams = useSearchParams();
-  const auth_id = searchParams.get('user_ID');
   const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   const [fname, setFname] = useState('');
   const [lname, setLname] = useState('');
   const [email, setEmail] = useState('');
-  const [department, setDepartment] = useState('');
+  const [dept, setDept] = useState('');
   const [phone, setPhone] = useState('');
-  const [role] = useState('');
+  const [role, setRole] = useState('');
   const [rank, setRank] = useState('');
   const [instructorOffice, setInstructorOffice] = useState('');
   const [nickname, setNickname] = useState('');
@@ -34,7 +32,7 @@ export function EditClientProfile() {
   const [originalLname, setOriginalLname] = useState('');
   const [originalIdnumber, setOriginalIdnumber] = useState('');
   const [originalEmail, setOriginalEmail] = useState('');
-  const [originalDepartment, setOriginalDepartment] = useState('');
+  const [originalDept, setOriginalDept] = useState('');
   const [originalRank, setOriginalRank] = useState('');
   const [originalInstructorOffice, setOriginalInstructorOffice] = useState('');
   const [originalNickname, setOriginalNickname] = useState('');
@@ -57,25 +55,26 @@ export function EditClientProfile() {
 
         setUser(user);
 
-        setOriginalFname(user.first_name || 'User');
-        setFname(user.first_name || 'User');
-        setOriginalLname(user.last_name || 'OO');
-        setLname(user.last_name || 'OO');
+        setOriginalFname(user.first_name);
+        setFname(user.first_name);
+        setOriginalLname(user.last_name);
+        setLname(user.last_name);
+        setRole(user.role);
         if (user.role === 'Instructor') {
-          setOriginalIdnumber(user.instructor_id || '20XX-XXXXX');
-          setIdnumber(user.instructor_id || '20XX-XXXXX');
+          setOriginalIdnumber(user.instructor_id);
+          setIdnumber(user.instructor_id);
         } else if (user.role === 'Student') {
-          setOriginalIdnumber(user.student_num || '20XX-XXXXX');
-          setIdnumber(user.student_num || '20XX-XXXXX');
+          setOriginalIdnumber(user.student_num);
+          setIdnumber(user.student_num);
         }
-        setOriginalNickname(user.nickname || 'Isko');
-        setNickname(user.nickname || 'Isko');
-        setOriginalEmail(user.email || 'example@email.com');
-        setEmail(user.email || '');
-        setOriginalDepartment(user.dept || 'Department');
-        setDepartment(user.dept || 'Department');
-        setOriginalPhone(user.phone || '09123456789');
-        setPhone(user.phone || '09123456789');
+        setOriginalNickname(user.nickname);
+        setNickname(user.nickname);
+        setOriginalEmail(user.email);
+        setEmail(user.email);
+        setOriginalDept(user.dept);
+        setDept(user.dept);
+        setOriginalPhone(user.phone);
+        setPhone(user.phone);
         setOriginalNickname(user.nickname || '');
         setNickname(user.nickname || '');
 
@@ -119,7 +118,7 @@ export function EditClientProfile() {
     if (lname !== originalLname) updates.last_name = lname;
     if (idnumber !== originalIdnumber) updates.id_number = idnumber;
     if (email !== originalEmail) updates.email = email;
-    if (department !== originalDepartment) updates.dept = department;
+    if (dept !== originalDept) updates.dept = dept;
     if (nickname !== originalNickname) updates.nickname = nickname;
     if (phone !== originalPhone) updates.phone = phone;
 
@@ -140,7 +139,7 @@ export function EditClientProfile() {
     }
 
     try {
-      const response = await fetch(`/api/user/update`, {
+      const response = await fetch(`/api/user/update/${auth_id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -157,12 +156,12 @@ export function EditClientProfile() {
         title: 'Success',
         description: 'Profile updated successfully!',
       });
-      setOriginalFname(fname || '');
-      setOriginalLname(lname || '');
+      setOriginalFname(fname);
+      setOriginalLname(lname);
       setOriginalIdnumber(idnumber || '');
-      setOriginalEmail(email || '');
-      setOriginalDepartment(department || '');
-      setOriginalNickname(nickname || '');
+      setOriginalEmail(email);
+      setOriginalDept(dept);
+      setOriginalNickname(nickname);
       setOriginalPhone(phone || '');
 
       if (user.role === 'Instructor') {
@@ -209,11 +208,11 @@ export function EditClientProfile() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="firstName">First Name</Label>
-              <Input id="firstName" value={fname || ''} onChange={e => setFname(e.target.value)} />
+              <Input id="firstName" placeholder={fname || ''} onChange={e => setFname(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="lastName">Last Name</Label>
-              <Input id="lastName" value={lname || ''} onChange={e => setLname(e.target.value)} />
+              <Input id="lastName" placeholder={lname || ''} onChange={e => setLname(e.target.value)} />
             </div>
           </div>
 
@@ -224,7 +223,7 @@ export function EditClientProfile() {
               </Label>
               <Input
                 id="idnumber"
-                value={idnumber || ''}
+                placeholder={idnumber || ''}
                 onChange={e => setIdnumber(e.target.value)}
               />
             </div>
@@ -233,7 +232,7 @@ export function EditClientProfile() {
               <Input
                 id="email"
                 type="email"
-                value={email}
+                placeholder={email}
                 onChange={e => setEmail(e.target.value)}
               />
             </div>
@@ -244,7 +243,7 @@ export function EditClientProfile() {
               <Label htmlFor="nickname">Nickname</Label>
               <Input
                 id="nickname"
-                value={nickname || ''}
+                placeholder={nickname || ''}
                 onChange={e => setNickname(e.target.value)}
               />
             </div>
@@ -254,7 +253,7 @@ export function EditClientProfile() {
               <Input
                 id="phone"
                 type="tel"
-                value={phone || ''}
+                placeholder={phone || ''}
                 onChange={e => {
                   if (/^\d*$/.test(e.target.value)) {
                     setPhone(e.target.value);
@@ -304,8 +303,8 @@ export function EditClientProfile() {
             <Label htmlFor="department">Department</Label>
             <select
               id="department"
-              defaultValue={department || ''}
-              onChange={e => setDepartment(e.target.value)}
+              defaultValue={dept}
+              onChange={e => setDept(e.target.value)}
               className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6b1d1d] transition-colors duration-200"
             >
               <option value="" disabled>
@@ -333,8 +332,6 @@ export function EditClientProfile() {
 }
 
 export function SetPassword() {
-  const searchParams = useSearchParams();
-  const userId = searchParams.get('user_ID');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const { toast } = useToast();
@@ -357,7 +354,7 @@ export function SetPassword() {
         return;
       }
 
-      if (!userId) {
+      if (!auth_id) {
         toast({
           title: 'Error',
           description: 'User ID is missing. Please try again.',
@@ -365,7 +362,7 @@ export function SetPassword() {
         });
         return;
       }
-      const response = await resetUserPassword(userId, newPassword);
+      const response = await resetUserPassword(auth_id, newPassword);
 
       if (response.success) {
         toast({
