@@ -22,25 +22,29 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   const supabase = await createClient();
+
   const {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
 
   if (userError || !user) {
-    console.error('Error fetching user:', userError?.message);
-    return;
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { data: adminCheck } = await supabase
+  console.log ('User ID:', user.id); // Log the user ID for debugging
+
+  // Check if the logged in user is an admin
+  const { data: adminCheck, error: roleError } = await supabase
     .from('User')
     .select('role')
-    .eq('id', user.id)
+    .eq('auth_id', user.id)
     .single();
 
-  if (adminCheck?.role !== 'admin') {
-    console.error('User is not an admin');
-    return;
+  console.log('Admin Check:', adminCheck, 'Role Error:', roleError);
+
+  if (roleError || !adminCheck || adminCheck.role !== 'Admin') {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
   const { id } = await params;
@@ -49,7 +53,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     return NextResponse.json({ error: 'No user ID provided.' }, { status: 400 });
   }
 
-  const { error } = await supabase.from('User').delete().eq('user_ID', id);
+  const { error } = await supabase.from('User').delete().eq('auth_id', id);
 
   if (error) {
     console.error('Error deleting user:', error.message);
