@@ -54,8 +54,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         filteredUpdates.instructor_id = parsedData.data.id_number;
       } else if (parsedData.data.role === 'Student') {
         filteredUpdates.student_num = parsedData.data.id_number;
-      }
-      else { 
+      } else {
         return NextResponse.json({ error: 'Invalid role for ID number' }, { status: 400 });
       }
     }
@@ -65,7 +64,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     if (parsedData.data.rank && parsedData.data.rank !== userRecord.rank) {
       filteredUpdates.rank = parsedData.data.rank;
     }
-    if (parsedData.data.instructor_office && parsedData.data.instructor_office !== userRecord.instructor_office) {
+    if (
+      parsedData.data.instructor_office &&
+      parsedData.data.instructor_office !== userRecord.instructor_office
+    ) {
       filteredUpdates.instructor_office = String(parsedData.data.instructor_office);
     }
     if (parsedData.data.nickname && parsedData.data.nickname !== userRecord.nickname) {
