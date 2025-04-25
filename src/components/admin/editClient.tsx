@@ -9,11 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { createClient } from '@/utils/supabase/client';
+import { User } from '@/utils/types';
 
 export function EditClientProfile() {
   const searchParams = useSearchParams();
   const auth_id = searchParams.get('user_ID');
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const { toast } = useToast();
 
   const [fname, setFname] = useState('');
@@ -121,7 +122,7 @@ export function EditClientProfile() {
     if (nickname !== originalNickname) updates.nickname = nickname;
     if (phone !== originalPhone) updates.phone = phone;
 
-    if (user.role === 'Instructor') {
+    if (user?.role === 'Instructor') {
       if (instructorOffice !== originalInstructorOffice) {
         updates.instructor_office = parseInt(instructorOffice, 10);
       }
@@ -163,7 +164,7 @@ export function EditClientProfile() {
       setOriginalNickname(nickname);
       setOriginalPhone(phone || '');
 
-      if (user.role === 'Instructor') {
+      if (user?.role === 'Instructor') {
         setOriginalInstructorOffice(user.instructor_office || '');
         setOriginalRank(user.instructor_rank || '');
       }

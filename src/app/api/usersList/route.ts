@@ -47,9 +47,19 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ status: 200 });
-  } catch (error: any) {
-    console.error('Error:', error);
-    return NextResponse.json({ error: 'Invalid request', details: error.message }, { status: 400 });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Error:', error.message);
+      return NextResponse.json(
+        { error: 'Invalid request', details: error.message },
+        { status: 400 }
+      );
+    }
+    console.error('Unknown error:', error);
+    return NextResponse.json(
+      { error: 'Invalid request', details: 'Unknown error occurred' },
+      { status: 400 }
+    );
   }
 }
 
@@ -94,7 +104,7 @@ export async function GET() {
 
     // Return validated data
     return NextResponse.json(validatedData, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Handle validation or unknown errors
     if (error instanceof z.ZodError) {
       console.error('Validation Error:', error.errors);
@@ -104,9 +114,13 @@ export async function GET() {
       );
     }
 
-    console.error('API error:', error.message || 'An unknown error occurred');
+    if (error instanceof Error) {
+      console.error('API error:', error.message);
+    } else {
+      console.error('API error: An unknown error occurred');
+    }
     return NextResponse.json(
-      { error: error.message || 'An unknown error occurred' },
+      { error: error instanceof Error ? error.message : 'An unknown error occurred' },
       { status: 500 }
     );
   }

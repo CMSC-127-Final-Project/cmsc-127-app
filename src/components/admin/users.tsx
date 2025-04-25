@@ -8,17 +8,7 @@ import { useRouter } from 'next/navigation';
 import { List, Search } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-
-interface User {
-  auth_id: string;
-  number: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  role: string;
-  dept: string;
-}
+import { RawUser, User } from '@/utils/types';
 
 const DropdownPortal: React.FC<{
   children: React.ReactNode;
@@ -64,7 +54,7 @@ const handleUserAction = async (
   }
 };
 
-const manageUsers = () => {
+const ManageUsers = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
@@ -94,7 +84,7 @@ const manageUsers = () => {
         const response = await fetch('/api/usersList', { method: 'GET' });
         if (!response.ok) throw new Error('Failed to fetch reservations');
         const data = await response.json();
-        const mappedUsers = data.map((user: any) => ({
+        const mappedUsers = data.map((user: RawUser) => ({
           auth_id: user.auth_id,
           number: user.student_num || user.instructor_id || 'N/A',
           firstName: user.first_name,
@@ -107,10 +97,14 @@ const manageUsers = () => {
         setUsers(mappedUsers);
         setFilteredUsers(mappedUsers);
         setShowEmptyState(mappedUsers.length === 0);
-      } catch (err: any) {
-        console.error('Error fetching users:', err.message);
-        setError(err.message || 'An unknown error occurred');
-      } finally {
+      } catch (err) {
+        if (err instanceof Error) {
+          console.error('Error fetching users:', err.message);
+          setError(err.message || 'An unknown error occurred');
+        } else {
+          console.error('Unknown error:', err);
+          setError('An unknown error occurred');
+        }
         setLoading(false);
       }
     };
@@ -322,7 +316,13 @@ const manageUsers = () => {
                 <td colSpan={9} className="py-10">
                   <div className="flex flex-col items-center justify-center text-center mt-16 text-gray-500">
                     <List className="w-12 h-12 mb-4" />
-                    <p className="font-medium text-base text-gray-700">No users searched</p>
+                    {loading && !hasSearched && (
+                      <p className="text-gray-500 text-center mt-4">Loading users...</p>
+                    )}
+                    {error && <p className="text-red-500 text-center mt-4">{error}</p>}
+                    {hasSearched && showEmptyState && (
+                      <p className="font-medium text-base text-gray-700">No users searched</p>
+                    )}
                     <p className="text-sm mt-1">
                       Input the first or last name of the user then click &quot;Search&quot; to find
                       the user.
@@ -338,4 +338,4 @@ const manageUsers = () => {
   );
 };
 
-export default manageUsers;
+export default ManageUsers;
