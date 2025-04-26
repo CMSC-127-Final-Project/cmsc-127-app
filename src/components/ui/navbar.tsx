@@ -170,7 +170,7 @@ export default function Navbar({ user_id }: { user_id: string }) {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-60 h-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
+              <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
                 <div className="absolute -top-2 right-4 w-4 h-4 bg-white dark:bg-gray-800 border-t border-l border-gray-200 dark:border-gray-700 rotate-45"></div>
                 <div className="p-3">
                   <div className="flex items-center gap-2 border-b pb-2 dark:border-gray-600">
@@ -189,24 +189,6 @@ export default function Navbar({ user_id }: { user_id: string }) {
                       }}
                     >
                       Profile and Preferences
-                    </li>
-                    <li
-                      className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                      onClick={() => {
-                        setDropdownOpen(false);
-                        router.push('/profile?tab=security');
-                      }}
-                    >
-                      Security
-                    </li>
-                    <li
-                      className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                      onClick={() => {
-                        setDropdownOpen(false);
-                        router.push('/support');
-                      }}
-                    >
-                      Help and Support
                     </li>
                   </ul>
                   <div className="flex justify-end">

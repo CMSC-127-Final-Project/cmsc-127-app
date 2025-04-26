@@ -52,20 +52,6 @@ export default function ProfileManagement({ user_id }: { user_id: string }) {
       <CardHeader className="pb-3">
         <div className="flex justify-between items-center">
           <CardTitle className="text-2xl font-bold">Welcome, {username} 👋</CardTitle>
-          <Button
-            onClick={handleSignOut}
-            disabled={isSigningOut}
-            variant="destructive"
-            size="sm"
-            className="bg-[#6b1d1d] hover:bg-[#5a1818] ${
-                isSigningOut
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-[#5D1A0B] hover:bg-[#5d0b0be7]'
-              } text-white text-sm font-roboto rounded-2xl`"
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>{isSigningOut ? 'Signing out...' : 'Sign out'}</span>
-          </Button>
         </div>
         <p className="text-sm text-muted-foreground">
           Manage your account settings and preferences
