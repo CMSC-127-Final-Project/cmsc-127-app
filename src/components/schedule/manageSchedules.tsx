@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { RxClipboard } from 'react-icons/rx';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,8 +15,19 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useToast } from '@/hooks/use-toast';
+import { ClipboardList, Search, CalendarIcon, Clock, Trash2, Plus, X, Filter } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface Room {
   room_number: string;
@@ -44,6 +54,10 @@ export default function RoomReservation() {
   const [startTime, setStartTime] = useState<string | null>(null);
   const [endTime, setEndTime] = useState<string | null>(null);
   const [scheduleUpdated, setScheduleUpdated] = useState(false);
+  const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedRoomTypes, setSelectedRoomTypes] = useState<string[]>([]);
+  const [uniqueRoomTypes, setUniqueRoomTypes] = useState<string[]>([]);
   const { toast } = useToast();
 
   const formatRoomType = (type: string) => {
@@ -53,8 +67,23 @@ export default function RoomReservation() {
       .join(' ');
   };
 
+  const getRoomTypeColor = (type: string): { bg: string; text: string; border: string } => {
+    const lowerType = type.toLowerCase();
+    if (lowerType.includes('laboratory') || lowerType.includes('lab')) {
+      return { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' };
+    } else if (lowerType.includes('lecture') || lowerType.includes('classroom')) {
+      return { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200' };
+    } else if (lowerType.includes('office') || lowerType.includes('admin')) {
+      return { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200' };
+    } else if (lowerType.includes('conference') || lowerType.includes('meeting')) {
+      return { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' };
+    } else {
+      return { bg: 'bg-[#5D1A0B]/10', text: 'text-[#5D1A0B]', border: 'border-[#5D1A0B]/20' };
+    }
+  };
+
   const addSchedule = async (schedule: {
-    room_number?: string;
+    room_num?: string;
     regular: boolean;
     start_time: string | null;
     end_time: string | null;
@@ -77,6 +106,7 @@ export default function RoomReservation() {
       });
       setShowAddScheduleDialog(false);
       setScheduleUpdated(prev => !prev); // Trigger reload
+      resetForm();
     } catch (error) {
       console.error('Error adding schedule:', error);
       toast({
@@ -85,6 +115,14 @@ export default function RoomReservation() {
         variant: 'destructive',
       });
     }
+  };
+
+  const resetForm = () => {
+    setStartTime(null);
+    setEndTime(null);
+    setSelectedDate(null);
+    setSelectedDays([]);
+    setIsRecurring(false);
   };
 
   const removeSchedule = async (scheduleId: string) => {
@@ -138,6 +176,41 @@ export default function RoomReservation() {
     setShowAddScheduleDialog(true);
   };
 
+  const handleDayToggle = (day: string) => {
+    setSelectedDays(prev => (prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]));
+  };
+
+  const handleRoomTypeToggle = (type: string) => {
+    setSelectedRoomTypes(prev =>
+      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+    );
+  };
+
+  const clearFilters = () => {
+    setSelectedRoomTypes([]);
+    setSearchQuery('');
+    setFilteredRooms(availableRooms);
+  };
+
+  // Apply filters whenever search query or selected room types change
+  useEffect(() => {
+    let filtered = availableRooms;
+
+    // Apply search query filter
+    if (searchQuery) {
+      filtered = filtered.filter(room =>
+        room.room_number.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Apply room type filter
+    if (selectedRoomTypes.length > 0) {
+      filtered = filtered.filter(room => selectedRoomTypes.includes(room.room_type));
+    }
+
+    setFilteredRooms(filtered);
+  }, [searchQuery, selectedRoomTypes, availableRooms]);
+
   useEffect(() => {
     const loadReservations = async () => {
       try {
@@ -147,6 +220,10 @@ export default function RoomReservation() {
         }
         const data = await response.json();
         setAvailableRooms(data);
+
+        // Extract unique room types
+        const types = Array.from(new Set(data.map((room: Room) => room.room_type)));
+        setUniqueRoomTypes(types);
       } catch (err) {
         console.error('Error loading reservations:', err);
       }
@@ -154,126 +231,227 @@ export default function RoomReservation() {
     loadReservations();
   }, [scheduleUpdated]);
 
-  useEffect(() => {
-    setFilteredRooms(availableRooms); // Initialize filteredRooms with all availableRooms
-  }, [availableRooms]);
-
-  function setRoomNumber(value: string): void {
-    const filtered = availableRooms.filter(room =>
-      room.room_number.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredRooms(filtered);
-  }
-
   return (
-    <div className="bg-white p-6 md:p-10 rounded-3xl shadow-md mx-4 md:mx-20 mt-1 mb-10 font-roboto">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-        <h2 className="text-lg md:text-4xl font-bold font-raleway text-gray-900">
-          Manage Schedules
+    <div className="bg-white p-6 md:p-10 rounded-3xl shadow-lg mx-4 md:mx-auto max-w-7xl mt-12 mb-10 font-roboto">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <h2 className="text-2xl md:text-4xl font-bold font-raleway text-black">
+          Room Schedule Management
         </h2>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3 mb-8">
-        <div className="space-y-2">
+      <div className="flex flex-col md:flex-row gap-4 mb-8">
+        <div className="relative flex-grow max-w-md">
+          <Search
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={18}
+          />
           <Input
             id="roomNumber"
             type="text"
             placeholder="Search for room..."
-            onChange={e => setRoomNumber(e.target.value)}
-            className="w-full"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="pl-10 pr-4 py-2 border-[#5D1A0B]/20 focus:border-[#5D1A0B] focus:ring-[#5D1A0B] rounded-full w-full text-black"
           />
+        </div>
+
+        <div className="flex gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="flex items-center gap-2 border-[#5D1A0B]/20">
+                <Filter size={16} />
+                Room Type
+                {selectedRoomTypes.length > 0 && (
+                  <Badge className="ml-1 bg-[#5D1A0B] text-white">{selectedRoomTypes.length}</Badge>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel className="font-raleway text-black">
+                Filter by Room Type
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {uniqueRoomTypes.map(type => (
+                <DropdownMenuCheckboxItem
+                  key={type}
+                  checked={selectedRoomTypes.includes(type)}
+                  onCheckedChange={() => handleRoomTypeToggle(type)}
+                  className="capitalize text-black"
+                >
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`w-3 h-3 rounded-full ${getRoomTypeColor(type).bg} ${getRoomTypeColor(type).border}`}
+                    ></div>
+                    {formatRoomType(type)}
+                  </div>
+                </DropdownMenuCheckboxItem>
+              ))}
+              {uniqueRoomTypes.length === 0 && (
+                <div className="px-2 py-1 text-sm text-gray-500">No room types available</div>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {(selectedRoomTypes.length > 0 || searchQuery) && (
+            <Button
+              variant="ghost"
+              onClick={clearFilters}
+              className="text-[#5D1A0B] hover:text-[#731f10] hover:bg-[#5D1A0B]/5"
+            >
+              <X size={16} className="mr-2" />
+              Clear Filters
+            </Button>
+          )}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredRooms.map(room => (
-          <div
-            key={room.room_number}
-            className="border rounded-2xl shadow-sm hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-in-out p-4 flex flex-col h-full"
-          >
-            <div className="flex justify-between items-center mb-2">
-              <h4 className="font-semibold text-[#5D1A0B]">{room.room_number}</h4>
-              <span className="text-sm bg-[#5D1A0B]/10 text-[#5D1A0B] px-2 py-1 rounded-full">
-                Type: {formatRoomType(room.room_type)}
-              </span>
-            </div>
-            <p className="text-sm text-gray-500 mb-2">
-              <span className="font-medium text-gray-700">Schedules:</span>
-              {room.schedules.length > 0 ? (
-                room.schedules.slice(0, 3).map((schedule, index) => (
-                  <span key={index} className="block">
-                    {schedule.time_range}
-                  </span>
-                ))
-              ) : (
-                <span className="block">&ndash;</span>
-              )}
-              {room.schedules.length > 3 && <span className="block text-gray-400">...more</span>}
-            </p>
-            <div className="mt-auto flex justify-end gap-2">
-              <Button
-                onClick={() => handleReserveClick(room)}
-                className="bg-[#5D1A0B] hover:bg-[#731f10] text-white"
-              >
-                <RxClipboard size={20} className="mr-2" />
-                <span className="hidden md:inline">Manage Schedules</span>
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
+      {selectedRoomTypes.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          {selectedRoomTypes.map(type => (
+            <Badge
+              key={type}
+              variant="outline"
+              className={`${getRoomTypeColor(type).bg} ${getRoomTypeColor(type).text} ${getRoomTypeColor(type).border} flex items-center gap-1`}
+            >
+              {formatRoomType(type)}
+              <X
+                size={14}
+                className="cursor-pointer ml-1"
+                onClick={() => handleRoomTypeToggle(type)}
+              />
+            </Badge>
+          ))}
+        </div>
+      )}
+
+      {filteredRooms.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 text-gray-500 bg-gray-50 rounded-xl">
+          <Search size={48} className="mb-4 text-gray-400" />
+          <p className="text-lg">No rooms found matching your search criteria</p>
+          <Button variant="link" onClick={clearFilters} className="mt-2 text-[#5D1A0B]">
+            Clear all filters
+          </Button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredRooms.map(room => (
+            <Card
+              key={room.room_number}
+              className="overflow-hidden border border-[#5D1A0B]/10 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 ease-in-out"
+            >
+              <CardHeader className="bg-[#5D1A0B]/5 pb-2">
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-xl font-semibold font-raleway text-[#5D1A0B]">
+                    {room.room_number}
+                  </CardTitle>
+                  <Badge
+                    variant="outline"
+                    className={`${getRoomTypeColor(room.room_type).bg} ${getRoomTypeColor(room.room_type).text} ${getRoomTypeColor(room.room_type).border}`}
+                  >
+                    {formatRoomType(room.room_type)}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <h4 className="text-sm font-medium font-raleway text-gray-700 mb-2 flex items-center">
+                  <Clock size={16} className="mr-2 text-[#5D1A0B]/70" />
+                  Scheduled Times
+                </h4>
+                <div className="space-y-1 min-h-[80px] max-h-[120px] overflow-y-auto pr-1">
+                  {room.schedules.length > 0 ? (
+                    room.schedules.map((schedule, index) => (
+                      <div
+                        key={index}
+                        className="text-sm py-1 px-2 rounded bg-[#5D1A0B]/5 flex justify-between"
+                      >
+                        <span>{schedule.time_range}</span>
+                        <span className="text-[#5D1A0B]/70 text-xs">
+                          {schedule.regular ? 'Recurring' : 'One-time'}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-400 italic">No schedules available</p>
+                  )}
+                </div>
+              </CardContent>
+              <CardFooter className="pt-2 pb-4 flex justify-end">
+                <Button
+                  onClick={() => handleReserveClick(room)}
+                  className="bg-[#5D1A0B] hover:bg-[#731f10] text-white transition-colors duration-200"
+                >
+                  <ClipboardList size={18} className="mr-2" />
+                  Manage Schedules
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      )}
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="rounded-xl space-y-4 w-full max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Schedules for {selectedRoom?.room_number}</DialogTitle>
-            <DialogDescription>Manage the schedules for this room.</DialogDescription>
+        <DialogContent className="rounded-xl max-w-3xl">
+          <DialogHeader className="pb-2">
+            <DialogTitle className="text-2xl text-[#5D1A0B] font-raleway flex items-center">
+              <ClipboardList size={20} className="mr-2" />
+              Room {selectedRoom?.room_number} Schedules
+            </DialogTitle>
+            <DialogDescription>View and manage all schedules for this room</DialogDescription>
           </DialogHeader>
 
-          <div className="overflow-x-auto font-roboto max-h-60 overflow-y-auto">
-            <table className="w-full border-collapse shadow-sm rounded-lg overflow-hidden text-sm md:text-base">
+          <Separator className="my-2" />
+
+          <div className="overflow-x-auto font-roboto max-h-[350px] overflow-y-auto rounded-lg border border-gray-200">
+            <table className="w-full border-collapse text-sm md:text-base">
               <thead>
-                <tr className="bg-[#5D1A0B] text-white text-left h-14">
-                  <th className="px-2 md:px-4 py-2 w-1/4">Recurring</th>
-                  <th className="px-2 md:px-4 py-2 w-1/4">Start Time</th>
-                  <th className="px-2 md:px-4 py-2 w-1/4">End Time</th>
-                  <th className="px-2 md:px-4 py-2 w-1/4">Date/Days</th>
-                  <th className="px-2 md:px-4 py-2 w-1/4">Action</th>
+                <tr className="bg-[#5D1A0B] text-white text-left">
+                  <th className="px-4 py-3 font-medium">Type</th>
+                  <th className="px-4 py-3 font-medium">Start Time</th>
+                  <th className="px-4 py-3 font-medium">End Time</th>
+                  <th className="px-4 py-3 font-medium">Date/Days</th>
+                  <th className="px-4 py-3 font-medium text-center">Action</th>
                 </tr>
               </thead>
-              <tbody className="bg-white">
+              <tbody className="bg-white divide-y divide-gray-100">
                 {selectedRoom?.schedules?.length ? (
                   selectedRoom?.schedules.map((schedule, index) => (
-                    <tr key={index} className="border-t last:border-b">
-                      <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
-                        {schedule.regular ? 'Yes' : 'No'}
+                    <tr key={index} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-3">
+                        <Badge
+                          variant={schedule.regular ? 'outline' : 'secondary'}
+                          className={
+                            schedule.regular
+                              ? 'bg-green-50 text-green-700 border-green-200'
+                              : 'bg-blue-50 text-blue-700 border-blue-200'
+                          }
+                        >
+                          {schedule.regular ? 'Recurring' : 'One-time'}
+                        </Badge>
                       </td>
-                      <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
-                        {schedule.start_time || '-'}
-                      </td>
-                      <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
-                        {schedule.end_time || '-'}
-                      </td>
-                      <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
+                      <td className="px-4 py-3">{schedule.start_time || '-'}</td>
+                      <td className="px-4 py-3">{schedule.end_time || '-'}</td>
+                      <td className="px-4 py-3">
                         {Array.isArray(schedule.days)
                           ? schedule.days.join(', ')
                           : schedule.date || '-'}
                       </td>
-                      <td className="px-3 md:px-5 py-3 text-center hover:bg-gray-100">
+                      <td className="px-4 py-3 text-center">
                         <Button
-                          variant="outline"
+                          variant="ghost"
+                          size="sm"
                           onClick={() => handleDeleteSchedule(index)}
-                          className="text-red-900 hover:bg-red-50 hover:text-red-900"
+                          className="text-red-600 hover:bg-red-50 hover:text-red-700"
                         >
-                          Delete
+                          <Trash2 size={16} />
+                          <span className="sr-only">Delete</span>
                         </Button>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="text-center px-3 md:px-5 py-3 text-gray-400">
-                      No Schedules Found
+                    <td colSpan={5} className="text-center px-4 py-8 text-gray-400">
+                      No schedules found for this room
                     </td>
                   </tr>
                 )}
@@ -281,11 +459,20 @@ export default function RoomReservation() {
             </table>
           </div>
 
-          <DialogFooter className="mt-4">
+          <DialogFooter className="mt-4 flex justify-between items-center">
+            <Button
+              variant="outline"
+              onClick={() => setShowDialog(false)}
+              className="border-gray-300"
+            >
+              <X size={16} className="mr-2" />
+              Close
+            </Button>
             <Button
               onClick={handleAddSchedule}
               className="bg-[#5D1A0B] hover:bg-[#731f10] text-white"
             >
+              <Plus size={16} className="mr-2" />
               Add Schedule
             </Button>
           </DialogFooter>
@@ -293,99 +480,127 @@ export default function RoomReservation() {
       </Dialog>
 
       <Dialog open={showAddScheduleDialog} onOpenChange={setShowAddScheduleDialog}>
-        <DialogContent className="rounded-xl space-y-4">
+        <DialogContent className="rounded-xl max-w-md">
           <DialogHeader>
-            <DialogTitle>Add Schedule</DialogTitle>
+            <DialogTitle className="text-xl text-[#5D1A0B] font-raleway">
+              Add New Schedule
+            </DialogTitle>
+            <DialogDescription>
+              Create a new schedule for Room {selectedRoom?.room_number}
+            </DialogDescription>
           </DialogHeader>
-          <div className="flex items-center space-x-2">
-            <Label htmlFor="recurring">Recurring</Label>
-            <Switch id="recurring" checked={isRecurring} onCheckedChange={setIsRecurring} />
+
+          <Separator className="my-2" />
+
+          <div className="space-y-5 py-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="recurring" className="text-base font-medium">
+                  Schedule Type
+                </Label>
+                <Badge
+                  variant={isRecurring ? 'outline' : 'secondary'}
+                  className={
+                    isRecurring
+                      ? 'bg-green-50 text-green-700 border-green-200'
+                      : 'bg-blue-50 text-blue-700 border-blue-200'
+                  }
+                >
+                  {isRecurring ? 'Recurring' : 'One-time'}
+                </Badge>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="recurring"
+                  checked={isRecurring}
+                  onCheckedChange={setIsRecurring}
+                  className="data-[state=checked]:bg-[#5D1A0B]"
+                />
+              </div>
+            </div>
+
+            {isRecurring ? (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Select Days</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {['M', 'T', 'W', 'Th', 'F', 'Sa', 'Su'].map(day => (
+                      <Button
+                        key={day}
+                        type="button"
+                        variant={selectedDays.includes(day) ? 'default' : 'outline'}
+                        onClick={() => handleDayToggle(day)}
+                        className={`h-9 w-9 p-0 ${
+                          selectedDays.includes(day)
+                            ? 'bg-[#5D1A0B] text-white hover:bg-[#731f10]'
+                            : 'border-gray-300 hover:bg-[#5D1A0B]/10'
+                        }`}
+                      >
+                        {day}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Select Date</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={`w-full justify-start text-left border-black font-normal ${!selectedDate ? 'text-gray-400' : 'text-black'}`}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {selectedDate ? selectedDate.toLocaleDateString() : 'Select a date'}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar selected={selectedDate} onChange={setSelectedDate} />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Time Range</Label>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label className="text-xs text-gray-500">Start Time</Label>
+                  <Input
+                    type="time"
+                    value={startTime || ''}
+                    onChange={e => setStartTime(e.target.value)}
+                    className="border-gray-300 text-black"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs text-gray-500">End Time</Label>
+                  <Input
+                    type="time"
+                    value={endTime || ''}
+                    onChange={e => setEndTime(e.target.value)}
+                    className="border-gray-300 text-black"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          {isRecurring ? (
-            <div className="space-y-4">
-              <Label>Days</Label>
-              <ToggleGroup type="multiple" className="flex gap-2">
-                {['M', 'T', 'W', 'Th', 'F', 'Sa', 'Su'].map(day => (
-                  <ToggleGroupItem
-                    key={day}
-                    value={day}
-                    className="data-[state=on]:bg-[#5D1A0B] data-[state=on]:text-white"
-                  >
-                    {day}
-                  </ToggleGroupItem>
-                ))}
-              </ToggleGroup>
-              <div className="space-y-2">
-                <Label>Time Range</Label>
-                <div className="flex items-center gap-2">
-                  <Input
-                    type="time"
-                    value={startTime || ''}
-                    onChange={e => setStartTime(e.target.value)}
-                    className="w-full"
-                  />
-                  <span>-</span>
-                  <Input
-                    type="time"
-                    value={endTime || ''}
-                    onChange={e => setEndTime(e.target.value)}
-                    className="w-full"
-                  />
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <Label>Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full">
-                    {selectedDate ? selectedDate.toDateString() : 'Pick a date'}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent>
-                  <Calendar selected={selectedDate} onChange={setSelectedDate} />
-                </PopoverContent>
-              </Popover>
-              <div className="space-y-2">
-                <Label>Time Range</Label>
-                <div className="flex items-center gap-2">
-                  <Input
-                    type="time"
-                    value={startTime || ''}
-                    onChange={e => setStartTime(e.target.value)}
-                    className="w-full"
-                  />
-                  <span>-</span>
-                  <Input
-                    type="time"
-                    value={endTime || ''}
-                    onChange={e => setEndTime(e.target.value)}
-                    className="w-full"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-          <DialogFooter>
+
+          <DialogFooter className="flex justify-between items-center pt-2">
             <Button
               variant="outline"
-              onClick={() => setShowAddScheduleDialog(false)}
-              className="text-red-900 hover:bg-red-50 hover:text-red-900"
+              onClick={() => {
+                setShowAddScheduleDialog(false);
+                resetForm();
+              }}
+              className="border-gray-300"
             >
-              Close
+              Cancel
             </Button>
             <Button
               className="bg-[#5D1A0B] hover:bg-[#731f10] text-white"
               onClick={() => {
-                const selectedDays = Array.from(
-                  new Set(
-                    Array.from(document.querySelectorAll('[data-state="on"]')).map(
-                      el => el.textContent
-                    )
-                  )
-                ).filter((day): day is string => day !== null);
-
                 const newSchedule = {
                   room_num: selectedRoom?.room_number,
                   regular: isRecurring,
@@ -397,8 +612,11 @@ export default function RoomReservation() {
                 };
                 addSchedule(newSchedule);
               }}
+              disabled={
+                !startTime || !endTime || (isRecurring ? selectedDays.length === 0 : !selectedDate)
+              }
             >
-              Save
+              Save Schedule
             </Button>
           </DialogFooter>
         </DialogContent>
