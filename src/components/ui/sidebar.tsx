@@ -30,7 +30,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   const links = [
     { title: 'Dashboard', href: '/homepage' },
-    { title: 'Profile and Preferences', href: '/profile' },
     { title: 'Change Password', href: '/profile?tab=security' },
     { title: 'Help and Support', href: '/support' },
   ];
