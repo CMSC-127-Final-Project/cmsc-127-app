@@ -50,7 +50,7 @@ export default function ProfileSidebar() {
               }`}
               onClick={handleSignOut}
             >
-              <LogOut className="h-4 w-4 mr-6 text-[#6b1d1d]" />
+              <LogOut className="h-4 w-4 mr-2 text-[#6b1d1d]" />
               <span className="text-sm font-medium">
                 {isSigningOut ? 'Signing out...' : 'Sign out'}
               </span>
