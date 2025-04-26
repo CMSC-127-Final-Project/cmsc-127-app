@@ -222,8 +222,7 @@ export default function RoomReservation() {
         const data: Room[] = await response.json();
         setAvailableRooms(data);
 
-        // Extract unique room types
-        const types = Array.from(new Set(data.map((room: Room) => room.room_type)));
+        const types = Array.from(new Set(data.map(room => room.room_type)));
         setUniqueRoomTypes(types);
       } catch (err) {
         console.error('Error loading reservations:', err);
@@ -233,9 +232,9 @@ export default function RoomReservation() {
   }, [scheduleUpdated]);
 
   return (
-    <div className="bg-white p-6 md:p-10 rounded-3xl shadow-lg mx-4 md:mx-auto max-w-7xl mt-12 mb-10 font-roboto">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <h2 className="text-2xl md:text-4xl font-bold font-raleway text-black">
+    <div className="bg-white p-4 sm:p-6 md:p-10 rounded-3xl shadow-lg mx-2 sm:mx-4 md:mx-auto max-w-7xl mb-4 font-roboto">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <h2 className="text-xl sm:text-2xl md:text-4xl font-bold font-raleway text-black">
           Room Schedule Management
         </h2>
         <p className="text-gray-700 text-sm md:text-base">
@@ -243,8 +242,8 @@ export default function RoomReservation() {
         </p>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
-        <div className="relative flex-grow max-w-md">
+      <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-6 md:mb-8">
+        <div className="relative flex-grow w-full sm:max-w-md">
           <Search
             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
             size={18}
@@ -259,12 +258,15 @@ export default function RoomReservation() {
           />
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="flex items-center gap-2 border-[#5D1A0B]/20">
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 border-[#5D1A0B]/20 w-full sm:w-auto"
+              >
                 <Filter size={16} />
-                Room Type
+                <span className="whitespace-nowrap">Room Type</span>
                 {selectedRoomTypes.length > 0 && (
                   <Badge className="ml-1 bg-[#5D1A0B] text-white">{selectedRoomTypes.length}</Badge>
                 )}
@@ -300,7 +302,7 @@ export default function RoomReservation() {
             <Button
               variant="ghost"
               onClick={clearFilters}
-              className="text-[#5D1A0B] hover:text-[#731f10] hover:bg-[#5D1A0B]/5"
+              className="text-[#5D1A0B] hover:text-[#731f10] hover:bg-[#5D1A0B]/5 w-full sm:w-auto"
             >
               <X size={16} className="mr-2" />
               Clear Filters
@@ -315,7 +317,9 @@ export default function RoomReservation() {
             <Badge
               key={type}
               variant="outline"
-              className={`${getRoomTypeColor(type).bg} ${getRoomTypeColor(type).text} ${getRoomTypeColor(type).border} flex items-center gap-1`}
+              className={`${getRoomTypeColor(type).bg} ${getRoomTypeColor(type).text} ${
+                getRoomTypeColor(type).border
+              } flex items-center gap-1 text-xs sm:text-sm`}
             >
               {formatRoomType(type)}
               <X
@@ -329,34 +333,38 @@ export default function RoomReservation() {
       )}
 
       {filteredRooms.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-gray-500 bg-gray-50 rounded-xl">
-          <Search size={48} className="mb-4 text-gray-400" />
-          <p className="text-lg">No rooms found matching your search criteria</p>
+        <div className="flex flex-col items-center justify-center py-10 sm:py-16 text-gray-500 bg-gray-50 rounded-xl">
+          <Search size={36} className="mb-3 text-gray-400" />
+          <p className="text-base sm:text-lg text-center px-4">
+            No rooms found matching your search criteria
+          </p>
           <Button variant="link" onClick={clearFilters} className="mt-2 text-[#5D1A0B]">
             Clear all filters
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filteredRooms.map(room => (
             <Card
               key={room.room_number}
               className="overflow-hidden border border-[#5D1A0B]/10 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 ease-in-out"
             >
-              <CardHeader className="bg-[#5D1A0B]/5 pb-2">
-                <div className="flex justify-between items-center">
-                  <CardTitle className="text-xl font-semibold font-raleway text-[#5D1A0B]">
+              <CardHeader className="bg-[#5D1A0B]/5 pb-2 px-4 py-3 sm:px-6">
+                <div className="flex justify-between items-center flex-wrap gap-2">
+                  <CardTitle className="text-lg sm:text-xl font-semibold font-raleway text-[#5D1A0B]">
                     {room.room_number}
                   </CardTitle>
                   <Badge
                     variant="outline"
-                    className={`${getRoomTypeColor(room.room_type).bg} ${getRoomTypeColor(room.room_type).text} ${getRoomTypeColor(room.room_type).border}`}
+                    className={`${getRoomTypeColor(room.room_type).bg} ${getRoomTypeColor(room.room_type).text} ${
+                      getRoomTypeColor(room.room_type).border
+                    } text-xs sm:text-sm`}
                   >
                     {formatRoomType(room.room_type)}
                   </Badge>
                 </div>
               </CardHeader>
-              <CardContent className="pt-4">
+              <CardContent className="pt-3 px-4 sm:px-6">
                 <h4 className="text-sm font-medium font-raleway text-gray-700 mb-2 flex items-center">
                   <Clock size={16} className="mr-2 text-[#5D1A0B]/70" />
                   Scheduled Times
@@ -366,26 +374,28 @@ export default function RoomReservation() {
                     room.schedules.map((schedule, index) => (
                       <div
                         key={index}
-                        className="text-sm py-1 px-2 rounded bg-[#5D1A0B]/5 flex justify-between"
+                        className="text-xs sm:text-sm py-1 px-2 rounded bg-[#5D1A0B]/5 flex justify-between"
                       >
-                        <span>{schedule.time_range}</span>
-                        <span className="text-[#5D1A0B]/70 text-xs">
+                        <span className="truncate mr-2">{schedule.time_range}</span>
+                        <span className="text-[#5D1A0B]/70 text-xs whitespace-nowrap">
                           {schedule.regular ? 'Recurring' : 'One-time'}
                         </span>
                       </div>
                     ))
                   ) : (
-                    <p className="text-sm text-gray-400 italic">No schedules available</p>
+                    <p className="text-xs sm:text-sm text-gray-400 italic">
+                      No schedules available
+                    </p>
                   )}
                 </div>
               </CardContent>
-              <CardFooter className="pt-2 pb-4 flex justify-end">
+              <CardFooter className="pt-2 pb-3 sm:pb-4 px-4 sm:px-6 flex justify-end">
                 <Button
                   onClick={() => handleReserveClick(room)}
-                  className="bg-[#5D1A0B] hover:bg-[#731f10] text-white transition-colors duration-200"
+                  className="bg-[#5D1A0B] hover:bg-[#731f10] text-white transition-colors duration-200 text-xs sm:text-sm w-full sm:w-auto"
                 >
-                  <ClipboardList size={18} className="mr-2" />
-                  Manage Schedules
+                  <ClipboardList size={16} className="mr-2" />
+                  <span>Manage Schedules</span>
                 </Button>
               </CardFooter>
             </Card>
@@ -394,57 +404,59 @@ export default function RoomReservation() {
       )}
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="rounded-xl max-w-3xl">
+        <DialogContent className="rounded-xl w-[95vw] max-w-3xl p-4 sm:p-6">
           <DialogHeader className="pb-2">
-            <DialogTitle className="text-2xl text-[#5D1A0B] font-raleway flex items-center">
+            <DialogTitle className="text-xl sm:text-2xl text-[#5D1A0B] font-raleway flex items-center">
               <ClipboardList size={20} className="mr-2" />
               Room {selectedRoom?.room_number} Schedules
             </DialogTitle>
-            <DialogDescription>View and manage all schedules for this room</DialogDescription>
+            <DialogDescription className="text-sm">
+              View and manage all schedules for this room
+            </DialogDescription>
           </DialogHeader>
 
           <Separator className="my-2" />
 
-          <div className="overflow-x-auto font-roboto max-h-[350px] overflow-y-auto rounded-lg border border-gray-200">
-            <table className="w-full border-collapse text-sm md:text-base">
-              <thead>
+          <div className="overflow-x-auto font-roboto max-h-[60vh] sm:max-h-[350px] overflow-y-auto rounded-lg border border-gray-200">
+            <table className="w-full border-collapse text-xs sm:text-sm md:text-base">
+              <thead className="sticky top-0 z-10">
                 <tr className="bg-[#5D1A0B] text-white text-left">
-                  <th className="px-4 py-3 font-medium">Type</th>
-                  <th className="px-4 py-3 font-medium">Start Time</th>
-                  <th className="px-4 py-3 font-medium">End Time</th>
-                  <th className="px-4 py-3 font-medium">Date/Days</th>
-                  <th className="px-4 py-3 font-medium text-center">Action</th>
+                  <th className="px-2 sm:px-4 py-2 sm:py-3 font-medium">Type</th>
+                  <th className="px-2 sm:px-4 py-2 sm:py-3 font-medium">Start</th>
+                  <th className="px-2 sm:px-4 py-2 sm:py-3 font-medium">End</th>
+                  <th className="px-2 sm:px-4 py-2 sm:py-3 font-medium">Date/Days</th>
+                  <th className="px-2 sm:px-4 py-2 sm:py-3 font-medium text-center">Action</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-100">
                 {selectedRoom?.schedules?.length ? (
                   selectedRoom?.schedules.map((schedule, index) => (
                     <tr key={index} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-3">
+                      <td className="px-2 sm:px-4 py-2 sm:py-3">
                         <Badge
                           variant={schedule.regular ? 'outline' : 'secondary'}
-                          className={
+                          className={`text-xs ${
                             schedule.regular
                               ? 'bg-green-50 text-green-700 border-green-200'
                               : 'bg-blue-50 text-blue-700 border-blue-200'
-                          }
+                          }`}
                         >
                           {schedule.regular ? 'Recurring' : 'One-time'}
                         </Badge>
                       </td>
-                      <td className="px-4 py-3">{schedule.start_time || '-'}</td>
-                      <td className="px-4 py-3">{schedule.end_time || '-'}</td>
-                      <td className="px-4 py-3">
+                      <td className="px-2 sm:px-4 py-2 sm:py-3">{schedule.start_time || '-'}</td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3">{schedule.end_time || '-'}</td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 truncate max-w-[120px] sm:max-w-none">
                         {Array.isArray(schedule.days)
                           ? schedule.days.join(', ')
                           : schedule.date || '-'}
                       </td>
-                      <td className="px-4 py-3 text-center">
+                      <td className="px-2 sm:px-4 py-2 sm:py-3 text-center">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDeleteSchedule(index)}
-                          className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                          className="text-red-600 hover:bg-red-50 hover:text-red-700 h-8 w-8 p-0"
                         >
                           <Trash2 size={16} />
                           <span className="sr-only">Delete</span>
@@ -463,11 +475,11 @@ export default function RoomReservation() {
             </table>
           </div>
 
-          <DialogFooter className="mt-4 flex justify-between items-center">
+          <DialogFooter className="mt-4 flex flex-col-reverse sm:flex-row justify-between items-center gap-3">
             <Button
               variant="outline"
               onClick={() => setShowDialog(false)}
-              className="border-gray-300"
+              className="border-gray-300 w-full sm:w-auto"
             >
               <X size={16} className="mr-2" />
               Close
@@ -484,31 +496,31 @@ export default function RoomReservation() {
       </Dialog>
 
       <Dialog open={showAddScheduleDialog} onOpenChange={setShowAddScheduleDialog}>
-        <DialogContent className="rounded-xl max-w-md">
+        <DialogContent className="rounded-xl max-w-md p-4 sm:p-6 w-[95vw]">
           <DialogHeader>
-            <DialogTitle className="text-xl text-[#5D1A0B] font-raleway">
+            <DialogTitle className="text-lg sm:text-xl text-[#5D1A0B] font-raleway">
               Add New Schedule
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-sm">
               Create a new schedule for Room {selectedRoom?.room_number}
             </DialogDescription>
           </DialogHeader>
 
           <Separator className="my-2" />
 
-          <div className="space-y-5 py-2">
-            <div className="flex items-center justify-between">
+          <div className="space-y-4 sm:space-y-5 py-2">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center space-x-2">
-                <Label htmlFor="recurring" className="text-base font-medium">
+                <Label htmlFor="recurring" className="text-sm sm:text-base font-medium">
                   Schedule Type
                 </Label>
                 <Badge
                   variant={isRecurring ? 'outline' : 'secondary'}
-                  className={
+                  className={`text-xs ${
                     isRecurring
                       ? 'bg-green-50 text-green-700 border-green-200'
                       : 'bg-blue-50 text-blue-700 border-blue-200'
-                  }
+                  }`}
                 >
                   {isRecurring ? 'Recurring' : 'One-time'}
                 </Badge>
@@ -524,7 +536,7 @@ export default function RoomReservation() {
             </div>
 
             {isRecurring ? (
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Select Days</Label>
                   <div className="flex flex-wrap gap-2">
@@ -534,7 +546,7 @@ export default function RoomReservation() {
                         type="button"
                         variant={selectedDays.includes(day) ? 'default' : 'outline'}
                         onClick={() => handleDayToggle(day)}
-                        className={`h-9 w-9 p-0 ${
+                        className={`h-8 sm:h-9 w-8 sm:w-9 p-0 text-xs sm:text-sm ${
                           selectedDays.includes(day)
                             ? 'bg-[#5D1A0B] text-white hover:bg-[#731f10]'
                             : 'border-gray-300 hover:bg-[#5D1A0B]/10'
@@ -553,7 +565,9 @@ export default function RoomReservation() {
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
-                      className={`w-full justify-start text-left border-black font-normal ${!selectedDate ? 'text-gray-400' : 'text-black'}`}
+                      className={`w-full justify-start text-left border-black font-normal text-sm ${
+                        !selectedDate ? 'text-gray-400' : 'text-black'
+                      }`}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {selectedDate ? selectedDate.toLocaleDateString() : 'Select a date'}
@@ -568,14 +582,14 @@ export default function RoomReservation() {
 
             <div className="space-y-2">
               <Label className="text-sm font-medium">Time Range</Label>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-1">
                   <Label className="text-xs text-gray-500">Start Time</Label>
                   <Input
                     type="time"
                     value={startTime || ''}
                     onChange={e => setStartTime(e.target.value)}
-                    className="border-gray-300 text-black"
+                    className="border-gray-300 text-black text-sm"
                   />
                 </div>
                 <div className="space-y-1">
@@ -584,21 +598,21 @@ export default function RoomReservation() {
                     type="time"
                     value={endTime || ''}
                     onChange={e => setEndTime(e.target.value)}
-                    className="border-gray-300 text-black"
+                    className="border-gray-300 text-black text-sm"
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          <DialogFooter className="flex justify-between items-center pt-2">
+          <DialogFooter className="flex flex-col-reverse sm:flex-row justify-between items-center gap-3 pt-2">
             <Button
               variant="outline"
               onClick={() => {
                 setShowAddScheduleDialog(false);
                 resetForm();
               }}
-              className="border-gray-300"
+              className="border-gray-300 w-full sm:w-auto"
             >
               Cancel
             </Button>
