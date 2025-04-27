@@ -10,17 +10,15 @@ jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
-
     permissions:
       actions: read
       contents: read
       security-events: write
 
     strategy:
-      fail-fast: false
       matrix:
-        language: [ 'javascript-typescript', 'actions' ] 
-
+        language: [javascript] # or [javascript, typescript, etc.]
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -35,4 +33,3 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
-
