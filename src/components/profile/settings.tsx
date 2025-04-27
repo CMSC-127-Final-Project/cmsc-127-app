@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes'; // ✅ Import this
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,14 +13,26 @@ import { useSearchParams } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Settings({ user_id }: { user_id: string }) {
+  const { setTheme, theme } = useTheme(); // ✅ Initialize theme control
   const searchParams = useSearchParams();
   const defaultTab = searchParams.get('tab') || 'personal';
+
+  const [activeTab, setActiveTab] = useState(defaultTab);
+  const [isDarkMode, setIsDarkMode] = useState(false); // ✅ State for dark mode switch
 
   useEffect(() => {
     setActiveTab(defaultTab);
   }, [defaultTab]);
 
-  const [activeTab, setActiveTab] = useState(defaultTab);
+  useEffect(() => {
+    setIsDarkMode(theme === 'dark'); // ✅ Sync switch position with actual theme
+  }, [theme]);
+
+  const handleDarkModeToggle = (checked: boolean) => {
+    setIsDarkMode(checked);
+    setTheme(checked ? 'dark' : 'light');
+  };
+
   const [fname, setFname] = useState('');
   const [lname, setLname] = useState('');
   const [email, setEmail] = useState('');
@@ -394,7 +407,7 @@ export default function Settings({ user_id }: { user_id: string }) {
                     Switch between light and dark themes
                   </p>
                 </div>
-                <Switch />
+                <Switch checked={isDarkMode} onCheckedChange={handleDarkModeToggle} />
               </div>
             </CardContent>
           </Card>

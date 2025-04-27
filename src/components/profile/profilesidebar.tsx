@@ -38,14 +38,14 @@ export default function ProfileSidebar() {
         <CardContent className="p-0 font-raleway">
           <div className="divide-y">
             <div
-              className="p-3 hover:bg-gray-50 cursor-pointer flex items-center"
+              className="p-3 hover:bg-gray-50 dark:hover:bg-[#3e4c61] cursor-pointer flex items-center"
               onClick={() => router.push('/homepage')}
             >
               <Home className="h-4 w-4 mr-6 text-[#6b1d1d]" />
               <span className="text-sm font-medium">Back to Dashboard</span>
             </div>
             <div
-              className={`p-3 hover:bg-gray-50 cursor-pointer flex items-center ${
+              className={`p-3 hover:bg-gray-50 dark:hover:bg-[#3e4c61] cursor-pointer flex items-center ${
                 isSigningOut ? 'opacity-50 pointer-events-none' : ''
               }`}
               onClick={handleSignOut}
