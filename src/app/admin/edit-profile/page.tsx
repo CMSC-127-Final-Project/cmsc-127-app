@@ -5,11 +5,11 @@ import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: 'Reset Password',
+  title: 'Edit Client Profile',
   icons: {
     icon: '/upfavicon.ico',
   },
-  description: 'Reset user password',
+  description: 'Admin page for editing client profiles.',
 };
 
 export default async function EditProfilePage() {
