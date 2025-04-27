@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript-typescript', 'actions' ]  # 👈 scan both js/ts and github actions
+        language: [ 'javascript-typescript', 'actions' ] 
 
     steps:
       - name: Checkout repository
