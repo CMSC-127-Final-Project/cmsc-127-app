@@ -37,7 +37,11 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: userData } = await supabase.from("User").select("role").eq("auth_id", user?.id).single();
+  const { data: userData } = await supabase
+    .from('User')
+    .select('role')
+    .eq('auth_id', user?.id)
+    .single();
 
   if (
     !user &&

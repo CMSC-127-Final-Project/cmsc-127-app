@@ -259,7 +259,11 @@ export default function RoomReservation() {
       </div>
 
       <div className="flex justify-end">
-        <Button onClick={handleSearch} className="bg-[#5D1A0B] hover:bg-[#731f10] text-white" disabled={isLoading}>
+        <Button
+          onClick={handleSearch}
+          className="bg-[#5D1A0B] hover:bg-[#731f10] text-white"
+          disabled={isLoading}
+        >
           <Search className="mr-2" size={20} />
           <span className="hidden md:inline">Search</span>
         </Button>
@@ -420,7 +424,9 @@ export default function RoomReservation() {
             >
               Cancel
             </Button>
-            <Button onClick={confirmReservation} disabled={isLoading}>Confirm</Button>
+            <Button onClick={confirmReservation} disabled={isLoading}>
+              Confirm
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
