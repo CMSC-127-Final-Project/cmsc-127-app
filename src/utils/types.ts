@@ -19,7 +19,6 @@ export interface ContactOptionProps {
 }
 
 export interface FaqItemProps {
-  id: string;
   question: string;
   answer: string;
   isExpanded: boolean;

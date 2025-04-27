@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   ChevronUp,
   ChevronDown,
-  MessageSquare,
   Monitor,
   Facebook,
   Twitter,
@@ -43,7 +42,6 @@ export default function ContactUs() {
           <CardContent className="space-y-4">
             <div className="space-y-4 p-4">
               <FaqItem
-                id="password1"
                 question="How do I reset my password?"
                 answer="To reset your password, go to the Administrator's office and bring an identification card."
                 isExpanded={expandedFaq === 'password1'}
@@ -51,7 +49,6 @@ export default function ContactUs() {
               />
 
               <FaqItem
-                id="access"
                 question="Can I access the app on multiple devices?"
                 answer="Yes, you can access the app on multiple devices. Simply log in with your account credentials, and your data will sync across all devices."
                 isExpanded={expandedFaq === 'access'}
@@ -59,7 +56,6 @@ export default function ContactUs() {
               />
 
               <FaqItem
-                id="support"
                 question="How do I contact customer support?"
                 answer="You can contact customer support by navigating to the Contact tab in the app. You can reach us via email, Facebook, Twitter, or Instagram. Our team will respond to your queries as soon as possible"
                 isExpanded={expandedFaq === 'support'}
@@ -67,7 +63,6 @@ export default function ContactUs() {
               />
 
               <FaqItem
-                id="password2"
                 question="How do I change my password?"
                 answer="To change your password, click the sidebar and go to Profile and Preferences. Then, navigate to the Security Tab."
                 isExpanded={expandedFaq === 'notifications2'}
@@ -75,7 +70,6 @@ export default function ContactUs() {
               />
 
               <FaqItem
-                id="data"
                 question="Is my data safe and private?"
                 answer="Yes, we take data security seriously. All your information is encrypted and stored securely according to industry standards."
                 isExpanded={expandedFaq === 'data'}
@@ -115,7 +109,7 @@ export default function ContactUs() {
                 rel="noopener noreferrer"
               >
                 <ContactOption
-                  icon={<MessageSquare className="h-6 w-6" />}
+                  icon={<Instagram className="h-6 w-6" />}
                   title="Instagram: @upmindanao"
                 />
               </a>
@@ -127,7 +121,7 @@ export default function ContactUs() {
   );
 }
 
-function FaqItem({ id, question, answer, isExpanded, onToggle }: FaqItemProps) {
+function FaqItem({ question, answer, isExpanded, onToggle }: FaqItemProps) {
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden">
       <button className="w-full p-4 text-left flex items-center justify-between" onClick={onToggle}>
