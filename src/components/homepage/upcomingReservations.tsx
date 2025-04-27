@@ -43,7 +43,7 @@ const UpcomingReservations = ({ user_id }: { user_id: string }) => {
   const toggleActionColumn = (action: 'cancel' | 'modify') => {
     setActionColumn(prev => (prev === action ? null : action));
   };
-  
+
   return (
     <div className="bg-white p-6 md:p-10 rounded-3xl drop-shadow-[0_-4px_10px_rgba(0,0,0,0.1)] mx-4 md:mx-20 mt-1 mb-10">
       <div className="flex flex-row justify-between items-center mb-4">

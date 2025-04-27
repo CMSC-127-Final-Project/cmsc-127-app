@@ -162,7 +162,6 @@
 }
 
 @layer components {
-
   .dark a:hover,
   .dark button:hover,
   .dark .nav-tab:hover,
@@ -200,12 +199,13 @@
 .sidebar-open .rounded-3xl {
   width: calc(100% - 14rem);
   margin-left: 14rem;
-  transition: width 0.3s, margin-left 0.3s;
+  transition:
+    width 0.3s,
+    margin-left 0.3s;
 }
 
 /* Mobile sidebar */
 @media (max-width: 767px) {
-
   .sidebar-open .container,
   .sidebar-open .content-section,
   .sidebar-open .rounded-3xl {
