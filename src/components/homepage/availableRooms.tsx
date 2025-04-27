@@ -37,7 +37,6 @@ export default function RoomReservation() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSearch = async () => {
-    setIsLoading(true);
     if (!date) {
       setIsLoading(false);
       setShowEmptyState(true);
@@ -55,6 +54,8 @@ export default function RoomReservation() {
       return;
     }
 
+    setIsLoading(true); // <-- ONLY set loading after validations are successful
+
     try {
       const response = await fetch('/api/rooms/available/', {
         method: 'POST',
@@ -66,18 +67,10 @@ export default function RoomReservation() {
 
       const data = await response.json();
 
-      const mappedData = data.map(
-        (room: {
-          id: string;
-          room_number: string;
-          capacity: number;
-          notes?: string;
-          freeSlots: { start: string; end: string }[];
-        }) => ({
-          ...room,
-          number: room.room_number,
-        })
-      );
+      const mappedData = data.map((room: any) => ({
+        ...room,
+        number: room.room_number,
+      }));
 
       const filteredRooms =
         startTime && endTime
