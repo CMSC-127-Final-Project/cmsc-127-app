@@ -1,11 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-<<<<<<< HEAD
-import { Trash2, CalendarDays, Repeat, Clock } from 'lucide-react';
-import { RxClipboard } from 'react-icons/rx';
-=======
->>>>>>> e45d6a1 (chore/improve schedules ui)
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
