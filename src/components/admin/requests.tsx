@@ -4,16 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { RxCheckCircled, RxCrossCircled, RxTrash, RxDotsHorizontal } from 'react-icons/rx';
 import { useToast } from '@/hooks/use-toast';
-
-interface Reservation {
-  reservation_id: string;
-  created_at: string;
-  room_num: string;
-  date: string;
-  name: string;
-  start_time: string;
-  end_time: string;
-}
+import { Reservation } from '@/utils/types';
 
 const DropdownPortal: React.FC<{
   children: React.ReactNode;
