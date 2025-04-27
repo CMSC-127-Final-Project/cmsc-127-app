@@ -2,7 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Raleway, Roboto } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
-import { PostHogProvider } from './providers';
+// import { PostHogProvider } from './providers';
 
 const roboto = Roboto({
   variable: '--font-roboto',
@@ -30,7 +30,7 @@ export default function RootLayout({
     <html lang="en" className={`${roboto.variable} ${raleway.variable}`}>
       <body className="font-roboto antialiased">
         <Toaster />
-        <PostHogProvider>{children}</PostHogProvider>
+        {children}
       </body>
     </html>
   );

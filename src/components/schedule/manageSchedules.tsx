@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Trash2, CalendarDays, Repeat, Clock } from 'lucide-react';
 import { RxClipboard } from 'react-icons/rx';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -167,13 +168,17 @@ export default function RoomReservation() {
 
   return (
     <div className="bg-white p-6 md:p-10 rounded-3xl shadow-md mx-4 md:mx-20 mt-1 mb-10 font-roboto">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+      <div className="flex flex-col gap-2 mb-6">
         <h2 className="text-lg md:text-4xl font-bold font-raleway text-gray-900">
-          Manage Schedules
+          Schedule Management 📝
         </h2>
+        <p className="text-gray-700 text-sm md:text-base">
+          View and manage the schedules for each room.
+        </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3 mb-8">
+      <div className="grid gap-6 md:grid-cols-3 mb-8 items-center">
+        <div className="col-span-2"></div>
         <div className="space-y-2">
           <Input
             id="roomNumber"
@@ -185,7 +190,7 @@ export default function RoomReservation() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredRooms.map(room => (
           <div
             key={room.room_number}
@@ -194,7 +199,7 @@ export default function RoomReservation() {
             <div className="flex justify-between items-center mb-2">
               <h4 className="font-semibold text-[#5D1A0B]">{room.room_number}</h4>
               <span className="text-sm bg-[#5D1A0B]/10 text-[#5D1A0B] px-2 py-1 rounded-full">
-                Type: {formatRoomType(room.room_type)}
+                {formatRoomType(room.room_type)}
               </span>
             </div>
             <p className="text-sm text-gray-500 mb-2">
@@ -233,46 +238,43 @@ export default function RoomReservation() {
           <div className="overflow-x-auto font-roboto max-h-60 overflow-y-auto">
             <table className="w-full border-collapse shadow-sm rounded-lg overflow-hidden text-sm md:text-base">
               <thead>
-                <tr className="bg-[#5D1A0B] text-white text-left h-14">
-                  <th className="px-2 md:px-4 py-2 w-1/4">Recurring</th>
-                  <th className="px-2 md:px-4 py-2 w-1/4">Start Time</th>
-                  <th className="px-2 md:px-4 py-2 w-1/4">End Time</th>
-                  <th className="px-2 md:px-4 py-2 w-1/4">Date/Days</th>
-                  <th className="px-2 md:px-4 py-2 w-1/4">Action</th>
+                <tr className="bg-[#5D1A0B] text-white text-left h-12">
+                  <th className="px-2 md:px-3 py-2">Recurring</th>
+                  <th className="px-2 md:px-3 py-2">Start Time</th>
+                  <th className="px-2 md:px-3 py-2">End Time</th>
+                  <th className="px-2 md:px-3 py-2">Date/Days</th>
+                  <th className="px-2 md:px-3 py-2 text-center">Action</th>
                 </tr>
               </thead>
               <tbody className="bg-white">
                 {selectedRoom?.schedules?.length ? (
                   selectedRoom?.schedules.map((schedule, index) => (
                     <tr key={index} className="border-t last:border-b">
-                      <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
+                      <td className="px-2 md:px-3 py-2 hover:bg-gray-100">
                         {schedule.regular ? 'Yes' : 'No'}
                       </td>
-                      <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
+                      <td className="px-2 md:px-3 py-2 hover:bg-gray-100">
                         {schedule.start_time || '-'}
                       </td>
-                      <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
+                      <td className="px-2 md:px-3 py-2 hover:bg-gray-100">
                         {schedule.end_time || '-'}
                       </td>
-                      <td className="px-3 md:px-5 py-3 hover:bg-gray-100">
+                      <td className="px-2 md:px-3 py-2 hover:bg-gray-100">
                         {Array.isArray(schedule.days)
                           ? schedule.days.join(', ')
                           : schedule.date || '-'}
                       </td>
-                      <td className="px-3 md:px-5 py-3 text-center hover:bg-gray-100">
-                        <Button
-                          variant="outline"
+                      <td className="px-2 md:px-3 py-2">
+                        <Trash2
+                          className="w-5 h-5 cursor-pointer mx-auto hover:scale-110 transition text-red-500"
                           onClick={() => handleDeleteSchedule(index)}
-                          className="text-red-900 hover:bg-red-50 hover:text-red-900"
-                        >
-                          Delete
-                        </Button>
+                        />
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="text-center px-3 md:px-5 py-3 text-gray-400">
+                    <td colSpan={5} className="text-center px-2 md:px-3 py-2 text-gray-400">
                       No Schedules Found
                     </td>
                   </tr>
@@ -293,7 +295,7 @@ export default function RoomReservation() {
       </Dialog>
 
       <Dialog open={showAddScheduleDialog} onOpenChange={setShowAddScheduleDialog}>
-        <DialogContent className="rounded-xl space-y-4">
+        <DialogContent className="rounded-xl space-y-4 w-full max-w-md">
           <DialogHeader>
             <DialogTitle>Add Schedule</DialogTitle>
           </DialogHeader>
@@ -303,7 +305,10 @@ export default function RoomReservation() {
           </div>
           {isRecurring ? (
             <div className="space-y-4">
-              <Label>Days</Label>
+              <div className="flex items-center gap-2">
+                <Repeat className="w-5 h-5 text-gray-600" />
+                <Label>Days</Label>
+              </div>
               <ToggleGroup type="multiple" className="flex gap-2">
                 {['M', 'T', 'W', 'Th', 'F', 'Sa', 'Su'].map(day => (
                   <ToggleGroupItem
@@ -318,6 +323,7 @@ export default function RoomReservation() {
               <div className="space-y-2">
                 <Label>Time Range</Label>
                 <div className="flex items-center gap-2">
+                  <Clock className="mr-1 h-10 w-10 text-gray-500" />
                   <Input
                     type="time"
                     value={startTime || ''}
@@ -325,6 +331,7 @@ export default function RoomReservation() {
                     className="w-full"
                   />
                   <span>-</span>
+                  <Clock className="mr-1 h-10 w-10 text-gray-500" />
                   <Input
                     type="time"
                     value={endTime || ''}
@@ -336,7 +343,10 @@ export default function RoomReservation() {
             </div>
           ) : (
             <div className="space-y-4">
-              <Label>Date</Label>
+              <div className="flex items-center gap-2">
+                <CalendarDays className="w-5 h-5 text-gray-600" />
+                <Label>Date</Label>
+              </div>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" className="w-full">
@@ -350,6 +360,7 @@ export default function RoomReservation() {
               <div className="space-y-2">
                 <Label>Time Range</Label>
                 <div className="flex items-center gap-2">
+                  <Clock className="mr-1 h-10 w-10 text-gray-500" />
                   <Input
                     type="time"
                     value={startTime || ''}
@@ -357,6 +368,7 @@ export default function RoomReservation() {
                     className="w-full"
                   />
                   <span>-</span>
+                  <Clock className="mr-1 h-10 w-10 text-gray-500" />
                   <Input
                     type="time"
                     value={endTime || ''}
