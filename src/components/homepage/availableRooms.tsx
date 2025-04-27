@@ -41,14 +41,14 @@ export default function RoomReservation() {
   const [reason, setReason] = useState('');
   const { toast } = useToast(); // Initialize toast
   const [selectedSlot, setSelectedSlot] = useState<{ start: string; end: string } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSearch = async () => {
+    setIsLoading(true);
     if (!date) {
-      toast({
-        title: 'Error',
-        description: 'Please select a date.',
-        variant: 'destructive',
-      });
+      setIsLoading(false);
+      setShowEmptyState(true);
+      setHasSearched(true);
       return;
     }
 
@@ -58,6 +58,7 @@ export default function RoomReservation() {
         description: 'Start time must be earlier than end time.',
         variant: 'destructive',
       });
+      setIsLoading(false);
       return;
     }
 
@@ -106,6 +107,7 @@ export default function RoomReservation() {
         variant: 'destructive',
       });
     }
+    setIsLoading(false);
   };
 
   const handleReserveClick = (room: Room) => {
@@ -114,17 +116,21 @@ export default function RoomReservation() {
   };
 
   const confirmReservation = async () => {
+    setIsLoading(true);
     if (!selectedRoom || !date || !reason.trim()) {
       toast({
         title: 'Error',
         description: 'Please fill in all required fields.',
         variant: 'destructive',
       });
+      setIsLoading(false);
       return;
     }
 
     const reservationStart = selectedSlot ? selectedSlot.start : startTime;
     const reservationEnd = selectedSlot ? selectedSlot.end : endTime;
+    console.log('Reservation Start:', reservationStart);
+    console.log('Reservation End:', reservationEnd);
 
     if (!reservationStart || !reservationEnd) {
       toast({
@@ -150,6 +156,7 @@ export default function RoomReservation() {
           description: 'Specified time does not fit within available slots.',
           variant: 'destructive',
         });
+        setIsLoading(false);
         return;
       }
     }
@@ -191,6 +198,7 @@ export default function RoomReservation() {
         variant: 'destructive',
       });
     }
+    setIsLoading(false);
   };
 
   return (
@@ -230,7 +238,7 @@ export default function RoomReservation() {
               id="start-time"
               type="time"
               value={startTime}
-              onChange={e => setStartTime(e.target.value)}
+              onChange={e => setStartTime(`${e.target.value}:00`)}
               className="flex-1"
             />
           </div>
@@ -251,7 +259,7 @@ export default function RoomReservation() {
       </div>
 
       <div className="flex justify-end">
-        <Button onClick={handleSearch} className="bg-[#5D1A0B] hover:bg-[#731f10] text-white">
+        <Button onClick={handleSearch} className="bg-[#5D1A0B] hover:bg-[#731f10] text-white" disabled={isLoading}>
           <Search className="mr-2" size={20} />
           <span className="hidden md:inline">Search</span>
         </Button>
@@ -286,7 +294,7 @@ export default function RoomReservation() {
                   </div>
                   <p className="text-sm text-gray-500 mb-2">
                     <span className="font-medium text-gray-700">Available Slots:</span>
-                    {room.freeSlots.map((slot, slotIndex) => (
+                    {room.freeSlots.slice(0, 3).map((slot, slotIndex) => (
                       <span key={`${room.id || roomIndex}-${slotIndex}`} className="block">
                         {new Date(`1970-01-01T${slot.start}`).toLocaleTimeString([], {
                           hour: '2-digit',
@@ -301,6 +309,11 @@ export default function RoomReservation() {
                         })}
                       </span>
                     ))}
+                    {room.freeSlots.length > 3 && (
+                      <span className="text-gray-400">
+                        +{room.freeSlots.length - 3} more slots available
+                      </span>
+                    )}
                   </p>
                   <div className="mt-auto flex justify-end">
                     <Button
@@ -367,7 +380,8 @@ export default function RoomReservation() {
                   type="time"
                   value={startTime}
                   onChange={e => {
-                    setStartTime(e.target.value);
+                    const timeValue = `${e.target.value}:00`;
+                    setStartTime(timeValue);
                     setSelectedSlot(null);
                   }}
                   className="w-full"
@@ -406,7 +420,7 @@ export default function RoomReservation() {
             >
               Cancel
             </Button>
-            <Button onClick={confirmReservation}>Confirm</Button>
+            <Button onClick={confirmReservation} disabled={isLoading}>Confirm</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -37,6 +37,8 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const { data: userData } = await supabase.from("User").select("role").eq("auth_id", user?.id).single();
+
   if (
     !user &&
     !request.nextUrl.pathname.startsWith('/login') &&
@@ -45,6 +47,17 @@ export async function updateSession(request: NextRequest) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
     url.pathname = '/login';
+    return NextResponse.redirect(url);
+  }
+
+  if (userData?.role === 'Admin' && request.nextUrl.pathname.startsWith('/homepage')) {
+    // user is admin, redirect to admin page
+    const url = request.nextUrl.clone();
+    url.pathname = '/admin';
+    return NextResponse.redirect(url);
+  } else if (request.nextUrl.pathname.startsWith('/admin') && userData?.role !== 'Admin') {
+    const url = request.nextUrl.clone();
+    url.pathname = '/homepage';
     return NextResponse.redirect(url);
   }
 
