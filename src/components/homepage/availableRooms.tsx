@@ -22,9 +22,9 @@ import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-interface Room {
+interface APIRoom {
   id: string;
-  number: string;
+  room_number: string;
   capacity: number;
   notes?: string;
   freeSlots: { start: string; end: string }[];
@@ -84,11 +84,13 @@ export default function RoomReservation() {
 
       const data = await response.json();
 
-      const mappedData = data.map((room: any) => ({
-        ...room,
+      const mappedData = (data as APIRoom[]).map(room => ({
+        id: room.id,
         number: room.room_number,
+        capacity: room.capacity,
+        notes: room.notes,
+        freeSlots: room.freeSlots,
       }));
-
       const filteredRooms =
         startTime && endTime
           ? mappedData.filter((room: Room) =>
@@ -197,7 +199,7 @@ export default function RoomReservation() {
         variant: 'destructive',
       });
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
