@@ -19,8 +19,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript-typescript', 'actions' ]
-       
+        language: [ 'javascript-typescript', 'actions' ]  # 👈 scan both js/ts and github actions
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -35,3 +35,4 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
+
