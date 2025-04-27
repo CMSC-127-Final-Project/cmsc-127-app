@@ -62,9 +62,7 @@ export default function ReservationForm({ user_id }: { user_id: string }) {
         if (!response.ok) throw new Error();
 
         const data = await response.json();
-        const sortedRooms = data.sort((a: Room, b: Room) =>
-          a.number.localeCompare(b.number)
-        );
+        const sortedRooms = data.sort((a: Room, b: Room) => a.number.localeCompare(b.number));
         setRooms(sortedRooms);
       } catch {
         console.error('Could not load rooms.');

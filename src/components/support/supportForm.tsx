@@ -2,14 +2,7 @@
 
 import type React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  ChevronUp,
-  ChevronDown,
-  Monitor,
-  Facebook,
-  Twitter,
-  Instagram,
-} from 'lucide-react';
+import { ChevronUp, ChevronDown, Monitor, Facebook, Twitter, Instagram } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useEffect, useState } from 'react';
 import { ContactOptionProps, FaqItemProps } from '@/utils/types';
