@@ -30,7 +30,7 @@ export default function ProfileSidebar() {
   };
 
   return (
-    <div className="w-full md:w-1/4">
+    <div className="w-full md:w-1/3 lg:w-1/5 ">
       <Card>
         <CardHeader>
           <CardTitle className="text-lg font-raleway">Account Options</CardTitle>
@@ -41,7 +41,7 @@ export default function ProfileSidebar() {
               className="p-3 hover:bg-gray-50 cursor-pointer flex items-center"
               onClick={() => router.push('/homepage')}
             >
-              <Home className="h-4 w-4 mr-2 text-[#6b1d1d]" />
+              <Home className="h-4 w-4 mr-6 text-[#6b1d1d]" />
               <span className="text-sm font-medium">Back to Dashboard</span>
             </div>
             <div
@@ -50,7 +50,7 @@ export default function ProfileSidebar() {
               }`}
               onClick={handleSignOut}
             >
-              <LogOut className="h-4 w-4 mr-2 text-[#6b1d1d]" />
+              <LogOut className="h-4 w-4 mr-6 text-[#6b1d1d]" />
               <span className="text-sm font-medium">
                 {isSigningOut ? 'Signing out...' : 'Sign out'}
               </span>
