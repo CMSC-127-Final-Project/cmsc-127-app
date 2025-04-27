@@ -15,6 +15,7 @@ import {
   DialogFooter,
   DialogTitle,
   DialogDescription,
+
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
@@ -29,6 +30,12 @@ interface Room {
   notes?: string
   freeSlots: { start: string; end: string }[]
 }
+
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast'; // Import toast hook
+import { Room } from '@/utils/types'; // Import the Room type
 
 export default function RoomReservation() {
   const [date, setDate] = useState<Date | null>(null)

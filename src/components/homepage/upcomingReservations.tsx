@@ -3,15 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { FaEdit } from 'react-icons/fa';
 import { RxCross1 } from 'react-icons/rx';
-
-interface Reservation {
-  room_num: string;
-  date: string;
-  start_time: string;
-  end_time: string;
-  status: string;
-  admin_notes?: string;
-}
+import { Reservation } from '@/utils/types';
 
 const getStatusClass = (status: string) => {
   switch (status) {

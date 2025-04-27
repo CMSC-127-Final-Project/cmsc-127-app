@@ -42,11 +42,12 @@ interface Room {
     date?: string;
   }[];
 }
+import { RoomSchedules } from '@/utils/types';
 
 export default function RoomReservation() {
-  const [availableRooms, setAvailableRooms] = useState<Room[]>([]);
-  const [filteredRooms, setFilteredRooms] = useState<Room[]>([]);
-  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [availableRooms, setAvailableRooms] = useState<RoomSchedules[]>([]);
+  const [filteredRooms, setFilteredRooms] = useState<RoomSchedules[]>([]);
+  const [selectedRoom, setSelectedRoom] = useState<RoomSchedules | null>(null);
   const [showDialog, setShowDialog] = useState(false);
   const [showAddScheduleDialog, setShowAddScheduleDialog] = useState(false);
   const [isRecurring, setIsRecurring] = useState(false);
@@ -158,7 +159,7 @@ export default function RoomReservation() {
     }
   };
 
-  const handleReserveClick = (room: Room) => {
+  const handleReserveClick = (room: RoomSchedules) => {
     setSelectedRoom(room);
     setShowDialog(true);
   };
