@@ -9,6 +9,10 @@ on:
     branches:
       - main
 
+permissions:
+  pull-requests: write 
+  contents: read
+
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
