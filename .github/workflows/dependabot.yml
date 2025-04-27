@@ -9,11 +9,16 @@ updates:
       prefix: "chore"
     open-pull-requests-limit: 5
     rebase-strategy: "auto"
-    # optional: ignore dev deps, pin major versions, etc.
-    # allow:
-    #   - dependency-type: "direct"
   # GitHub Actions versions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+  # Security updates only
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
+    labels: ["security"]
+    versioning-strategy: "lockfile-only"
