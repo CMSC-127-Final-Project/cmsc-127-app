@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { useState } from 'react';
 import { CalendarIcon, Clock, Search, List } from 'lucide-react';
@@ -15,20 +15,19 @@ import {
   DialogFooter,
   DialogTitle,
   DialogDescription,
-
-} from "@/components/ui/dialog"
-import { Textarea } from "@/components/ui/textarea"
-import { cn } from "@/lib/utils"
-import { useToast } from "@/hooks/use-toast"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 interface Room {
-  id: string
-  number: string
-  capacity: number
-  notes?: string
-  freeSlots: { start: string; end: string }[]
+  id: string;
+  number: string;
+  capacity: number;
+  notes?: string;
+  freeSlots: { start: string; end: string }[];
 }
 
 interface Room {
@@ -75,15 +74,15 @@ export default function RoomReservation() {
     setIsLoading(true); // <-- ONLY set loading after validations are successful
 
     try {
-      const response = await fetch("/api/rooms/available/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ date: date.toLocaleDateString("en-CA") }),
-      })
+      const response = await fetch('/api/rooms/available/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date: date.toLocaleDateString('en-CA') }),
+      });
 
-      if (!response.ok) throw new Error("Failed to fetch available rooms")
+      if (!response.ok) throw new Error('Failed to fetch available rooms');
 
-      const data = await response.json()
+      const data = await response.json();
 
       const mappedData = data.map((room: any) => ({
         ...room,
@@ -94,16 +93,17 @@ export default function RoomReservation() {
         startTime && endTime
           ? mappedData.filter((room: Room) =>
               room.freeSlots.some(
-                (slot: { start: string; end: string }) => startTime >= slot.start && endTime <= slot.end,
-              ),
+                (slot: { start: string; end: string }) =>
+                  startTime >= slot.start && endTime <= slot.end
+              )
             )
-          : mappedData
+          : mappedData;
 
-      setAvailableRooms(filteredRooms)
-      setHasSearched(true)
-      setShowEmptyState(filteredRooms.length === 0)
+      setAvailableRooms(filteredRooms);
+      setHasSearched(true);
+      setShowEmptyState(filteredRooms.length === 0);
     } catch (error) {
-      console.error("Error fetching available rooms:", error)
+      console.error('Error fetching available rooms:', error);
       toast({
         title: 'Error',
         description: 'Failed to fetch available rooms. Please try again later.',
@@ -115,87 +115,89 @@ export default function RoomReservation() {
   };
 
   const handleReserveClick = (room: Room) => {
-    setSelectedRoom(room)
-    setShowDialog(true)
-  }
+    setSelectedRoom(room);
+    setShowDialog(true);
+  };
 
   const confirmReservation = async () => {
     setIsLoading(true);
-    if (!selectedRoom || !date || !reason.trim()) {
-      toast({
-        title: 'Error',
-        description: 'Please fill in all required fields.',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    const reservationStart = selectedSlot ? selectedSlot.start : startTime;
-    const reservationEnd = selectedSlot ? selectedSlot.end : endTime;
-
-    if (!reservationStart || !reservationEnd) {
-      toast({
-        description: 'Please select or specify a valid time range.',
-        variant: 'destructive',
-      });
-      setIsLoading(false);
-      return;
-    }
-
-    // Validate custom time against available slots
-    if (!selectedSlot) {
-      const isValid = selectedRoom.freeSlots.some(
-        (slot) => reservationStart >= slot.start && reservationEnd <= slot.end && reservationStart < reservationEnd,
-      )
-
-      if (!isValid) {
-        toast({
-          description: 'Specified time does not fit within available slots.',
-          variant: 'destructive',
-        });
-        setIsLoading(false);
-        return;
-      }
-    }
 
     try {
-      const response = await fetch("/api/reservations/reserve", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      if (!selectedRoom || !date || !reason.trim()) {
+        toast({
+          title: 'Error',
+          description: 'Please fill in all required fields.',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      const reservationStart = selectedSlot ? selectedSlot.start : startTime;
+      const reservationEnd = selectedSlot ? selectedSlot.end : endTime;
+
+      if (!reservationStart || !reservationEnd) {
+        toast({
+          description: 'Please select or specify a valid time range.',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      // Validate custom time against available slots
+      if (!selectedSlot) {
+        const isValid = selectedRoom.freeSlots.some(
+          slot =>
+            reservationStart >= slot.start &&
+            reservationEnd <= slot.end &&
+            reservationStart < reservationEnd
+        );
+
+        if (!isValid) {
+          toast({
+            description: 'Specified time does not fit within available slots.',
+            variant: 'destructive',
+          });
+          return;
+        }
+      }
+
+      const response = await fetch('/api/reservations/reserve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           room_number: selectedRoom.number,
-          date: format(date, "yyyy-MM-dd"),
+          date: format(date, 'yyyy-MM-dd'),
           start_time: reservationStart,
           end_time: reservationEnd,
           reason,
         }),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error("Failed to reserve room")
+        throw new Error('Failed to reserve room');
       }
 
       toast({
-        title: "Success",
+        title: 'Success',
         description: `Room ${selectedRoom.number} reserved successfully!`,
-        variant: "default",
-      })
+        variant: 'default',
+      });
 
-      setShowDialog(false)
-      setSelectedRoom(null)
-      setReason("")
-      setSelectedSlot(null)
-      setStartTime("")
-      setEndTime("")
+      setShowDialog(false);
+      setSelectedRoom(null);
+      setReason('');
+      setSelectedSlot(null);
+      setStartTime('');
+      setEndTime('');
     } catch (error) {
-      console.error("Error reserving room:", error)
+      console.error('Error reserving room:', error);
       toast({
         title: 'Error',
         description: 'Failed to reserve room. Please try again later.',
         variant: 'destructive',
       });
     } finally {
-      setIsLoading(false); // Reset loading state after reservation is done
+      setIsLoading(false); 
     }
   };
 
@@ -228,7 +230,7 @@ export default function RoomReservation() {
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "PPP") : <span>Pick a date</span>}
+                {date ? format(date, 'PPP') : <span>Pick a date</span>}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" side="bottom" align="start">
@@ -300,7 +302,7 @@ export default function RoomReservation() {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {availableRooms
-              .filter((room) => room.freeSlots.length > 0) // Exclude rooms with no available slots
+              .filter(room => room.freeSlots.length > 0) // Exclude rooms with no available slots
               .map((room, roomIndex) => (
                 <Card
                   key={room.id || roomIndex}
@@ -370,7 +372,7 @@ export default function RoomReservation() {
                 {selectedRoom?.freeSlots.map((slot, index) => (
                   <Button
                     key={index}
-                    variant={selectedSlot === slot ? "default" : "outline"}
+                    variant={selectedSlot === slot ? 'default' : 'outline'}
                     onClick={() => {
                       setSelectedSlot(slot);
                       setStartTime(''); // Clear custom start time when slot is selected
@@ -444,5 +446,5 @@ export default function RoomReservation() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }
