@@ -1,0 +1,19 @@
+version: 2
+updates:
+  # Node.js dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "chore"
+    open-pull-requests-limit: 5
+    rebase-strategy: "auto"
+    # optional: ignore dev deps, pin major versions, etc.
+    # allow:
+    #   - dependency-type: "direct"
+  # GitHub Actions versions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
