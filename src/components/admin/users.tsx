@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { List, Search } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { RawUser, User } from '@/utils/types';
+import { User } from '@/utils/types';
 
 const DropdownPortal: React.FC<{
   children: React.ReactNode;
@@ -84,11 +84,11 @@ const ManageUsers = () => {
         const response = await fetch('/api/usersList', { method: 'GET' });
         if (!response.ok) throw new Error('Failed to fetch reservations');
         const data = await response.json();
-        const mappedUsers = data.map((user: RawUser) => ({
+        const mappedUsers = data.map((user: User) => ({
           auth_id: user.auth_id,
           number: user.student_num || user.instructor_id || 'N/A',
-          firstName: user.first_name,
-          lastName: user.last_name,
+          first_name: user.first_name,
+          last_name: user.last_name,
           email: user.email,
           phone: user.phone,
           role: user.role,
@@ -116,8 +116,8 @@ const ManageUsers = () => {
     setHasSearched(true);
 
     const filtered = users.filter(user => {
-      const firstNameMatch = user.firstName.toLowerCase().includes(firstName.toLowerCase());
-      const lastNameMatch = user.lastName.toLowerCase().includes(lastName.toLowerCase());
+      const firstNameMatch = user.first_name.toLowerCase().includes(firstName.toLowerCase());
+      const lastNameMatch = user.last_name.toLowerCase().includes(lastName.toLowerCase());
       return firstNameMatch && lastNameMatch;
     });
     setFilteredUsers(filtered);
@@ -218,16 +218,16 @@ const ManageUsers = () => {
                       {user.number}
                     </td>
                     <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">
-                      {user.firstName}
+                      {user.first_name}
                     </td>
                     <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                      {user.lastName}
+                      {user.last_name}
                     </td>
                     <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
                       {user.email}
                     </td>
                     <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">
-                      {user.phone}
+                      {user.phone || 'N/A'}
                     </td>
                     <td className="px-3 md:px-5 py-3 hover:bg-gray-100 font-roboto">{user.role}</td>
                     <td className="px-3 md:px-5 py-3 hover:bg-gray-100 text-center font-roboto">

@@ -15,10 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-
-interface Room {
-  room_number: string;
-}
+import { Room } from '@/utils/types';
 
 export default function ReservationForm({ user_id }: { user_id: string }) {
   const [allDay, setAllDay] = useState(false);
@@ -66,7 +63,7 @@ export default function ReservationForm({ user_id }: { user_id: string }) {
 
         const data = await response.json();
         const sortedRooms = data.sort((a: Room, b: Room) =>
-          a.room_number.localeCompare(b.room_number)
+          a.number.localeCompare(b.number)
         );
         setRooms(sortedRooms);
       } catch {
@@ -121,8 +118,8 @@ export default function ReservationForm({ user_id }: { user_id: string }) {
             </SelectTrigger>
             <SelectContent>
               {rooms.map(room => (
-                <SelectItem key={room.room_number} value={room.room_number}>
-                  {room.room_number}
+                <SelectItem key={room.number} value={room.number}>
+                  {room.number}
                 </SelectItem>
               ))}
             </SelectContent>

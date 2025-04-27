@@ -19,25 +19,12 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useToast } from '@/hooks/use-toast';
-
-interface Room {
-  room_number: string;
-  room_type: string;
-  schedules: {
-    timeslot_id: string;
-    regular: boolean;
-    start_time: string;
-    end_time: string;
-    time_range: string;
-    days?: string;
-    date?: string;
-  }[];
-}
+import { RoomSchedules } from '@/utils/types';
 
 export default function RoomReservation() {
-  const [availableRooms, setAvailableRooms] = useState<Room[]>([]);
-  const [filteredRooms, setFilteredRooms] = useState<Room[]>([]);
-  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [availableRooms, setAvailableRooms] = useState<RoomSchedules[]>([]);
+  const [filteredRooms, setFilteredRooms] = useState<RoomSchedules[]>([]);
+  const [selectedRoom, setSelectedRoom] = useState<RoomSchedules | null>(null);
   const [showDialog, setShowDialog] = useState(false);
   const [showAddScheduleDialog, setShowAddScheduleDialog] = useState(false);
   const [isRecurring, setIsRecurring] = useState(false);
@@ -121,7 +108,7 @@ export default function RoomReservation() {
     }
   };
 
-  const handleReserveClick = (room: Room) => {
+  const handleReserveClick = (room: RoomSchedules) => {
     setSelectedRoom(room);
     setShowDialog(true);
   };

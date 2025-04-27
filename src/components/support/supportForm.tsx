@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useEffect, useState } from 'react';
+import { ContactOptionProps, FaqItemProps } from '@/utils/types';
 
 export default function ContactUs() {
   const defaultTab = 'faq';
@@ -125,13 +126,6 @@ export default function ContactUs() {
     </Tabs>
   );
 }
-interface FaqItemProps {
-  id: string;
-  question: string;
-  answer: string;
-  isExpanded: boolean;
-  onToggle: () => void;
-}
 
 function FaqItem({ id, question, answer, isExpanded, onToggle }: FaqItemProps) {
   return (
@@ -152,11 +146,6 @@ function FaqItem({ id, question, answer, isExpanded, onToggle }: FaqItemProps) {
       )}
     </div>
   );
-}
-
-interface ContactOptionProps {
-  icon: React.ReactNode;
-  title: string;
 }
 
 function ContactOption({ icon, title }: ContactOptionProps) {

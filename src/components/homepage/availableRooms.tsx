@@ -20,14 +20,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast'; // Import toast hook
-
-interface Room {
-  id: string;
-  number: string;
-  capacity: number;
-  notes?: string;
-  freeSlots: { start: string; end: string }[];
-}
+import { Room } from '@/utils/types'; // Import the Room type
 
 export default function RoomReservation() {
   const [date, setDate] = useState<Date | null>(null);
