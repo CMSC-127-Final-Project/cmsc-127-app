@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Raleway, Roboto } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
+import { PostHogProvider } from './providers';
 import { ThemeProvider } from 'next-themes';
 
 const roboto = Roboto({
@@ -31,7 +32,7 @@ export default function RootLayout({
       <body className={`${roboto.variable} ${raleway.variable} font-roboto antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Toaster />
-          {children}
+          <PostHogProvider>{children}</PostHogProvider>
         </ThemeProvider>
       </body>
     </html>
