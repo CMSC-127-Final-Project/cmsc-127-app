@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Bell, Sun, Moon, UserCircle, LogOut } from 'lucide-react';
+import { Bell, UserCircle, LogOut } from 'lucide-react';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { useRouter } from 'next/navigation';
 import Sidebar from './sidebar';
@@ -9,18 +9,17 @@ import Sidebar from './sidebar';
 export default function Navbar({ user_id }: { user_id: string }) {
   const [currentTime, setCurrentTime] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [username, setUsername] = useState();
   const router = useRouter();
 
-  const [username, setUsername] = useState();
   useEffect(() => {
     const loadNickname = async () => {
       try {
         const response = await fetch(`/api/user/${user_id}`);
         if (!response.ok) {
-          throw new Error('Failed to fetch reservations');
+          throw new Error('Failed to fetch user data');
         }
         const data = await response.json();
         console.log('Fetched user data:', data);
@@ -52,6 +51,8 @@ export default function Navbar({ user_id }: { user_id: string }) {
     }
   };
 
+  const toggleSidebar = () => setSidebarOpen(prev => !prev);
+
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -60,13 +61,11 @@ export default function Navbar({ user_id }: { user_id: string }) {
         month: 'long',
         day: 'numeric',
       });
-
       const formattedTime = now.toLocaleTimeString('en-US', {
         hour: '2-digit',
         minute: '2-digit',
         hour12: true,
       });
-
       setCurrentTime(`${formattedDate} | ${formattedTime}`);
     };
 
@@ -74,28 +73,6 @@ export default function Navbar({ user_id }: { user_id: string }) {
     const interval = setInterval(updateTime, 60000);
     return () => clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    const savedDarkMode = localStorage.getItem('darkMode');
-    if (savedDarkMode !== null) {
-      setDarkMode(savedDarkMode === 'true');
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setDarkMode(prefersDark);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    localStorage.setItem('darkMode', darkMode.toString());
-  }, [darkMode]);
-
-  const toggleDarkMode = () => setDarkMode(!darkMode);
-  const toggleSidebar = () => setSidebarOpen(prev => !prev);
 
   return (
     <>
@@ -119,37 +96,11 @@ export default function Navbar({ user_id }: { user_id: string }) {
         </div>
 
         <div className="flex items-center space-x-4">
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="flex items-center space-x-6">
             <span className="text-gray-900 dark:text-white font-medium font-roboto">
               {currentTime}
             </span>
-            <button
-              onClick={toggleDarkMode}
-              className="focus:outline-none transition-colors duration-200"
-              aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {darkMode ? (
-                <Moon className="w-5 h-5 text-yellow-300 cursor-pointer" />
-              ) : (
-                <Sun className="w-5 h-5 text-gray-900 cursor-pointer" />
-              )}
-            </button>
             <Bell className="w-5 h-5 text-gray-900 dark:text-white cursor-pointer" />
-          </div>
-
-          <div className="flex md:hidden items-center space-x-4">
-            <Bell className="w-5 h-5 text-gray-900 dark:text-white cursor-pointer" />
-            <button
-              onClick={toggleDarkMode}
-              className="focus:outline-none transition-colors duration-200"
-              aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {darkMode ? (
-                <Moon className="w-5 h-5 text-yellow-300 cursor-pointer" />
-              ) : (
-                <Sun className="w-5 h-5 text-gray-900 cursor-pointer" />
-              )}
-            </button>
           </div>
 
           <div className="relative">
@@ -170,7 +121,7 @@ export default function Navbar({ user_id }: { user_id: string }) {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-60 h-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
+              <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
                 <div className="absolute -top-2 right-4 w-4 h-4 bg-white dark:bg-gray-800 border-t border-l border-gray-200 dark:border-gray-700 rotate-45"></div>
                 <div className="p-3">
                   <div className="flex items-center gap-2 border-b pb-2 dark:border-gray-600">
@@ -189,24 +140,6 @@ export default function Navbar({ user_id }: { user_id: string }) {
                       }}
                     >
                       Profile and Preferences
-                    </li>
-                    <li
-                      className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                      onClick={() => {
-                        setDropdownOpen(false);
-                        router.push('/profile?tab=security');
-                      }}
-                    >
-                      Security
-                    </li>
-                    <li
-                      className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                      onClick={() => {
-                        setDropdownOpen(false);
-                        router.push('/support');
-                      }}
-                    >
-                      Help and Support
                     </li>
                   </ul>
                   <div className="flex justify-end">
