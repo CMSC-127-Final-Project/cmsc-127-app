@@ -30,6 +30,14 @@ interface APIRoom {
   freeSlots: { start: string; end: string }[];
 }
 
+interface Room {
+  id: string;
+  number: string;
+  capacity: number;
+  notes?: string;
+  freeSlots: { start: string; end: string }[];
+}
+
 export default function RoomReservation() {
   const [date, setDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState('');
