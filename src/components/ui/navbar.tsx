@@ -97,7 +97,7 @@ export default function Navbar({ user_id }: { user_id: string }) {
 
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-6">
-            <span className="text-gray-900 dark:text-white font-medium font-roboto">
+            <span className="hidden md:inline text-gray-900 dark:text-white font-medium font-roboto">
               {currentTime}
             </span>
             <Bell className="w-5 h-5 text-gray-900 dark:text-white cursor-pointer" />
