@@ -25,7 +25,7 @@ export default function Navbar({ user_id }: { user_id: string }) {
         const data = await response.json();
         console.log('Fetched user data:', data);
         setUsername(data[0].nickname || 'User');
-        if(data[0].role === 'Student'){
+        if (data[0].role === 'Student') {
           setIdNumber(data[0].student_num || 'ID Number not available');
         } else {
           setIdNumber(data[0].instructor_id || 'ID Number not available');
