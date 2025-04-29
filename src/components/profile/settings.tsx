@@ -39,11 +39,12 @@ export default function Settings({ user_id }: { user_id: string }) {
   const [department, setDepartment] = useState('');
   const [phone, setPhone] = useState('');
   const [role, setRole] = useState('');
-  const [instructorOffice, setInstructorOffice] = useState('');
+  const [office, setOffice] = useState('');
   const [nickname, setNickname] = useState('');
   const [idnumber, setIdnumber] = useState();
   const [originalNickname, setOriginalNickname] = useState('');
   const [originalPhone, setOriginalPhone] = useState('');
+  const [originalOffice, setOriginalOffice] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -59,6 +60,28 @@ export default function Settings({ user_id }: { user_id: string }) {
         }
         const data = await response.json();
         const user = data[0];
+
+        if (user.role === 'Instructor') {
+          try {
+            const instructorResponse = await fetch(`/api/user/instructor/${user.instructor_id}`);
+            if (!instructorResponse.ok) {
+              throw new Error('Failed to fetch instructor details');
+            }
+            const instructorData = await instructorResponse.json();
+            const instructor = instructorData[0];
+
+            setOffice(instructor.office);
+            setOriginalOffice(user.instructor_office || '');
+            setDepartment(instructor.faculty_rank);
+          } catch (err) {
+            console.error('Error loading instructor details:', err);
+            toast({
+              title: 'Error',
+              description: 'Failed to load instructor details. Please try again later.',
+              variant: 'destructive',
+            });
+          }
+        }
 
         if (!user) {
           throw new Error('No user data found');
@@ -76,9 +99,12 @@ export default function Settings({ user_id }: { user_id: string }) {
         setOriginalPhone(user.phone || '');
 
         if (user.role === 'Instructor') {
-          setInstructorOffice(user.instructor_office || '');
+          setIdnumber(user.instructor_id || 'Instructor ID');
+        } else if (user.role === 'Student') {
+          setIdnumber(user.student_num || 'Student Number');
+        } else {
+          setIdnumber(user.instructor_id || '');
         }
-        console.log('User role:', user.role);
       } catch (err) {
         console.error('Error loading user details:', err);
         toast({
@@ -100,10 +126,13 @@ export default function Settings({ user_id }: { user_id: string }) {
     const updates: {
       nickname?: string;
       phone?: string;
+      office?: string;
     } = {};
     if (nickname !== originalNickname) updates.nickname = nickname;
     if (phone !== originalPhone) updates.phone = phone;
-
+    if (role === 'Instructor' && office !== originalOffice) {
+      updates.office = office;
+    }
     if (Object.keys(updates).length === 0) {
       toast({
         title: 'Error',
@@ -114,7 +143,7 @@ export default function Settings({ user_id }: { user_id: string }) {
     }
 
     try {
-      const response = await fetch(`/api/user/update`, {
+      const response = await fetch(`/api/user/update/${user_id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -133,6 +162,7 @@ export default function Settings({ user_id }: { user_id: string }) {
       });
       setOriginalNickname(nickname || '');
       setOriginalPhone(phone || '');
+      setOffice(office || '');
     } catch (err) {
       console.error('Error updating profile:', err);
       toast({
@@ -314,7 +344,11 @@ export default function Settings({ user_id }: { user_id: string }) {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="instructorOffice">Instructor Office</Label>
-                    <Input id="instructorOffice" placeholder={instructorOffice} disabled />
+                    <Input
+                      id="instructorOffice"
+                      placeholder={office}
+                      onChange={e => setOffice(e.target.value)}
+                    />
                   </div>
                 </div>
               )}

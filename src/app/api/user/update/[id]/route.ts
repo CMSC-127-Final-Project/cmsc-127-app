@@ -31,6 +31,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const body = await request.json();
     const parsedData = updateUserSchema.safeParse(body);
 
+    console.log('Parsed Data:', parsedData);
+
     if (!parsedData.success) {
       return NextResponse.json(
         { error: 'Invalid input', details: parsedData.error.errors },
@@ -38,7 +40,21 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       );
     }
 
+    const { data: instructorRecord, error: instructorError } = await supabase
+      .from('Instructor')
+      .select('*')
+      .eq('instructor_id', userRecord.instructor_id)
+      .single();
+
+    console.log('Instructor Record:', instructorRecord, 'Instructor Error:', instructorError);
+    
+    if (instructorError && parsedData.data.role === 'Instructor') {
+      console.error('Instructor record error:', instructorError?.message || 'Instructor not found');
+      return NextResponse.json({ error: 'Instructor not found' }, { status: 404 });
+    }
+
     const filteredUpdates: Record<string, string> = {};
+    const instructorFilteredUpdates: Record<string, string> = {};
 
     if (parsedData.data.email && parsedData.data.email !== userRecord.email) {
       filteredUpdates.email = parsedData.data.email;
@@ -61,14 +77,14 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     if (parsedData.data.dept && parsedData.data.dept !== userRecord.dept) {
       filteredUpdates.dept = parsedData.data.dept;
     }
-    if (parsedData.data.rank && parsedData.data.rank !== userRecord.rank) {
-      filteredUpdates.rank = parsedData.data.rank;
+    if (parsedData.data.rank && parsedData.data.rank !== instructorRecord.rank) {
+      instructorFilteredUpdates.rank = parsedData.data.rank;
     }
     if (
-      parsedData.data.instructor_office &&
-      parsedData.data.instructor_office !== userRecord.instructor_office
+      parsedData.data.office &&
+      parsedData.data.office !== instructorRecord.office
     ) {
-      filteredUpdates.instructor_office = String(parsedData.data.instructor_office);
+      instructorFilteredUpdates.office = parsedData.data.office;
     }
     if (parsedData.data.nickname && parsedData.data.nickname !== userRecord.nickname) {
       filteredUpdates.nickname = parsedData.data.nickname;
@@ -78,8 +94,9 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     }
 
     console.log('Filtered Updates:', filteredUpdates);
+    console.log('Instructor Filtered Updates:', instructorFilteredUpdates);
 
-    if (Object.keys(filteredUpdates).length === 0) {
+    if (Object.keys(filteredUpdates).length === 0 && Object.keys(instructorFilteredUpdates).length === 0) {
       return NextResponse.json({ error: 'No updates provided' }, { status: 400 });
     }
 
@@ -88,8 +105,13 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       .update(filteredUpdates)
       .eq('auth_id', userRecord.auth_id);
 
+    const { error: instructorErrorUpdate } = await supabase
+        .from('Instructor')
+        .update(instructorFilteredUpdates)
+        .eq('instructor_id', userRecord.instructor_id);
+
     if (error) {
-      console.error('Database error:', error.message);
+      console.error('Database error:', error.message || 'Database error:', instructorErrorUpdate?.message);
       return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
     }
 

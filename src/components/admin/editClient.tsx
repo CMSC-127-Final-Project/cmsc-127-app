@@ -109,7 +109,7 @@ export function EditClientProfile() {
       id_number?: string;
       instructor_rank?: string;
       email?: string;
-      instructor_office?: number;
+      instructor_office?: string;
       dept?: string;
       nickname?: string;
       phone?: string;
@@ -124,7 +124,7 @@ export function EditClientProfile() {
 
     if (user?.role === 'Instructor') {
       if (instructorOffice !== originalInstructorOffice) {
-        updates.instructor_office = parseInt(instructorOffice, 10);
+        updates.instructor_office = instructorOffice;
       }
       if (rank !== originalRank) updates.instructor_rank = rank;
     }
