@@ -42,6 +42,8 @@ export default function RoomReservation() {
   const [date, setDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [searchStartTime, setSearchStartTime] = useState('');
+  const [searchEndTime, setSearchEndTime] = useState('');
   const [availableRooms, setAvailableRooms] = useState<Room[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [showEmptyState, setShowEmptyState] = useState(true);
@@ -54,20 +56,19 @@ export default function RoomReservation() {
 
   const handleSearch = async () => {
     if (!date) {
-      toast({
-        title: 'Error',
-        description: 'Please select a date.',
-        variant: 'destructive',
-      });
+      setHasSearched(true);
+      setShowEmptyState(true);
+      setIsLoading(false);
       return;
     }
 
-    if (startTime && endTime && startTime >= endTime) {
+    if (searchStartTime && searchEndTime && searchStartTime >= searchEndTime) {
       toast({
         title: 'Error',
         description: 'Start time must be earlier than end time.',
         variant: 'destructive',
       });
+      setIsLoading(false);
       return;
     }
 
@@ -92,11 +93,11 @@ export default function RoomReservation() {
         freeSlots: room.freeSlots,
       }));
       const filteredRooms =
-        startTime && endTime
+        searchStartTime && searchEndTime
           ? mappedData.filter((room: Room) =>
               room.freeSlots.some(
                 (slot: { start: string; end: string }) =>
-                  startTime >= slot.start && endTime <= slot.end
+                  searchStartTime >= slot.start && searchEndTime <= slot.end
               )
             )
           : mappedData;
@@ -247,8 +248,8 @@ export default function RoomReservation() {
             <Input
               id="start-time"
               type="time"
-              value={startTime}
-              onChange={e => setStartTime(e.target.value)}
+              value={searchStartTime}
+              onChange={e => setSearchStartTime(`${e.target.value}:00`)}
               className="flex-1 text-black border-black"
             />
           </div>
@@ -260,8 +261,8 @@ export default function RoomReservation() {
             <Input
               id="end-time"
               type="time"
-              value={endTime}
-              onChange={e => setEndTime(e.target.value)}
+              value={searchEndTime}
+              onChange={e => setSearchEndTime(e.target.value)}
               className="flex-1 text-black border-black"
             />
           </div>
@@ -376,9 +377,13 @@ export default function RoomReservation() {
                     key={index}
                     variant={selectedSlot === slot ? 'default' : 'outline'}
                     onClick={() => {
-                      setSelectedSlot(slot);
-                      setStartTime(''); // Clear custom start time when slot is selected
-                      setEndTime(''); // Clear custom end time when slot is selected
+                      if (selectedSlot === slot) {
+                        setSelectedSlot(null); // Deselect if already selected
+                      } else {
+                        setSelectedSlot(slot);
+                        setStartTime(''); // Clear custom start time when slot is selected
+                        setEndTime(''); // Clear custom end time when slot is selected
+                      }
                     }}
                     className={`text-xs sm:text-sm border-black ${
                       selectedSlot === slot ? 'bg-[#5D1A0B] hover:bg-[#731f10]' : ''
@@ -403,7 +408,7 @@ export default function RoomReservation() {
                     type="time"
                     id="start-time"
                     value={startTime}
-                    onChange={e => setStartTime(e.target.value)}
+                    onChange={e => setStartTime(`${e.target.value}:00`)}
                     disabled={!!selectedSlot}
                   />
                 </div>

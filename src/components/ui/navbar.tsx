@@ -11,6 +11,7 @@ export default function Navbar({ user_id }: { user_id: string }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [idNumber, setIdNumber] = useState('');
   const [username, setUsername] = useState();
   const router = useRouter();
 
@@ -24,6 +25,11 @@ export default function Navbar({ user_id }: { user_id: string }) {
         const data = await response.json();
         console.log('Fetched user data:', data);
         setUsername(data[0].nickname || 'User');
+        if(data[0].role === 'Student'){
+          setIdNumber(data[0].student_num || 'ID Number not available');
+        } else {
+          setIdNumber(data[0].instructor_id || 'ID Number not available');
+        }
       } catch (err) {
         console.error('Internal Server Error:', err);
       }
@@ -128,7 +134,7 @@ export default function Navbar({ user_id }: { user_id: string }) {
                     <UserCircle className="text-gray-600 dark:text-gray-300 w-12 h-12" />
                     <div>
                       <p className="font-semibold font-raleway dark:text-white">{username}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">20XX-XXXXX</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{idNumber}</p>
                     </div>
                   </div>
                   <ul className="mt-2 text-sm font-raleway border-b pb-2 dark:border-gray-600">
