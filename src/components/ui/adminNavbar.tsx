@@ -182,9 +182,6 @@ export default function Navbar({ user_id }: { user_id: string }) {
                     <UserCircle className="text-gray-600 dark:text-gray-300 w-12 h-12" />
                     <div>
                       <p className="font-semibold font-raleway dark:text-white">{username}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 font-raleway">
-                        20XX-XXXXX
-                      </p>
                     </div>
                   </div>
                   <ul className="mt-2 text-sm font-raleway border-b pb-2 dark:border-gray-600">
