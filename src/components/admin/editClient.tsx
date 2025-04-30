@@ -24,7 +24,7 @@ export function EditClientProfile() {
   const [phone, setPhone] = useState('');
   const [role, setRole] = useState('');
   const [rank, setRank] = useState('');
-  const [instructorOffice, setInstructorOffice] = useState('');
+  const [office, setOffice] = useState('');
   const [nickname, setNickname] = useState('');
   const [idnumber, setIdnumber] = useState<string | undefined>(undefined);
 
@@ -34,7 +34,7 @@ export function EditClientProfile() {
   const [originalEmail, setOriginalEmail] = useState('');
   const [originalDept, setOriginalDept] = useState('');
   const [originalRank, setOriginalRank] = useState('');
-  const [originalInstructorOffice, setOriginalInstructorOffice] = useState('');
+  const [originalOffice, setOriginalOffice] = useState('');
   const [originalNickname, setOriginalNickname] = useState('');
   const [originalPhone, setOriginalPhone] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -54,6 +54,35 @@ export function EditClientProfile() {
         }
 
         setUser(user);
+
+        if (user.role === 'Instructor' && user.instructor_id) {
+          try {
+            const instructorResponse = await fetch(`/api/user/instructor/${user.instructor_id}`);
+
+            if (!instructorResponse.ok) {
+              throw new Error('Failed to fetch instructor details');
+            }
+            const instructorData = await instructorResponse.json();
+            const instructor = instructorData[0];
+
+            if (!instructor) {
+              throw new Error('No instructor data found');
+            }
+
+            console.log('Instructor Data:', instructor);
+
+            setOffice(instructor.office);
+            setOriginalOffice(instructor.office || '');
+            setRank(instructor.rank);
+          } catch (err) {
+            console.error('Error loading instructor details:', err);
+            toast({
+              title: 'Error',
+              description: 'Failed to load instructor details. Please try again later.',
+              variant: 'destructive',
+            });
+          }
+        }
 
         setOriginalFname(user.first_name);
         setFname(user.first_name);
@@ -77,14 +106,6 @@ export function EditClientProfile() {
         setPhone(user.phone);
         setOriginalNickname(user.nickname || '');
         setNickname(user.nickname || '');
-
-        if (user.role === 'Instructor') {
-          setOriginalInstructorOffice(user.instructor_office || '');
-          setInstructorOffice(user.instructor_office || '');
-          setOriginalRank(user.instructor_rank || '');
-          setRank(user.instructor_rank || '');
-        }
-        console.log('User role:', user.role);
       } catch (err) {
         console.error('Error loading user details:', err);
         toast({
@@ -109,7 +130,7 @@ export function EditClientProfile() {
       id_number?: string;
       instructor_rank?: string;
       email?: string;
-      instructor_office?: number;
+      office?: string;
       dept?: string;
       nickname?: string;
       phone?: string;
@@ -123,8 +144,8 @@ export function EditClientProfile() {
     if (phone !== originalPhone) updates.phone = phone;
 
     if (user?.role === 'Instructor') {
-      if (instructorOffice !== originalInstructorOffice) {
-        updates.instructor_office = parseInt(instructorOffice, 10);
+      if (office !== originalOffice) {
+        updates.office = office;
       }
       if (rank !== originalRank) updates.instructor_rank = rank;
     }
@@ -165,8 +186,8 @@ export function EditClientProfile() {
       setOriginalPhone(phone || '');
 
       if (user?.role === 'Instructor') {
-        setOriginalInstructorOffice(user.instructor_office || '');
-        setOriginalRank(user.instructor_rank || '');
+        setOriginalOffice(user.office || '');
+        setOriginalRank(user.rank || '');
       }
     } catch (err) {
       console.error('Error updating profile:', err);
@@ -300,8 +321,8 @@ export function EditClientProfile() {
                 <Label htmlFor="instructorOffice">Instructor Office</Label>
                 <Input
                   id="instructorOffice"
-                  placeholder={instructorOffice || ''}
-                  onChange={e => setInstructorOffice(e.target.value)}
+                  placeholder={office || ''}
+                  onChange={e => setOffice(e.target.value)}
                 />
               </div>
             </div>
