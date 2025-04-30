@@ -147,7 +147,11 @@ export default function SignupForm() {
 
       if (!response.ok) {
         const responseError = await response.json();
-        throw { error: responseError.error, status: responseError.status, details: responseError.details };
+        throw {
+          error: responseError.error,
+          status: responseError.status,
+          details: responseError.details,
+        };
       }
 
       router.push('/homepage');

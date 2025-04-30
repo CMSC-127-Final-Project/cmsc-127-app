@@ -71,9 +71,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ message: 'User created successfully' }, { status: 200 });
   } catch (err) {
-    const { error, details, status } = err as { error: string; details?: string; status?: number; };
+    const { error, details, status } = err as { error: string; details?: string; status?: number };
     return NextResponse.json(
-      { error: error || 'Internal Server Error', status: status || 500, details: details || 'Try again later' },
+      {
+        error: error || 'Internal Server Error',
+        status: status || 500,
+        details: details || 'Try again later',
+      },
       { status: status || 500 }
     );
   }
