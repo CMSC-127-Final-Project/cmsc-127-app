@@ -39,6 +39,7 @@ export default function Settings({ user_id }: { user_id: string }) {
   const [department, setDepartment] = useState('');
   const [phone, setPhone] = useState('');
   const [role, setRole] = useState('');
+  const [rank, setRank] = useState('');
   const [office, setOffice] = useState('');
   const [nickname, setNickname] = useState('');
   const [idnumber, setIdnumber] = useState();
@@ -72,7 +73,7 @@ export default function Settings({ user_id }: { user_id: string }) {
 
             setOffice(instructor.office);
             setOriginalOffice(user.instructor_office || '');
-            setDepartment(instructor.faculty_rank);
+            setRank(instructor.faculty_rank);
           } catch (err) {
             console.error('Error loading instructor details:', err);
             toast({
@@ -328,8 +329,8 @@ export default function Settings({ user_id }: { user_id: string }) {
                     <Label htmlFor="facultyRank">Faculty Rank</Label>
                     <select
                       id="facultyRank"
-                      value={department}
-                      onChange={e => setDepartment(e.target.value)}
+                      defaultValue={rank}
+                      onChange={e => setRank(e.target.value)}
                       className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6b1d1d] transition-colors duration-200"
                       disabled
                     >
