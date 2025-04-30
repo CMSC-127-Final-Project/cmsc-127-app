@@ -24,7 +24,7 @@ export const signupSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters long'),
   fname: z.string().min(1, 'First name is required'),
   lname: z.string().min(1, 'Last name is required'),
-  nickname: z.string().optional(),
+  nickname: z.string().min(1, 'Nickname is required'),
   role: z.enum(['Student', 'Instructor']),
   department: z.string().min(1, 'Department is required'),
   studentNumber: z.string().optional(),
