@@ -2,9 +2,11 @@ import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { supabaseAdmin } from '@/utils/supabase/admin';
+import { cookies } from 'next/headers';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const supabase = createClient();
+  const cookieStore = await cookies();
 
   const { id } = await params;
 
@@ -14,6 +16,15 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
+
+    cookieStore.set('USER.Nickname', data[0].nickname);
+    if(data[0].role === 'Student') {
+      cookieStore.set('USER.ID', data[0].student_num);
+    } else if(data[0].role === 'Instructor') {
+      cookieStore.set('USER.ID', data[0].instructor_id);
+    }
+    
+    cookieStore.set('USER.DATA', JSON.stringify(data[0]));
 
     return NextResponse.json(data, { status: 200 });
   } catch {

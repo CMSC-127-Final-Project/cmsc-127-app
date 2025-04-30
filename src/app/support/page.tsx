@@ -4,6 +4,7 @@ import ContactUs from '@/components/support/supportForm';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import ProfileSidebar from '@/components/profile/profilesidebar';
 import { createClient } from '@/utils/supabase/server';
+import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'Help & Support',
@@ -19,10 +20,13 @@ export default async function SupportPage() {
     data: { user },
   } = await supabase.auth.getUser();
   const user_id = user?.id || '';
+  const cookieStore = await cookies();
+  const nickname = cookieStore.get('USER.Nickname')?.value || '';
+  const idNumber = cookieStore.get('USER.ID')?.value || '';
 
   return (
     <>
-      <Navbar user_id={user_id} />
+      <Navbar user_id={user_id} nickname={nickname} id_number={idNumber} />
       <main className="container mx-auto py-6 px-4 md:px-6 flex flex-col md:flex-row gap-6">
         <div className="flex flex-col w-full md:w-3/4">
           <Card className="mb-6">

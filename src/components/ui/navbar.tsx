@@ -7,38 +7,43 @@ import { useRouter } from 'next/navigation';
 import Sidebar from './sidebar';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 
-export default function Navbar({ user_id }: { user_id: string }) {
+export default function Navbar({ user_id, nickname, id_number }: { user_id: string, nickname: string, id_number: string }) {
   const [currentTime, setCurrentTime] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [idNumber, setIdNumber] = useState('');
-  const [username, setUsername] = useState();
+  const [idNumber, setIdNumber] = useState<string>();
+  const [username, setUsername] = useState<string>();
   const [profileImg, setProfileImg] = useState('');
   const router = useRouter();
 
   useEffect(() => {
     const loadNickname = async () => {
-      try {
-        const response = await fetch(`/api/user/${user_id}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch user data');
+      if (nickname && id_number) {
+        setUsername(nickname);
+        setIdNumber(id_number);
+      } else {
+        try {
+          const response = await fetch(`/api/user/${user_id}`);
+          if (!response.ok) {
+            throw new Error('Failed to fetch user data');
+          }
+          const data = await response.json();
+          console.log('Fetched user data:', data);
+          setUsername(data[0].nickname || 'User');
+          setProfileImg(data[0].profile_image || 'https://avatar.iran.liara.run/public/18');
+          if (data[0].role === 'Student') {
+            setIdNumber(data[0].student_num || 'ID Number not available');
+          } else {
+            setIdNumber(data[0].instructor_id || 'ID Number not available');
+          }
+        } catch (err) {
+          console.error('Internal Server Error:', err);
         }
-        const data = await response.json();
-        console.log('Fetched user data:', data);
-        setUsername(data[0].nickname || 'User');
-        setProfileImg(data[0].profile_image || 'https://avatar.iran.liara.run/public/18');
-        if (data[0].role === 'Student') {
-          setIdNumber(data[0].student_num || 'ID Number not available');
-        } else {
-          setIdNumber(data[0].instructor_id || 'ID Number not available');
-        }
-      } catch (err) {
-        console.error('Internal Server Error:', err);
       }
     };
     loadNickname();
-  }, [user_id]);
+  }, [user_id, nickname, id_number]);
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
