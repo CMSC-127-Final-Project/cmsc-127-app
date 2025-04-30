@@ -47,7 +47,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       .single();
 
     console.log('Instructor Record:', instructorRecord, 'Instructor Error:', instructorError);
-    
+
     if (instructorError && parsedData.data.role === 'Instructor') {
       console.error('Instructor record error:', instructorError?.message || 'Instructor not found');
       return NextResponse.json({ error: 'Instructor not found' }, { status: 404 });
@@ -80,10 +80,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     if (parsedData.data.rank && parsedData.data.rank !== instructorRecord.rank) {
       instructorFilteredUpdates.rank = parsedData.data.rank;
     }
-    if (
-      parsedData.data.office &&
-      parsedData.data.office !== instructorRecord.office
-    ) {
+    if (parsedData.data.office && parsedData.data.office !== instructorRecord.office) {
       instructorFilteredUpdates.office = parsedData.data.office;
     }
     if (parsedData.data.nickname && parsedData.data.nickname !== userRecord.nickname) {
@@ -96,7 +93,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     console.log('Filtered Updates:', filteredUpdates);
     console.log('Instructor Filtered Updates:', instructorFilteredUpdates);
 
-    if (Object.keys(filteredUpdates).length === 0 && Object.keys(instructorFilteredUpdates).length === 0) {
+    if (
+      Object.keys(filteredUpdates).length === 0 &&
+      Object.keys(instructorFilteredUpdates).length === 0
+    ) {
       return NextResponse.json({ error: 'No updates provided' }, { status: 400 });
     }
 
@@ -106,12 +106,16 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       .eq('auth_id', userRecord.auth_id);
 
     const { error: instructorErrorUpdate } = await supabase
-        .from('Instructor')
-        .update(instructorFilteredUpdates)
-        .eq('instructor_id', userRecord.instructor_id);
+      .from('Instructor')
+      .update(instructorFilteredUpdates)
+      .eq('instructor_id', userRecord.instructor_id);
 
     if (error) {
-      console.error('Database error:', error.message || 'Database error:', instructorErrorUpdate?.message);
+      console.error(
+        'Database error:',
+        error.message || 'Database error:',
+        instructorErrorUpdate?.message
+      );
       return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
     }
 

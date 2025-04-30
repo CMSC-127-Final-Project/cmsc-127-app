@@ -7,8 +7,8 @@ export interface User {
   phone: string;
   role: string;
   dept: string;
-  instructor_office: string;
-  instructor_rank: string;
+  office: string;
+  rank: string;
   student_num?: string;
   instructor_id?: string;
 }

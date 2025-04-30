@@ -8,7 +8,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const { id } = await params;
 
   try {
-    const { data, error } = await (await supabase).from('Instructor').select('*').eq('instructor_id', id);
+    const { data, error } = await (await supabase)
+      .from('Instructor')
+      .select('*')
+      .eq('instructor_id', id);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
