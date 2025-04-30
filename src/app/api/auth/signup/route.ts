@@ -1,19 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
-import { cookies } from 'next/headers';
 import { signupSchema } from '@/utils/schemas';
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
-  const cookieStore = await cookies();
 
   try {
     const formData = await request.json();
     const parsedData = signupSchema.safeParse(formData);
 
     if (!parsedData.success) {
+      // Extract detailed error messages
+      const errorDetails = parsedData.error.errors.map(err => ({
+        path: err.path.join('.'),
+        message: err.message,
+      }));
+
       return NextResponse.json(
-        { error: 'Invalid input', details: parsedData.error.errors },
+        { error: 'Invalid input', details: errorDetails[0].message, status: 400 },
         { status: 400 }
       );
     }
@@ -25,11 +29,7 @@ export async function POST(request: NextRequest) {
       password: validatedData.password,
     });
 
-    if (error) throw { message: error.message, status: error.status, name: error.name };
-
-    cookieStore.set('access_token', data.session?.access_token || '', { path: '/' });
-    cookieStore.set('refresh_token', data.session?.refresh_token || '', { path: '/' });
-    cookieStore.set('user', data.user?.id || '', { path: '/' });
+    if (error) throw { error: error.message };
 
     const { error: insertError } = await supabase.from('User').insert({
       auth_id: data.user?.id,
@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
       role: validatedData.role,
       dept: validatedData.department,
     });
+    if (insertError) throw { error: insertError.message };
 
     if (validatedData.role === 'Instructor') {
       const { error: updateError } = await supabase
@@ -47,7 +48,7 @@ export async function POST(request: NextRequest) {
         .update({ instructor_id: validatedData.instructorID })
         .eq('email', validatedData.email);
 
-      if (updateError) throw { message: updateError.message, name: updateError.name };
+      if (updateError) throw { error: updateError.name };
 
       const { error: instructorError } = await supabase
         .from('Instructor')
@@ -59,8 +60,7 @@ export async function POST(request: NextRequest) {
         .select('instructor_id')
         .single();
 
-      console.log(instructorError);
-      if (instructorError) throw { message: 'Please try again later.' };
+      if (instructorError) throw { error: instructorError.name };
     } else {
       const { error: studentError } = await supabase
         .from('User')
@@ -69,24 +69,11 @@ export async function POST(request: NextRequest) {
       if (studentError) throw { message: studentError.message, name: studentError.name };
     }
 
-    if (insertError) throw { message: insertError.message, name: insertError.name };
     return NextResponse.json({ message: 'User created successfully' }, { status: 200 });
-  } catch (error) {
-    const { message, status, name } = error as { message: string; status?: number; name?: string };
-    const userResponse = await supabase.auth.admin.getUserById(
-      cookieStore.get('user')?.value || ''
-    );
-    if (userResponse.data) {
-      const { error: supabaseError } = await supabase.auth.admin.deleteUser(
-        cookieStore.get('user')?.value || ''
-      );
-      if (supabaseError) console.log(supabaseError.message);
-      cookieStore.delete('access_token');
-      cookieStore.delete('refresh_token');
-      cookieStore.delete('user');
-    }
+  } catch (err) {
+    const { error, details, status } = err as { error: string; details?: string; status?: number; };
     return NextResponse.json(
-      { error: message, status: status || 500, name: name || 'Internal Server Error' },
+      { error: error || 'Internal Server Error', status: status || 500, details: details || 'Try again later' },
       { status: status || 500 }
     );
   }

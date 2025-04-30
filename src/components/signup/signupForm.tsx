@@ -61,6 +61,7 @@ export default function SignupForm() {
       toast({
         title: 'Error',
         description: 'Please fill in all fields.',
+        variant: 'destructive',
       });
       return false;
     }
@@ -69,6 +70,16 @@ export default function SignupForm() {
       toast({
         title: 'Error',
         description: 'Passwords do not match.',
+        variant: 'destructive',
+      });
+      return false;
+    }
+
+    if (formData.password.length < 8) {
+      toast({
+        title: 'Error',
+        description: 'Password must be at least 8 characters long.',
+        variant: 'destructive',
       });
       return false;
     }
@@ -98,6 +109,7 @@ export default function SignupForm() {
       toast({
         title: 'Error',
         description: 'Please fill in all fields.',
+        variant: 'destructive',
       });
       return;
     }
@@ -106,6 +118,7 @@ export default function SignupForm() {
       toast({
         title: 'Error',
         description: 'Please enter your student number.',
+        variant: 'destructive',
       });
       return;
     }
@@ -119,6 +132,7 @@ export default function SignupForm() {
       toast({
         title: 'Error',
         description: 'Please fill in all fields.',
+        variant: 'destructive',
       });
       return;
     }
@@ -132,20 +146,21 @@ export default function SignupForm() {
       });
 
       if (!response.ok) {
-        const { error, status, name } = await response.json();
-        throw { message: error, status: status, error_name: name };
+        const responseError = await response.json();
+        throw { error: responseError.error, status: responseError.status, details: responseError.details };
       }
 
       router.push('/homepage');
-    } catch (error) {
-      const { message, status, error_name } = error as {
-        message: string;
+    } catch (er) {
+      const { error, details, status } = er as {
+        error: string;
         status?: number;
-        error_name?: string;
+        details?: string;
       };
       toast({
-        title: `Uh-oh! Something went wrong. (code ${status})`,
-        description: `${error_name}: ${message}`,
+        title: `Uh-oh! Something went wrong (code: ${status})`,
+        description: `${error}: ${details}`,
+        variant: 'destructive',
       });
       setIsLoading(false);
     }
