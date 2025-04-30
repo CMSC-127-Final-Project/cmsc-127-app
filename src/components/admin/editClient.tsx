@@ -106,7 +106,6 @@ export function EditClientProfile() {
         setPhone(user.phone);
         setOriginalNickname(user.nickname || '');
         setNickname(user.nickname || '');
-
       } catch (err) {
         console.error('Error loading user details:', err);
         toast({
