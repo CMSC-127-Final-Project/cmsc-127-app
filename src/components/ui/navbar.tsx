@@ -123,7 +123,7 @@ export default function Navbar({ user_id, nickname, id_number }: { user_id: stri
               onClick={() => setDropdownOpen(!dropdownOpen)}
             >
               <span className="text-gray-900 dark:text-white font-medium font-roboto text-sm md:text-base">
-                {username || 'Guest'}
+                {username}
               </span>
               <span
                 className={`text-gray-900 dark:text-white text-sm font-roboto transition-transform ${

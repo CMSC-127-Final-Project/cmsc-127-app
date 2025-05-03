@@ -409,7 +409,7 @@ export default function Settings({ user_id, user_data }: { user_id: string, user
                 <Label htmlFor="department">Department</Label>
                 <select
                   id="department"
-                  defaultValue={department}
+                  value={department}
                   className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6b1d1d] transition-colors duration-200"
                   disabled
                 >
