@@ -22,7 +22,7 @@ const UpcomingReservations = ({ user_id }: { user_id: string }) => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [actionColumn, setActionColumn] = useState<'cancel' | 'modify' | null>(null);
-  const {toast} = useToast();
+  const { toast } = useToast();
 
   const handleReservationAction = async (
     endpoint: string,
