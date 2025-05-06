@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useTheme } from 'next-themes'; // ✅ Import this
+import { useTheme } from 'next-themes';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,19 +13,19 @@ import { useSearchParams } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Settings({ user_id }: { user_id: string }) {
-  const { setTheme, theme } = useTheme(); // ✅ Initialize theme control
+  const { setTheme, theme } = useTheme();
   const searchParams = useSearchParams();
   const defaultTab = searchParams.get('tab') || 'personal';
 
   const [activeTab, setActiveTab] = useState(defaultTab);
-  const [isDarkMode, setIsDarkMode] = useState(false); // ✅ State for dark mode switch
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
     setActiveTab(defaultTab);
   }, [defaultTab]);
 
   useEffect(() => {
-    setIsDarkMode(theme === 'dark'); // ✅ Sync switch position with actual theme
+    setIsDarkMode(theme === 'dark');
   }, [theme]);
 
   const handleDarkModeToggle = (checked: boolean) => {
@@ -51,6 +51,39 @@ export default function Settings({ user_id }: { user_id: string }) {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const { toast } = useToast();
+  const [profileImage, setProfileImage] = useState<string>('');
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append("file", file);
+  
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+  
+      if (!res.ok) {
+        throw new Error("Failed to upload file");
+      }
+  
+      const data = await res.json();
+  
+      if (!data.url) {
+        throw new Error("Image URL not returned from server.");
+      }
+  
+      console.log("Uploaded Image URL:", data.url);
+      // Optionally: setImageUrl(data.url);
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert(err.message);
+    }
+  };
+  
 
   useEffect(() => {
     const loadUserDetails = async () => {
@@ -248,13 +281,28 @@ export default function Settings({ user_id }: { user_id: string }) {
               <div className="flex items-center space-x-4">
                 <Avatar className="h-24 w-24">
                   <AvatarImage
-                    src="https://avatar.iran.liara.run/public/18"
+                    src={profileImage || 'https://avatar.iran.liara.run/public/18'}
                     alt="Profile picture"
                   />
-                  <AvatarFallback>UO</AvatarFallback>
+                  <AvatarFallback>
+                    {fname[0] || 'U'}
+                    {lname[0] || 'O'}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="space-y-2">
-                  <Button variant="outline">Upload New Picture</Button>
+                  <input
+                    id="fileUpload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                  <Button
+                    variant="outline"
+                    onClick={() => document.getElementById('fileUpload')?.click()}
+                  >
+                    Upload New Picture
+                  </Button>
                   <p className="text-xs text-muted-foreground">
                     Recommended size: 400x400px. Max file size: 2MB.
                   </p>
