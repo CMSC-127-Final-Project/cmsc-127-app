@@ -104,24 +104,6 @@ export default function Settings({ user_id }: { user_id: string }) {
     }
   }, [user_id, toast]);
 
-  const updateUserProfileImage = async (userId: string, imageUrl: string) => {
-    try {
-      const { error } = await supabase
-        .from('User')
-        .update({ profile_image: imageUrl })
-        .eq('id', userId);
-
-      if (error) throw error;
-    } catch (err) {
-      console.error('Error updating profile image:', err);
-      toast({
-        title: 'Error',
-        description: 'Failed to update profile image. Please try again.',
-        variant: 'destructive',
-      });
-    }
-  };
-
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
