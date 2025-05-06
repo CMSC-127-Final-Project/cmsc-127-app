@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 
-export async function PATCH(req: NextRequest, context: { params: { user_id: string } }) {
-  const { user_id } = context.params;
+export async function PATCH(req: NextRequest, { params }: { params: Record<string, string> }) {
+  const { user_id } = params;
   const { profile_image } = await req.json();
 
   if (!profile_image || typeof profile_image !== 'string') {
@@ -16,7 +16,7 @@ export async function PATCH(req: NextRequest, context: { params: { user_id: stri
       .from('User')
       .update({ profile_image })
       .eq('auth_id', user_id)
-      .select(); // add this to get updated rows
+      .select(); 
 
     if (error) throw error;
     if (!data || data.length === 0) {
