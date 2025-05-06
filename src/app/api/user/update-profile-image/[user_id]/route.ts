@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 
-export async function PATCH(req: NextRequest, { params }: { params: { user_id: string } }) {
-  const { user_id } = params; 
-  const { profile_image } = await req.json(); 
+export async function PATCH(req: NextRequest, context: { params: { user_id: string } }) {
+  const { user_id } = context.params;
+  const { profile_image } = await req.json();
+
+  if (!profile_image || typeof profile_image !== 'string') {
+    return NextResponse.json({ error: 'Invalid profile image' }, { status: 400 });
+  }
 
   try {
     const supabase = await createClient();
@@ -11,11 +15,15 @@ export async function PATCH(req: NextRequest, { params }: { params: { user_id: s
     const { data, error } = await supabase
       .from('User')
       .update({ profile_image })
-      .eq('auth_id', user_id);
+      .eq('auth_id', user_id)
+      .select(); // add this to get updated rows
 
     if (error) throw error;
+    if (!data || data.length === 0) {
+      return NextResponse.json({ error: 'No user found with that ID' }, { status: 404 });
+    }
 
-    return NextResponse.json({ message: 'Profile image updated successfully', data });
+    return NextResponse.json({ message: 'Profile image updated successfully', data }, { status: 200 });
   } catch (err) {
     console.error('Error updating profile image:', err);
     return NextResponse.json({ error: 'Failed to update profile image in the database' }, { status: 500 });
