@@ -11,6 +11,9 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSearchParams } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
+import { createClient } from '@/utils/supabase/client';
+
+const supabase = createClient();
 
 export default function Settings({ user_id }: { user_id: string }) {
   const { setTheme, theme } = useTheme();
@@ -53,38 +56,6 @@ export default function Settings({ user_id }: { user_id: string }) {
   const { toast } = useToast();
   const [profileImage, setProfileImage] = useState<string>('');
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-  
-    const formData = new FormData();
-    formData.append("file", file);
-  
-    try {
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-  
-      if (!res.ok) {
-        throw new Error("Failed to upload file");
-      }
-  
-      const data = await res.json();
-  
-      if (!data.url) {
-        throw new Error("Image URL not returned from server.");
-      }
-  
-      console.log("Uploaded Image URL:", data.url);
-      // Optionally: setImageUrl(data.url);
-    } catch (err) {
-      console.error("Upload error:", err);
-      alert(err.message);
-    }
-  };
-  
-
   useEffect(() => {
     const loadUserDetails = async () => {
       try {
@@ -96,29 +67,13 @@ export default function Settings({ user_id }: { user_id: string }) {
         const user = data[0];
 
         if (user.role === 'Instructor') {
-          try {
-            const instructorResponse = await fetch(`/api/user/instructor/${user.instructor_id}`);
-            if (!instructorResponse.ok) {
-              throw new Error('Failed to fetch instructor details');
-            }
-            const instructorData = await instructorResponse.json();
-            const instructor = instructorData[0];
+          const instructorResponse = await fetch(`/api/user/instructor/${user.instructor_id}`);
+          const instructorData = await instructorResponse.json();
+          const instructor = instructorData[0];
 
-            setOffice(instructor.office);
-            setOriginalOffice(user.instructor_office || '');
-            setRank(instructor.faculty_rank);
-          } catch (err) {
-            console.error('Error loading instructor details:', err);
-            toast({
-              title: 'Error',
-              description: 'Failed to load instructor details. Please try again later.',
-              variant: 'destructive',
-            });
-          }
-        }
-
-        if (!user) {
-          throw new Error('No user data found');
+          setOffice(instructor.office);
+          setOriginalOffice(user.instructor_office || '');
+          setRank(instructor.faculty_rank);
         }
 
         setFname(user.first_name || 'User');
@@ -127,18 +82,13 @@ export default function Settings({ user_id }: { user_id: string }) {
         setNickname(user.nickname || 'Isko');
         setEmail(user.email || 'example@email.com');
         setDepartment(user.dept || 'Department');
-        setPhone(data[0].phone || '09123456789');
+        setPhone(user.phone || '09123456789');
         setRole(user.role || 'student');
         setOriginalNickname(user.nickname || '');
         setOriginalPhone(user.phone || '');
 
-        if (user.role === 'Instructor') {
-          setIdnumber(user.instructor_id || 'Instructor ID');
-        } else if (user.role === 'Student') {
-          setIdnumber(user.student_num || 'Student Number');
-        } else {
-          setIdnumber(user.instructor_id || '');
-        }
+        // Set profile image if available
+        setProfileImage(user.profile_image || '');
       } catch (err) {
         console.error('Error loading user details:', err);
         toast({
@@ -153,6 +103,77 @@ export default function Settings({ user_id }: { user_id: string }) {
       loadUserDetails();
     }
   }, [user_id, toast]);
+
+  const updateUserProfileImage = async (userId: string, imageUrl: string) => {
+    try {
+      const { error } = await supabase
+        .from('User')
+        .update({ profile_image: imageUrl })
+        .eq('id', userId);
+
+      if (error) throw error;
+    } catch (err) {
+      console.error('Error updating profile image:', err);
+      toast({
+        title: 'Error',
+        description: 'Failed to update profile image. Please try again.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      // Upload image to S3
+      const res = await fetch('/api/profile/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to upload file');
+      }
+
+      const data = await res.json();
+
+      if (!data.url) {
+        throw new Error('Image URL not returned from server.');
+      }
+
+      // Set the profile image URL after upload
+      setProfileImage(data.url);
+      console.log('Uploaded image URL:', data.url);
+
+      // Update the profile image URL in Supabase
+      const updateRes = await fetch(`/api/user/update-profile-image/${user_id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ profile_image: data.url }),
+      });
+
+      if (!updateRes.ok) {
+        throw new Error('Failed to update profile image in the database');
+      }
+
+      toast({
+        title: 'Success',
+        description: 'Profile picture updated successfully!',
+      });
+    } catch (err) {
+      console.error('Upload error:', err);
+      toast({
+        title: 'Error',
+        description: err instanceof Error ? err.message : 'Unknown error',
+        variant: 'destructive',
+      });
+    }
+  };
 
   const handleSaveChanges = async () => {
     setIsSaving(true);
@@ -281,7 +302,10 @@ export default function Settings({ user_id }: { user_id: string }) {
               <div className="flex items-center space-x-4">
                 <Avatar className="h-24 w-24">
                   <AvatarImage
-                    src={profileImage || 'https://avatar.iran.liara.run/public/18'}
+                    src={
+                      profileImage ||
+                      'https://cmsc-127-app-bucket.s3.ap-southeast-1.amazonaws.com/f4671257-28bf-435a-ac0b-1c47c8cf6e03.jpg'
+                    }
                     alt="Profile picture"
                   />
                   <AvatarFallback>
