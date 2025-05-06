@@ -11,9 +11,6 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSearchParams } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-import { createClient } from '@/utils/supabase/client';
-
-const supabase = createClient();
 
 export default function Settings({ user_id }: { user_id: string }) {
   const { setTheme, theme } = useTheme();
