@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 
-export async function PATCH(req: NextRequest, { params }: { params: Record<string, string> }) {
-  const { user_id } = params;
+export async function PATCH(req: NextRequest, { params } : { params : Promise<{ user_id: string }> }) {
+  const { user_id } = await params;
   const { profile_image } = await req.json();
 
   if (!profile_image || typeof profile_image !== 'string') {
