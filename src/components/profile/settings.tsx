@@ -282,8 +282,7 @@ export default function Settings({ user_id }: { user_id: string }) {
                 <Avatar className="h-24 w-24">
                   <AvatarImage
                     src={
-                      profileImage ||
-                      'https://cmsc-127-app-bucket.s3.ap-southeast-1.amazonaws.com/f4671257-28bf-435a-ac0b-1c47c8cf6e03.jpg'
+                      profileImage 
                     }
                     alt="Profile picture"
                   />
