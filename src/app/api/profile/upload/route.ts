@@ -1,8 +1,8 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { v4 as uuidv4 } from "uuid";
-import { NextRequest } from "next/server";
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { v4 as uuidv4 } from 'uuid';
+import { NextRequest } from 'next/server';
 
-export const runtime = "nodejs";
+export const runtime = 'nodejs';
 
 const s3 = new S3Client({
   region: process.env.S3_REGION!,
@@ -15,15 +15,15 @@ const s3 = new S3Client({
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
-    console.log("FormData keys:", [...formData.keys()]);
+    console.log('FormData keys:', [...formData.keys()]);
 
-    const file = formData.get("file") as File;
+    const file = formData.get('file') as File;
 
     if (!file) {
-      return new Response(JSON.stringify({ error: "No file uploaded" }), { status: 400 });
+      return new Response(JSON.stringify({ error: 'No file uploaded' }), { status: 400 });
     }
 
-    console.log("File info:", {
+    console.log('File info:', {
       name: file.name,
       type: file.type,
       size: file.size,
@@ -38,10 +38,10 @@ export async function POST(req: NextRequest) {
       Bucket: process.env.S3_BUCKET!,
       Key: filename,
       Body: buffer,
-      ContentType: file.type || "application/octet-stream",
+      ContentType: file.type || 'application/octet-stream',
     };
 
-    console.log("Uploading with params:", {
+    console.log('Uploading with params:', {
       Bucket: uploadParams.Bucket,
       Key: uploadParams.Key,
       ContentType: uploadParams.ContentType,
@@ -51,9 +51,8 @@ export async function POST(req: NextRequest) {
 
     const fileUrl = `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/${filename}`;
     return new Response(JSON.stringify({ url: fileUrl }), { status: 200 });
-
   } catch (err) {
-    console.error("Upload error:", JSON.stringify(err, null, 2));
-    return new Response(JSON.stringify({ error: "Failed to upload file" }), { status: 500 });
+    console.error('Upload error:', JSON.stringify(err, null, 2));
+    return new Response(JSON.stringify({ error: 'Failed to upload file' }), { status: 500 });
   }
 }
