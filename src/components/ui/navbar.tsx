@@ -135,16 +135,12 @@ export default function Navbar({ user_id }: { user_id: string }) {
                 <div className="p-3">
                   <div className="flex items-center gap-4 border-b pb-2">
                     <Avatar className="h-14 w-14">
-                      <AvatarImage
-                        src={
-                          profileImg 
-                        }
-                        alt="Profile picture"
-                      />
-                     
+                      <AvatarImage src={profileImg} alt="Profile picture" />
                     </Avatar>
-                    <div className='flex flex-col align-bottom'>
-                      <p className="font-semibold text-md font-raleway leading-4 dark:text-white">{username}</p>
+                    <div className="flex flex-col align-bottom">
+                      <p className="font-semibold text-md font-raleway leading-4 dark:text-white">
+                        {username}
+                      </p>
                       <p className="text-sm text-gray-500 dark:text-gray-400">{idNumber}</p>
                     </div>
                   </div>

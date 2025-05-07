@@ -280,12 +280,7 @@ export default function Settings({ user_id }: { user_id: string }) {
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-4">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage
-                    src={
-                      profileImage 
-                    }
-                    alt="Profile picture"
-                  />
+                  <AvatarImage src={profileImage} alt="Profile picture" />
                   <AvatarFallback>
                     {fname[0] || 'U'}
                     {lname[0] || 'O'}
