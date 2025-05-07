@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { UserSearch, Sun, Moon, UserCircle, LogOut } from 'lucide-react';
+import { UserSearch, Sun, Moon, LogOut } from 'lucide-react';
 import { RxHamburgerMenu } from 'react-icons/rx';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { useRouter } from 'next/navigation';
 import Sidebar from './adminSidebar';
 
@@ -12,6 +13,7 @@ export default function Navbar({ user_id }: { user_id: string }) {
   const [darkMode, setDarkMode] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profileImg, setProfileImg] = useState('');
   const router = useRouter();
 
   const [username, setUsername] = useState();
@@ -24,6 +26,7 @@ export default function Navbar({ user_id }: { user_id: string }) {
         }
         const data = await response.json();
         setUsername(data[0].nickname || 'User');
+        setProfileImg(data[0].profile_image || 'https://avatar.iran.liara.run/public/18');
       } catch (err) {
         console.error('Internal Server Error:', err);
       }
@@ -178,8 +181,10 @@ export default function Navbar({ user_id }: { user_id: string }) {
               <div className="absolute right-0 mt-2 w-60 h-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
                 <div className="absolute -top-2 right-4 w-4 h-4 bg-white dark:bg-gray-800 border-t border-l border-gray-200 dark:border-gray-700 rotate-45"></div>
                 <div className="p-3">
-                  <div className="flex items-center gap-2 border-b pb-2 dark:border-gray-600">
-                    <UserCircle className="text-gray-600 dark:text-gray-300 w-12 h-12" />
+                  <div className="flex items-center gap-4 border-b pb-2">
+                    <Avatar className="h-14 w-14">
+                      <AvatarImage src={profileImg} alt="Profile picture" />
+                    </Avatar>
                     <div>
                       <p className="font-semibold font-raleway dark:text-white">{username}</p>
                     </div>
@@ -192,7 +197,7 @@ export default function Navbar({ user_id }: { user_id: string }) {
                         router.push('/profile');
                       }}
                     >
-                      Profile and Preferences
+                      Profile and Settings
                     </li>
                     <li
                       className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"

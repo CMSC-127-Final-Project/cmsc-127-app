@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Bell, UserCircle, LogOut } from 'lucide-react';
+import { Bell, LogOut } from 'lucide-react';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { useRouter } from 'next/navigation';
 import Sidebar from './sidebar';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 
 export default function Navbar({ user_id }: { user_id: string }) {
   const [currentTime, setCurrentTime] = useState('');
@@ -13,6 +14,7 @@ export default function Navbar({ user_id }: { user_id: string }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [idNumber, setIdNumber] = useState('');
   const [username, setUsername] = useState();
+  const [profileImg, setProfileImg] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -25,6 +27,7 @@ export default function Navbar({ user_id }: { user_id: string }) {
         const data = await response.json();
         console.log('Fetched user data:', data);
         setUsername(data[0].nickname || 'User');
+        setProfileImg(data[0].profile_image || 'https://avatar.iran.liara.run/public/18');
         if (data[0].role === 'Student') {
           setIdNumber(data[0].student_num || 'ID Number not available');
         } else {
@@ -127,14 +130,18 @@ export default function Navbar({ user_id }: { user_id: string }) {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
                 <div className="absolute -top-2 right-4 w-4 h-4 bg-white dark:bg-gray-800 border-t border-l border-gray-200 dark:border-gray-700 rotate-45"></div>
                 <div className="p-3">
-                  <div className="flex items-center gap-2 border-b pb-2 dark:border-gray-600">
-                    <UserCircle className="text-gray-600 dark:text-gray-300 w-12 h-12" />
-                    <div>
-                      <p className="font-semibold font-raleway dark:text-white">{username}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{idNumber}</p>
+                  <div className="flex items-center gap-4 border-b pb-2">
+                    <Avatar className="h-14 w-14">
+                      <AvatarImage src={profileImg} alt="Profile picture" />
+                    </Avatar>
+                    <div className="flex flex-col align-bottom">
+                      <p className="font-semibold text-md font-raleway leading-4 dark:text-white">
+                        {username}
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{idNumber}</p>
                     </div>
                   </div>
                   <ul className="mt-2 text-sm font-raleway border-b pb-2 dark:border-gray-600">
@@ -145,7 +152,7 @@ export default function Navbar({ user_id }: { user_id: string }) {
                         router.push('/profile');
                       }}
                     >
-                      Profile and Preferences
+                      Profile & Settings
                     </li>
                   </ul>
                   <div className="flex justify-end">
