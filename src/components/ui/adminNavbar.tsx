@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { UserSearch, Sun, Moon, UserCircle, LogOut } from 'lucide-react';
+import { UserSearch, Sun, Moon, LogOut } from 'lucide-react';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { useRouter } from 'next/navigation';
