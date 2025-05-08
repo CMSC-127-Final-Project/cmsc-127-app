@@ -12,8 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSearchParams } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 
-export default function Settings({ user_id }: { user_id: string }) {
-  const { setTheme, theme } = useTheme();
+export default function Settings({ user_id, user_data }: { user_id: string; user_data: JSON }) {
+  const { setTheme, theme } = useTheme(); // ✅ Initialize theme control
   const searchParams = useSearchParams();
   const defaultTab = searchParams.get('tab') || 'personal';
 
@@ -55,13 +55,19 @@ export default function Settings({ user_id }: { user_id: string }) {
 
   useEffect(() => {
     const loadUserDetails = async () => {
+      let user = null;
       try {
-        const response = await fetch(`/api/user/${user_id}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch user details');
+        if (Object.keys(user_data).length !== 0) {
+          user = user_data;
+          console.log('User data from props:', user_data);
+        } else {
+          const response = await fetch(`/api/user/${user_id}`);
+          if (!response.ok) {
+            throw new Error('Failed to fetch user details');
+          }
+          const data = await response.json();
+          user = data[0];
         }
-        const data = await response.json();
-        const user = data[0];
 
         if (user.role === 'Instructor') {
           const instructorResponse = await fetch(`/api/user/instructor/${user.instructor_id}`);
@@ -99,7 +105,7 @@ export default function Settings({ user_id }: { user_id: string }) {
     if (user_id) {
       loadUserDetails();
     }
-  }, [user_id, toast]);
+  }, [user_id, user_data, toast]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -403,7 +409,7 @@ export default function Settings({ user_id }: { user_id: string }) {
                 <Label htmlFor="department">Department</Label>
                 <select
                   id="department"
-                  defaultValue={department}
+                  value={department}
                   className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6b1d1d] transition-colors duration-200"
                   disabled
                 >

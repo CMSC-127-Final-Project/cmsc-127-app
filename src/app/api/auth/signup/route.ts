@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { signupSchema } from '@/utils/schemas';
+import { cookies } from 'next/headers';
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
+  const cookieStore = await cookies();
 
   try {
     const formData = await request.json();
@@ -41,6 +43,8 @@ export async function POST(request: NextRequest) {
       dept: validatedData.department,
     });
     if (insertError) throw { error: insertError.message };
+
+    cookieStore.set('USER.Nickname', validatedData.nickname);
 
     if (validatedData.role === 'Instructor') {
       const { error: updateError } = await supabase

@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { updateUserSchema } from '@/utils/schemas';
+import { cookies } from 'next/headers';
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const cookieStore = await cookies();
   const supabase = await createClient();
 
   const { id } = await params;
@@ -118,6 +120,23 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       );
       return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
     }
+
+    const { error: updatedUserError, data: updatedUserData } = await supabase
+      .from('User')
+      .select('*')
+      .eq('auth_id', id)
+      .single();
+    if (updatedUserError) {
+      console.error('Error fetching updated user data:', updatedUserError.message);
+      return NextResponse.json({ error: 'Failed to fetch updated user data' }, { status: 500 });
+    }
+    cookieStore.set('USER.Nickname', updatedUserData.nickname);
+    if (updatedUserData.role === 'Student') {
+      cookieStore.set('USER.ID', updatedUserData.student_num);
+    } else if (updatedUserData.role === 'Instructor') {
+      cookieStore.set('USER.ID', updatedUserData.instructor_id);
+    }
+    cookieStore.set('USER.DATA', JSON.stringify(updatedUserData));
 
     return NextResponse.json({ message: 'Profile updated successfully' }, { status: 200 });
   } catch (err) {
