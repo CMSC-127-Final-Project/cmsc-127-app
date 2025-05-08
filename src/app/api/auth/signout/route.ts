@@ -6,7 +6,7 @@ export async function GET() {
   const supabase = await createClient();
   const cookieStore = await cookies();
   const { error } = await supabase.auth.signOut();
-  if(cookieStore.get('USER.Nickname')) {
+  if (cookieStore.get('USER.Nickname')) {
     cookieStore.delete('USER.Nickname');
     cookieStore.delete('USER.ID');
     cookieStore.delete('USER.DATA');

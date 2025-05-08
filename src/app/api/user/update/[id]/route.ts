@@ -121,7 +121,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
     }
 
-    const { error: updatedUserError, data: updatedUserData } = await supabase.from('User').select('*').eq('auth_id', id).single();
+    const { error: updatedUserError, data: updatedUserData } = await supabase
+      .from('User')
+      .select('*')
+      .eq('auth_id', id)
+      .single();
     if (updatedUserError) {
       console.error('Error fetching updated user data:', updatedUserError.message);
       return NextResponse.json({ error: 'Failed to fetch updated user data' }, { status: 500 });

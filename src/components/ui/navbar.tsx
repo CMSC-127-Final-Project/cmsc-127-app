@@ -7,7 +7,15 @@ import { useRouter } from 'next/navigation';
 import Sidebar from './sidebar';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 
-export default function Navbar({ user_id, nickname, id_number }: { user_id: string, nickname: string, id_number: string }) {
+export default function Navbar({
+  user_id,
+  nickname,
+  id_number,
+}: {
+  user_id: string;
+  nickname: string;
+  id_number: string;
+}) {
   const [currentTime, setCurrentTime] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);

@@ -18,12 +18,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     cookieStore.set('USER.Nickname', data[0].nickname);
-    if(data[0].role === 'Student') {
+    if (data[0].role === 'Student') {
       cookieStore.set('USER.ID', data[0].student_num);
-    } else if(data[0].role === 'Instructor') {
+    } else if (data[0].role === 'Instructor') {
       cookieStore.set('USER.ID', data[0].instructor_id);
     }
-    
+
     cookieStore.set('USER.DATA', JSON.stringify(data[0]));
 
     return NextResponse.json(data, { status: 200 });

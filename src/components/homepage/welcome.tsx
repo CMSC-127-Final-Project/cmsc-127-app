@@ -4,11 +4,11 @@ import { FaUser } from 'react-icons/fa';
 import { useEffect } from 'react';
 import { useState } from 'react';
 
-export default function Welcome({ user_id, nickname }: { user_id: string, nickname: string }) {
+export default function Welcome({ user_id, nickname }: { user_id: string; nickname: string }) {
   const [username, setUsername] = useState<string>();
   useEffect(() => {
     const loadNickname = async () => {
-      if(nickname) {
+      if (nickname) {
         setUsername(nickname);
       } else {
         try {

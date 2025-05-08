@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSearchParams } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 
-export default function Settings({ user_id, user_data }: { user_id: string, user_data: JSON }) {
+export default function Settings({ user_id, user_data }: { user_id: string; user_data: JSON }) {
   const { setTheme, theme } = useTheme(); // ✅ Initialize theme control
   const searchParams = useSearchParams();
   const defaultTab = searchParams.get('tab') || 'personal';

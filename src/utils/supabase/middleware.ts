@@ -43,13 +43,15 @@ export async function updateSession(request: NextRequest) {
     !request.nextUrl.pathname.startsWith('/signup')
   ) {
     // try to refresh the session
-    const { data: { session } } = await supabase.auth.refreshSession();
+    const {
+      data: { session },
+    } = await supabase.auth.refreshSession();
     if (session) {
       // session was refreshed, check if user exists
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      
+
       if (!user) {
         // no user, potentially respond by redirecting the user to the login page
         const url = request.nextUrl.clone();
@@ -60,10 +62,10 @@ export async function updateSession(request: NextRequest) {
   }
 
   const { data: userData } = await supabase
-  .from('User')
-  .select('role')
-  .eq('auth_id', user?.id)
-  .single();
+    .from('User')
+    .select('role')
+    .eq('auth_id', user?.id)
+    .single();
 
   if (userData?.role === 'Admin' && request.nextUrl.pathname.startsWith('/homepage')) {
     // user is admin, redirect to admin page

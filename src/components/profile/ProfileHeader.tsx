@@ -4,7 +4,13 @@ import { useState } from 'react';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { useEffect } from 'react';
 
-export default function ProfileManagement({ user_id, nickname }: { user_id: string, nickname: string }) {
+export default function ProfileManagement({
+  user_id,
+  nickname,
+}: {
+  user_id: string;
+  nickname: string;
+}) {
   const [username, setUsername] = useState<string>();
   useEffect(() => {
     const loadNickname = async () => {
