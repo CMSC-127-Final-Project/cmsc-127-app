@@ -46,18 +46,22 @@ export async function updateSession(request: NextRequest) {
     const {
       data: { session },
     } = await supabase.auth.refreshSession();
-    if (session) {
-      // session was refreshed, check if user exists
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+    if (!session) {
+      // no session, potentially respond by redirecting the user to the login page
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      return NextResponse.redirect(url);
+    }
+    // session was refreshed, check if user exists
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-      if (!user) {
-        // no user, potentially respond by redirecting the user to the login page
-        const url = request.nextUrl.clone();
-        url.pathname = '/login';
-        return NextResponse.redirect(url);
-      }
+    if (!user) {
+      // no user, potentially respond by redirecting the user to the login page
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      return NextResponse.redirect(url);
     }
   }
 
