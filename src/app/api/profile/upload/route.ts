@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
     const fileUrl = `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/${filename}`;
     return new Response(JSON.stringify({ url: fileUrl }), { status: 200 });
   } catch (err) {
-    console.error('Upload error:', JSON.stringify(err, null, 2));
-    return new Response(JSON.stringify({ error: 'Failed to upload file' }), { status: 500 });
+  console.error('Upload error:', err); // ← remove JSON.stringify here
+  return new Response(JSON.stringify({ error: 'Failed to upload file' }), { status: 500 });
   }
 }
