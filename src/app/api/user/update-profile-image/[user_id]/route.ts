@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import { cookies } from 'next/headers';
 
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ user_id: string }> }
 ) {
+  const cookieStore = await cookies();
   const { user_id } = await params;
   const { profile_image } = await req.json();
 
@@ -25,6 +27,9 @@ export async function PATCH(
     if (!data || data.length === 0) {
       return NextResponse.json({ error: 'No user found with that ID' }, { status: 404 });
     }
+
+    cookieStore.set('USER.DATA', JSON.stringify(data[0]));
+    cookieStore.set('USER.PFP', data[0].profile_image);
 
     return NextResponse.json(
       { message: 'Profile image updated successfully', data },

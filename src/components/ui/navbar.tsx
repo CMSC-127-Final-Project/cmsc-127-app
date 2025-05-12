@@ -11,10 +11,12 @@ export default function Navbar({
   user_id,
   nickname,
   id_number,
+  profile_link,
 }: {
   user_id: string;
   nickname: string;
   id_number: string;
+  profile_link: string;
 }) {
   const [currentTime, setCurrentTime] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -27,9 +29,10 @@ export default function Navbar({
 
   useEffect(() => {
     const loadNickname = async () => {
-      if (nickname && id_number) {
+      if (nickname && id_number && profile_link) {
         setUsername(nickname);
         setIdNumber(id_number);
+        setProfileImg(profile_link);
       } else {
         try {
           const response = await fetch(`/api/user/${user_id}`);
@@ -51,7 +54,7 @@ export default function Navbar({
       }
     };
     loadNickname();
-  }, [user_id, nickname, id_number]);
+  }, [user_id, nickname, id_number, profile_link]);
 
   const handleSignOut = async () => {
     setIsSigningOut(true);

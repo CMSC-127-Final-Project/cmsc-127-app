@@ -21,10 +21,16 @@ export default async function HomePage() {
   const cookieStore = await cookies();
   const nickname = cookieStore.get('USER.Nickname')?.value || '';
   const idNumber = cookieStore.get('USER.ID')?.value || '';
+  const profileImg = cookieStore.get('USER.PFP')?.value || '';
 
   return (
     <>
-      <Navbar user_id={user_id} nickname={nickname} id_number={idNumber} />
+      <Navbar
+        user_id={user_id}
+        nickname={nickname}
+        id_number={idNumber}
+        profile_link={profileImg}
+      />
       <div className="lg:mt-0 md:mt-12">
         <Welcome user_id={user_id} nickname={nickname} />
         <RoomReservation />
