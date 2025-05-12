@@ -32,19 +32,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
-
-  create-pull-request:
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          branch: release
-          base: main
-          title: "chore: Release ${GITHUB_REF##*/}"
-          body: "This pull request contains the changes for the latest release."
-          labels: "release"
