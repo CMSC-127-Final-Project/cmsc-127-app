@@ -58,6 +58,7 @@ export default function RoomReservation() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRoomTypes, setSelectedRoomTypes] = useState<string[]>([]);
   const [uniqueRoomTypes, setUniqueRoomTypes] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const formatRoomType = (type: string) => {
@@ -90,6 +91,7 @@ export default function RoomReservation() {
     days?: string[];
     date?: string | null;
   }) => {
+    setIsLoading(true);
     try {
       const response = await fetch('/api/schedule/add', {
         method: 'POST',
@@ -114,6 +116,8 @@ export default function RoomReservation() {
         description: 'Failed to add schedule',
         variant: 'destructive',
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -630,7 +634,7 @@ export default function RoomReservation() {
                 addSchedule(newSchedule);
               }}
               disabled={
-                !startTime || !endTime || (isRecurring ? selectedDays.length === 0 : !selectedDate)
+                !startTime || !endTime || (isRecurring ? selectedDays.length === 0 : !selectedDate) || isLoading
               }
             >
               Save Schedule
