@@ -16,8 +16,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       return NextResponse.json({ error: 'Unauthorized: No active session' }, { status: 401 });
     }
 
-    const sessionAuthId = user.user.id;
-
     const { data: userRecord, error: userRecordError } = await supabase
       .from('User')
       .select('*')
