@@ -23,10 +23,11 @@ export default async function SupportPage() {
   const cookieStore = await cookies();
   const nickname = cookieStore.get('USER.Nickname')?.value || '';
   const idNumber = cookieStore.get('USER.ID')?.value || '';
+  const profileImg = cookieStore.get('USER.PFP')?.value || '';
 
   return (
     <>
-      <Navbar user_id={user_id} nickname={nickname} id_number={idNumber} />
+      <Navbar user_id={user_id} nickname={nickname} id_number={idNumber} profile_link={profileImg}/>
       <main className="container mx-auto py-6 px-4 md:px-6 flex flex-col md:flex-row gap-6">
         <div className="flex flex-col w-full md:w-3/4">
           <Card className="mb-6">

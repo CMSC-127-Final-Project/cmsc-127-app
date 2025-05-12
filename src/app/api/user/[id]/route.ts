@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     } else if (data[0].role === 'Instructor') {
       cookieStore.set('USER.ID', data[0].instructor_id);
     }
-
+    cookieStore.set('USER.PFP', data[0].profile_image);
     cookieStore.set('USER.DATA', JSON.stringify(data[0]));
 
     return NextResponse.json(data, { status: 200 });

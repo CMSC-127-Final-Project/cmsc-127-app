@@ -23,10 +23,11 @@ export default async function HomePage() {
   const userData = cookieStore.get('USER.DATA')?.value
     ? JSON.parse(cookieStore.get('USER.DATA')!.value as string)
     : {};
+  const profileImg = cookieStore.get('USER.PFP')?.value || '';
 
   return (
     <>
-      <Navbar user_id={user_id} nickname={nickname} id_number={idNumber} />
+      <Navbar user_id={user_id} nickname={nickname} id_number={idNumber} profile_link={profileImg} />
       <main className="container mx-auto py-6 px-4 md:px-6 flex flex-col md:flex-row gap-6 md:mt-10 lg:mt-0">
         <div className="flex flex-col w-full md:w-3/4">
           <Header user_id={user_id} nickname={nickname} />
