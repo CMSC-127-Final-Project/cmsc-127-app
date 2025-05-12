@@ -634,7 +634,10 @@ export default function RoomReservation() {
                 addSchedule(newSchedule);
               }}
               disabled={
-                !startTime || !endTime || (isRecurring ? selectedDays.length === 0 : !selectedDate) || isLoading
+                !startTime ||
+                !endTime ||
+                (isRecurring ? selectedDays.length === 0 : !selectedDate) ||
+                isLoading
               }
             >
               Save Schedule

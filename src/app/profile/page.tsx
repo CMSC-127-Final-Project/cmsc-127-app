@@ -27,7 +27,12 @@ export default async function HomePage() {
 
   return (
     <>
-      <Navbar user_id={user_id} nickname={nickname} id_number={idNumber} profile_link={profileImg} />
+      <Navbar
+        user_id={user_id}
+        nickname={nickname}
+        id_number={idNumber}
+        profile_link={profileImg}
+      />
       <main className="container mx-auto py-6 px-4 md:px-6 flex flex-col md:flex-row gap-6 md:mt-10 lg:mt-0">
         <div className="flex flex-col w-full md:w-3/4">
           <Header user_id={user_id} nickname={nickname} />
