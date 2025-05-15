@@ -23,7 +23,7 @@ export function EditClientProfile() {
   const [dept, setDept] = useState('');
   const [phone, setPhone] = useState('');
   const [role, setRole] = useState('');
-  const [rank, setRank] = useState('');
+  const [faculty_rank, setFaculty_rank] = useState('');
   const [office, setOffice] = useState('');
   const [nickname, setNickname] = useState('');
   const [idnumber, setIdnumber] = useState<string | undefined>(undefined);
@@ -73,7 +73,7 @@ export function EditClientProfile() {
 
             setOffice(instructor.office);
             setOriginalOffice(instructor.office || '');
-            setRank(instructor.rank);
+            setFaculty_rank(instructor.rank);
           } catch (err) {
             console.error('Error loading instructor details:', err);
             toast({
@@ -128,7 +128,7 @@ export function EditClientProfile() {
       first_name?: string;
       last_name?: string;
       id_number?: string;
-      instructor_rank?: string;
+      faculty_rank?: string;
       email?: string;
       office?: string;
       dept?: string;
@@ -147,8 +147,10 @@ export function EditClientProfile() {
       if (office !== originalOffice) {
         updates.office = office;
       }
-      if (rank !== originalRank) updates.instructor_rank = rank;
+      if (faculty_rank !== originalRank) updates.faculty_rank = faculty_rank;
     }
+
+    console.log('Updates:', updates);
 
     if (Object.keys(updates).length === 0) {
       toast({
@@ -304,17 +306,14 @@ export function EditClientProfile() {
                 <Label htmlFor="facultyRank">Faculty Rank</Label>
                 <select
                   id="facultyRank"
-                  defaultValue={rank}
-                  onChange={e => setRank(e.target.value)}
+                  onChange={e => setFaculty_rank(e.target.value)}
                   className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6b1d1d] transition-colors duration-200"
                 >
-                  <option value="" disabled>
-                    Select rank
-                  </option>
-                  <option value="lecturer">Lecturer</option>
-                  <option value="asstprof">Assistant Professor</option>
-                  <option value="asscprof">Associate Professor</option>
-                  <option value="professor">Professor</option>
+                  <option value="">Select rank</option>
+                  <option value="Lecturer">Lecturer</option>
+                  <option value="Assistant Professor">Assistant Professor</option>
+                  <option value="Associate Professor">Associate Professor</option>
+                  <option value="Professor">Professor</option>
                 </select>
               </div>
               <div className="space-y-2">
@@ -332,13 +331,10 @@ export function EditClientProfile() {
             <Label htmlFor="department">Department</Label>
             <select
               id="department"
-              defaultValue={dept}
               onChange={e => setDept(e.target.value)}
               className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6b1d1d] transition-colors duration-200"
             >
-              <option value="" disabled>
-                Select department
-              </option>
+              <option value="">Select department</option>
               <option value="DMPCS">DMPCS</option>
               <option value="DSFT">DSFT</option>
               <option value="DBSES">DBSES</option>

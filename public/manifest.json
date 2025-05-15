@@ -1,0 +1,25 @@
+{
+  "name": "CSM Room Management System",
+  "short_name": "CSM Rooms",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/upfavicon.ico",
+      "type": "image/x-icon",
+      "sizes": "64x64 32x32 24x24 16x16"
+    },
+    {
+      "src": "/up_logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/upminlogo.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

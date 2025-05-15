@@ -6,7 +6,7 @@ export const updateUserSchema = z.object({
   last_name: z.string().optional(),
   id_number: z.string().optional(),
   dept: z.string().optional(),
-  rank: z.string().optional(),
+  faculty_rank: z.string().optional(),
   office: z.string().optional(),
   nickname: z.string().optional(),
   phone: z.string().regex(/^\d+$/, 'Phone number must contain only digits').optional(),

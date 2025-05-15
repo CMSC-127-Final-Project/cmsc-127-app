@@ -11,13 +11,10 @@ export async function POST(request: NextRequest) {
 
   try {
     const rawBody = await request.text();
-    console.log('Raw Request Body:', rawBody);
 
     const formData = JSON.parse(rawBody);
-    console.log('Parsed Form Data:', formData);
 
     const validatedFormData = UsersListSchema.parse(formData);
-    console.log('Validated Form Data:', validatedFormData);
 
     if (!validatedFormData.length) {
       return NextResponse.json({ error: 'No data provided', status: 400 }, { status: 400 });
@@ -100,7 +97,6 @@ export async function GET() {
 
     // Validate data using Zod
     const validatedData = UsersListSchema.parse(data);
-    console.log('Validated Data:', validatedData);
 
     // Return validated data
     return NextResponse.json(validatedData, { status: 200 });
