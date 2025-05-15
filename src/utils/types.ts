@@ -105,7 +105,7 @@ export interface RoomSchedules {
   }[];
 }
 
-interface PWAOptions {
+export interface PWAOptions {
   dest: string;
   register?: boolean;
   skipWaiting?: boolean;
