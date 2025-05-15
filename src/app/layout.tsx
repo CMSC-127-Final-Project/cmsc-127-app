@@ -38,18 +38,6 @@ export default function RootLayout({
           <PostHogProvider>{children}</PostHogProvider>
         </ThemeProvider>
       </body>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            if ('serviceWorker' in navigator) {
-              navigator.serviceWorker.register('/sw.js', { scope: '/' });
-              console.log('Service Worker registered');
-            }
-            else {
-              console.log('Service Worker not supported');
-          `,
-        }}
-      />
     </html>
   );
 }
