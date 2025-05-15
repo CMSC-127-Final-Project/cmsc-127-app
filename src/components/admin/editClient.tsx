@@ -23,7 +23,7 @@ export function EditClientProfile() {
   const [dept, setDept] = useState('');
   const [phone, setPhone] = useState('');
   const [role, setRole] = useState('');
-  const [faculty_rank, setRank] = useState('');
+  const [faculty_rank, setFaculty_rank] = useState('');
   const [office, setOffice] = useState('');
   const [nickname, setNickname] = useState('');
   const [idnumber, setIdnumber] = useState<string | undefined>(undefined);
@@ -73,7 +73,7 @@ export function EditClientProfile() {
 
             setOffice(instructor.office);
             setOriginalOffice(instructor.office || '');
-            setRank(instructor.rank);
+            setFaculty_rank(instructor.rank);
           } catch (err) {
             console.error('Error loading instructor details:', err);
             toast({
@@ -306,7 +306,7 @@ export function EditClientProfile() {
                 <Label htmlFor="facultyRank">Faculty Rank</Label>
                 <select
                   id="facultyRank"
-                  onChange={e => setRank(e.target.value)}
+                  onChange={e => setFaculty_rank(e.target.value)}
                   className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6b1d1d] transition-colors duration-200"
                 >
                   <option value="">Select rank</option>
