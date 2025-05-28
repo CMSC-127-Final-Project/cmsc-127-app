@@ -84,16 +84,18 @@ const ManageUsers = () => {
         const response = await fetch('/api/usersList', { method: 'GET' });
         if (!response.ok) throw new Error('Failed to fetch reservations');
         const data = await response.json();
-        const mappedUsers = data.map((user: User) => ({
-          auth_id: user.auth_id,
-          number: user.student_num || user.instructor_id || 'N/A',
-          first_name: user.first_name,
-          last_name: user.last_name,
-          email: user.email,
-          phone: user.phone,
-          role: user.role,
-          dept: user.dept,
-        }));
+        const mappedUsers = data
+          .filter((user: User) => user.role !== 'Admin')
+          .map((user: User) => ({
+            auth_id: user.auth_id,
+            number: user.student_num || user.instructor_id || 'N/A',
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            phone: user.phone,
+            role: user.role,
+            dept: user.dept,
+          }));
         setUsers(mappedUsers);
         setFilteredUsers(mappedUsers);
         setShowEmptyState(mappedUsers.length === 0);
