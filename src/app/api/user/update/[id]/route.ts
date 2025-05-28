@@ -16,9 +16,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       return NextResponse.json({ error: 'Unauthorized: No active session' }, { status: 401 });
     }
 
-    const sessionAuthId = user.user.id;
-    console.log('Session Auth ID:', sessionAuthId);
-
     const { data: userRecord, error: userRecordError } = await supabase
       .from('User')
       .select('*')
@@ -47,8 +44,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       .select('*')
       .eq('instructor_id', userRecord.instructor_id)
       .single();
-
-    console.log('Instructor Record:', instructorRecord, 'Instructor Error:', instructorError);
 
     if (instructorError && parsedData.data.role === 'Instructor') {
       console.error('Instructor record error:', instructorError?.message || 'Instructor not found');
@@ -79,8 +74,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     if (parsedData.data.dept && parsedData.data.dept !== userRecord.dept) {
       filteredUpdates.dept = parsedData.data.dept;
     }
-    if (parsedData.data.rank && parsedData.data.rank !== instructorRecord.rank) {
-      instructorFilteredUpdates.rank = parsedData.data.rank;
+    if (
+      parsedData.data.faculty_rank &&
+      parsedData.data.faculty_rank !== instructorRecord.faculty_rank
+    ) {
+      instructorFilteredUpdates.faculty_rank = parsedData.data.faculty_rank;
     }
     if (parsedData.data.office && parsedData.data.office !== instructorRecord.office) {
       instructorFilteredUpdates.office = parsedData.data.office;
@@ -91,9 +89,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     if (parsedData.data.phone && parsedData.data.phone !== userRecord.phone) {
       filteredUpdates.phone = parsedData.data.phone;
     }
-
-    console.log('Filtered Updates:', filteredUpdates);
-    console.log('Instructor Filtered Updates:', instructorFilteredUpdates);
 
     if (
       Object.keys(filteredUpdates).length === 0 &&

@@ -44,3 +44,12 @@ next-env.d.ts
 .env.sentry-build-plugin
 
 *storybook.log
+
+# PWA files
+/public/sw.*
+/public/workbox-*.js
+/public/fallback-*.js
+/public/precache.*.*.js.map
+/public/workbox-*.js.map
+/public/worker-*.js.map
+/public/fallback-*.js
